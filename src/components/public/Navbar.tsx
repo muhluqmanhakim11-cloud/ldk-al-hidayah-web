@@ -65,15 +65,6 @@ export default function Navbar() {
                   </Link>
                 );
               })}
-              
-              <div className="w-px h-6 bg-gray-300 mx-3"></div>
-              
-              <Link href="/rekrutmen" className="ml-3 px-6 py-2.5 rounded-full text-sm font-bold bg-green-600 text-white shadow-[0_4px_14px_0_rgba(22,163,74,0.39)] hover:bg-green-700 hover:shadow-[0_6px_20px_rgba(22,163,74,0.23)] transition-all duration-300 hover:-translate-y-0.5 active:scale-95">
-                Gabung
-              </Link>
-              <Link href="/login" className="ml-3 px-6 py-2.5 rounded-full text-sm font-bold border-2 border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 active:scale-95">
-                Admin
-              </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -114,13 +105,6 @@ export default function Navbar() {
               </Link>
             );
           })}
-          <div className="pt-4 mt-2 flex flex-col gap-3">
-            <Link href="/rekrutmen" onClick={() => setIsOpen(false)} className="w-full text-center bg-green-600 text-white px-4 py-3.5 rounded-2xl font-bold shadow-md active:scale-95 transition-transform">
-              Gabung LDK Sekarang
-            </Link>
-            <Link href="/login" onClick={() => setIsOpen(false)} className="w-full text-center bg-gray-100 text-gray-700 px-4 py-3.5 rounded-2xl font-bold active:scale-95 transition-transform">
-              Masuk sebagai Admin
-            </Link>
           </div>
         </div>
       </div>
