@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import AdminLayout from "@/components/admin/AdminLayout";
-import Topbar from "@/components/admin/Topbar";
+
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -73,9 +72,8 @@ export default function SettingsPage() {
   };
 
   return (
-    <AdminLayout>
-      <Topbar title="Pengaturan Situs" />
-      
+    <>
+
       <div className="p-4 md:p-6 lg:p-8">
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden max-w-4xl">
           <div className="p-6 border-b border-gray-100">
@@ -184,6 +182,6 @@ export default function SettingsPage() {
           )}
         </div>
       </div>
-    </AdminLayout>
+    </>
   );
 }

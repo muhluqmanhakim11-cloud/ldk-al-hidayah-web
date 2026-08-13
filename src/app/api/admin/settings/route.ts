@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { siteSettings } from "@/db/schema";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/auth";
+import { auth } from "@/auth";
 
 export async function GET() {
   try {
@@ -23,7 +22,7 @@ export async function GET() {
 
 export async function PUT(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     // Only superadmin can edit settings
     if (!session || session.user.role !== 'SUPER_ADMIN') {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
