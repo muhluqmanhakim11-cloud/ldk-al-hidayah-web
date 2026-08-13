@@ -199,6 +199,20 @@ export const siteSettings = pgTable('site_settings', {
   email: varchar('email', { length: 255 }).default('halo@ldkalhidayah.com'),
   instagramUrl: varchar('instagram_url', { length: 500 }),
   youtubeUrl: varchar('youtube_url', { length: 500 }),
+  tiktokUrl: varchar('tiktok_url', { length: 500 }),
+  facebookUrl: varchar('facebook_url', { length: 500 }),
+  vercelBadgeUrl: varchar('vercel_badge_url', { length: 1000 }),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// 14. profiles (for Profil LDK public page CRUD)
+export const profiles = pgTable('profiles', {
+  id: serial('id').primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  content: text('content').notNull(),
+  orderIndex: integer('order_index').default(0).notNull(),
+  status: varchar('status', { length: 20 }).default('PUBLISHED').notNull(), // DRAFT, PUBLISHED
+  createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 

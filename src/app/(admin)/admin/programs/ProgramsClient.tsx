@@ -18,7 +18,7 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
   const [filterDivision, setFilterDivision] = useState(userRole === "ADMIN_BIDANG" ? String(userDivisionId) : "");
   const [filterStatus, setFilterStatus] = useState("");
 
-  const [formData, setFormData] = useState({ id: 0, name: "", slug: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", description: "", objective: "", schedule: "", status: "DRAFT" });
+  const [formData, setFormData] = useState({ id: 0, name: "", slug: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", description: "", objective: "", schedule: "", status: "PUBLISHED" });
   
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
@@ -144,7 +144,7 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
         
         {!isReadOnly && (
           <button 
-            onClick={() => { setFormData({ id: 0, name: "", slug: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", description: "", objective: "", schedule: "", status: "DRAFT" }); setIsModalOpen(true); }}
+            onClick={() => { setFormData({ id: 0, name: "", slug: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", description: "", objective: "", schedule: "", status: "PUBLISHED" }); setIsModalOpen(true); }}
             className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 whitespace-nowrap"
           >
             + Tambah Program
@@ -223,15 +223,7 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
               <label className="block text-sm font-medium mb-1">Jadwal (Contoh: Setiap Bulan)</label>
               <input type="text" value={formData.schedule} onChange={e => setFormData({...formData, schedule: e.target.value})} className="w-full border rounded px-3 py-2" />
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Status</label>
-              <select required value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full border rounded px-3 py-2">
-                <option value="DRAFT">DRAFT</option>
-                <option value="PUBLISHED">PUBLISHED</option>
-                <option value="COMPLETED">COMPLETED</option>
-                <option value="CANCELLED">CANCELLED</option>
-              </select>
-            </div>
+
           </div>
           
           <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white py-2 rounded">

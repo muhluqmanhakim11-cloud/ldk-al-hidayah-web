@@ -59,7 +59,7 @@ export default async function BeritaPage() {
                       </div>
                       <div className="text-xs">
                         <p className="font-medium text-gray-900">{article.author?.name || 'Admin'}</p>
-                        <p className="text-gray-500">{article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-'}</p>
+                        <p className="text-gray-500">{article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' }) : '-'}</p>
                       </div>
                     </div>
                   </div>

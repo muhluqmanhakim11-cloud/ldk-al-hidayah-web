@@ -192,7 +192,7 @@ export default async function AdminRecruitmentPage({
                     <div className="text-xs text-gray-500">{item.studyProgram}</div>
                   </td>
                   <td className="p-4">{item.interestedDivision?.name || '-'}</td>
-                  <td className="p-4">{new Date(item.createdAt).toLocaleDateString('id-ID')}</td>
+                  <td className="p-4">{new Date(item.createdAt).toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta' })}</td>
                   <td className="p-4">
                     <span className={`px-2 py-1 rounded-full text-xs font-bold
                       ${item.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' : ''}

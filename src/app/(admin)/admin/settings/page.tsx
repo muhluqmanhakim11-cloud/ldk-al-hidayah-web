@@ -14,7 +14,10 @@ export default function SettingsPage() {
     address: "",
     email: "",
     instagramUrl: "",
-    youtubeUrl: ""
+    youtubeUrl: "",
+    tiktokUrl: "",
+    facebookUrl: "",
+    vercelBadgeUrl: ""
   });
 
   useEffect(() => {
@@ -32,7 +35,10 @@ export default function SettingsPage() {
           address: data.address || "",
           email: data.email || "",
           instagramUrl: data.instagramUrl || "",
-          youtubeUrl: data.youtubeUrl || ""
+          youtubeUrl: data.youtubeUrl || "",
+          tiktokUrl: data.tiktokUrl || "",
+          facebookUrl: data.facebookUrl || "",
+          vercelBadgeUrl: data.vercelBadgeUrl || ""
         });
       }
     } catch (error) {
@@ -159,6 +165,48 @@ export default function SettingsPage() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
                     placeholder="https://youtube.com/..."
                   />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Link TikTok</label>
+                  <input
+                    type="url"
+                    name="tiktokUrl"
+                    value={settings.tiktokUrl}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
+                    placeholder="https://tiktok.com/@..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Link Facebook</label>
+                  <input
+                    type="url"
+                    name="facebookUrl"
+                    value={settings.facebookUrl}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
+                    placeholder="https://facebook.com/..."
+                  />
+                </div>
+              </div>
+
+              <div className="border-t border-gray-100 mt-6 pt-6">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Pengaturan Server</h3>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Vercel Status Badge URL</label>
+                  <input
+                    type="url"
+                    name="vercelBadgeUrl"
+                    value={settings.vercelBadgeUrl}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
+                    placeholder="https://vercelbadge.vercel.app/api/..."
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    URL status badge dari Vercel untuk menampilkan status server secara langsung di admin panel.
+                  </p>
                 </div>
               </div>
 

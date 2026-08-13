@@ -42,7 +42,7 @@ export default async function GaleriPage() {
                     {gallery.description && <p className="text-gray-500 mt-2">{gallery.description}</p>}
                   </div>
                   <div className="mt-4 md:mt-0 text-sm text-gray-400 font-medium">
-                    {new Date(gallery.createdAt).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}
+                    {new Date(gallery.createdAt).toLocaleDateString('id-ID', { month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' })}
                   </div>
                 </div>
 

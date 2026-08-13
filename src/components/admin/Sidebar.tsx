@@ -13,9 +13,10 @@ interface SidebarProps {
   session: Session | null;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  vercelBadgeUrl?: string | null;
 }
 
-export default function Sidebar({ session, isOpen, setIsOpen }: SidebarProps) {
+export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: SidebarProps) {
   const pathname = usePathname();
   const role = session?.user?.role;
   const divisionId = session?.user?.divisionId;
@@ -82,6 +83,13 @@ export default function Sidebar({ session, isOpen, setIsOpen }: SidebarProps) {
             );
           })}
         </div>
+
+        {vercelBadgeUrl && (
+          <div className="absolute bottom-0 w-full p-4 border-t bg-gray-50 flex flex-col items-center justify-center space-y-2">
+            <span className="text-xs text-gray-500 font-medium">Server Status (Vercel)</span>
+            <img src={vercelBadgeUrl} alt="Vercel Deployment Status" className="h-6" />
+          </div>
+        )}
       </div>
     </>
   );

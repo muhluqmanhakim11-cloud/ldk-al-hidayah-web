@@ -13,7 +13,7 @@ const programSchema = z.object({
   description: z.string().optional().nullable(),
   objective: z.string().optional().nullable(),
   schedule: z.string().optional().nullable(),
-  status: z.enum(["DRAFT", "PUBLISHED", "COMPLETED", "CANCELLED"]).default("DRAFT"),
+  status: z.enum(["DRAFT", "PUBLISHED", "COMPLETED", "CANCELLED"]).default("PUBLISHED"),
 });
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {

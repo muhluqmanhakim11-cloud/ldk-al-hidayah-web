@@ -1,10 +1,20 @@
 import { Metadata } from "next";
+import { db } from "@/db";
+import { profiles } from "@/db/schema";
+import { eq, asc } from "drizzle-orm";
 
 export const metadata: Metadata = {
   title: "Profil Organisasi",
 };
 
-export default function ProfilPage() {
+export const revalidate = 0; // Ensure data is always fresh
+
+export default async function ProfilPage() {
+  const profileSections = await db.query.profiles.findMany({
+    where: eq(profiles.status, "PUBLISHED"),
+    orderBy: [asc(profiles.orderIndex)],
+  });
+
   return (
     <div className="bg-white pb-20">
       {/* Page Header */}
@@ -18,44 +28,21 @@ export default function ProfilPage() {
       <div className="container mx-auto px-4 lg:px-8 mt-12 md:mt-16">
         <div className="max-w-4xl mx-auto space-y-12 text-gray-700 leading-relaxed text-lg">
           
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b pb-2">Sejarah Singkat</h2>
-            <p className="mb-4">
-              LDK Al-Hidayah didirikan pada tahun 2005 dengan tujuan awal menjadi wadah silaturahmi mahasiswa Muslim di lingkungan kampus. Seiring berjalannya waktu, organisasi ini berkembang menjadi pusat kegiatan kerohanian dan pengembangan diri yang berlandaskan nilai-nilai keislaman.
-            </p>
-            <p>
-              Dengan semangat mencetak generasi robbani, LDK Al-Hidayah terus berinovasi dalam menyebarkan nilai kebaikan, harmoni, dan prestasi akademik maupun non-akademik.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b pb-2">Visi</h2>
-            <div className="bg-green-50 p-6 rounded-lg text-center font-semibold text-xl text-green-800 shadow-sm border border-green-100">
-              "Terwujudnya Kampus Madani yang berlandaskan nilai-nilai keislaman dan mencetak generasi unggul yang berakhlak mulia."
+          {profileSections.length === 0 ? (
+            <div className="text-center text-gray-500 py-10">
+              Belum ada informasi profil yang dipublikasikan.
             </div>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b pb-2">Misi</h2>
-            <ul className="space-y-4 list-none pl-0">
-              <li className="flex items-start">
-                <span className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-700 font-bold mr-4">1</span>
-                <span>Menyelenggarakan kegiatan pembinaan keislaman yang komprehensif bagi seluruh elemen kampus.</span>
-              </li>
-              <li className="flex items-start">
-                <span className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-700 font-bold mr-4">2</span>
-                <span>Membangun ukhuwah islamiyah dan solidaritas antar mahasiswa Muslim.</span>
-              </li>
-              <li className="flex items-start">
-                <span className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-700 font-bold mr-4">3</span>
-                <span>Menumbuhkan semangat kepedulian sosial dan advokasi kemahasiswaan.</span>
-              </li>
-              <li className="flex items-start">
-                <span className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-700 font-bold mr-4">4</span>
-                <span>Meningkatkan kapasitas kepemimpinan dan profesionalitas pengurus.</span>
-              </li>
-            </ul>
-          </section>
+          ) : (
+            profileSections.map((section) => (
+              <section key={section.id}>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b pb-2">{section.title}</h2>
+                <div 
+                  className="prose max-w-none text-gray-700 whitespace-pre-wrap"
+                  dangerouslySetInnerHTML={{ __html: section.content }}
+                />
+              </section>
+            ))
+          )}
 
         </div>
       </div>

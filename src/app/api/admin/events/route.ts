@@ -15,7 +15,7 @@ const eventSchema = z.object({
   location: z.string().optional().nullable(),
   description: z.string().optional().nullable(),
   coverImage: z.string().optional().nullable(),
-  status: z.enum(["DRAFT", "PUBLISHED", "COMPLETED", "CANCELLED", "UPCOMING", "ONGOING", "DONE"]).default("DRAFT"),
+  status: z.enum(["DRAFT", "PUBLISHED", "COMPLETED", "CANCELLED", "UPCOMING", "ONGOING", "DONE"]).default("PUBLISHED"),
 });
 
 export async function GET(req: Request) {

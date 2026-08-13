@@ -19,7 +19,7 @@ export default function EventsClient({ periods, divisions, programs, userRole, u
   const [filterProgram, setFilterProgram] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
 
-  const [formData, setFormData] = useState({ id: 0, name: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", programId: programs[0]?.id || 0, date: "", time: "", location: "", description: "", status: "DRAFT" });
+  const [formData, setFormData] = useState({ id: 0, name: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", programId: programs[0]?.id || 0, date: "", time: "", location: "", description: "", status: "PUBLISHED" });
   
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
@@ -58,7 +58,7 @@ export default function EventsClient({ periods, divisions, programs, userRole, u
         <p className="text-xs text-gray-500">{row.program?.name}</p>
       </div>
     )},
-    { header: "Tanggal", accessor: (row: any) => row.date ? new Date(row.date).toLocaleDateString('id-ID') : "-" },
+    { header: "Tanggal", accessor: (row: any) => row.date ? new Date(row.date).toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta' }) : "-" },
     { 
       header: "Status", 
       accessor: (row: any) => (
@@ -160,7 +160,7 @@ export default function EventsClient({ periods, divisions, programs, userRole, u
         
         {!isReadOnly && (
           <button 
-            onClick={() => { setFormData({ id: 0, name: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", programId: programs[0]?.id || 0, date: "", time: "", location: "", description: "", status: "DRAFT" }); setIsModalOpen(true); }}
+            onClick={() => { setFormData({ id: 0, name: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", programId: programs[0]?.id || 0, date: "", time: "", location: "", description: "", status: "PUBLISHED" }); setIsModalOpen(true); }}
             className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 whitespace-nowrap"
           >
             + Tambah Kegiatan
@@ -247,18 +247,7 @@ export default function EventsClient({ periods, divisions, programs, userRole, u
             <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full border rounded px-3 py-2" rows={2}></textarea>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Status</label>
-            <select required value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full border rounded px-3 py-2">
-              <option value="DRAFT">DRAFT</option>
-              <option value="PUBLISHED">PUBLISHED</option>
-              <option value="COMPLETED">COMPLETED</option>
-              <option value="CANCELLED">CANCELLED</option>
-              <option value="UPCOMING">UPCOMING</option>
-              <option value="ONGOING">ONGOING</option>
-              <option value="DONE">DONE</option>
-            </select>
-          </div>
+
           
           <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white py-2 rounded">
             {loading ? "Menyimpan..." : "Simpan"}

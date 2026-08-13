@@ -41,7 +41,7 @@ export async function PUT(req: NextRequest) {
           ...body,
           updatedAt: new Date(),
         })
-        .where(require("drizzle-orm").eq(siteSettings.id, settings.id))
+        .where(eq(siteSettings.id, settings.id))
         .returning();
       return NextResponse.json(updated);
     }

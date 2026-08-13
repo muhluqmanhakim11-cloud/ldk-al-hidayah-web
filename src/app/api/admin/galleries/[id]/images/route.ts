@@ -92,6 +92,17 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       }
     }
 
+    // Auto-publish the gallery if it has images uploaded
+    if (uploadedImages.length > 0) {
+      // Set the gallery status to PUBLISHED. Optionally set the coverImage if it's the first image.
+      await db.update(galleries)
+        .set({ 
+          status: "PUBLISHED",
+          ...(existingGallery.coverImage ? {} : { coverImage: uploadedImages[0].imageUrl }) 
+        })
+        .where(eq(galleries.id, galleryId));
+    }
+
     return NextResponse.json(uploadedImages, { status: 201 });
   } catch (error) {
     console.error(error);

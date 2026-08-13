@@ -11,7 +11,7 @@ const gallerySchema = z.object({
   divisionId: z.coerce.number().min(1, "Bidang wajib diisi"),
   periodId: z.coerce.number().min(1, "Periode wajib diisi"),
   description: z.string().optional().nullable(),
-  status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).default("DRAFT"),
+  status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).default("PUBLISHED"),
 });
 
 export async function GET(req: Request) {

@@ -21,7 +21,7 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
   const [filterDivision, setFilterDivision] = useState(userRole === "ADMIN_BIDANG" ? String(userDivisionId) : "");
   const [filterStatus, setFilterStatus] = useState("");
 
-  const [formData, setFormData] = useState({ id: 0, title: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", eventId: "", description: "", status: "DRAFT" });
+  const [formData, setFormData] = useState({ id: 0, title: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", eventId: "", description: "", status: "PUBLISHED" });
   
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
@@ -99,6 +99,22 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || "Terjadi kesalahan");
 
+      const targetGalleryId = result.id || formData.id;
+
+      if (uploadFiles && uploadFiles.length > 0) {
+        const form = new FormData();
+        for (let i = 0; i < uploadFiles.length; i++) {
+          form.append("images", uploadFiles[i]);
+        }
+        const uploadRes = await fetch(`/api/admin/galleries/${targetGalleryId}/images`, {
+          method: "POST",
+          body: form,
+        });
+        const uploadResult = await uploadRes.json();
+        if (!uploadRes.ok) throw new Error(uploadResult.error || "Gagal mengunggah foto");
+      }
+
+      setUploadFiles(null);
       setIsModalOpen(false);
       fetchGalleries();
     } catch (err: any) {
@@ -217,7 +233,7 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
         
         {!isReadOnly && (
           <button 
-            onClick={() => { setFormData({ id: 0, title: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", eventId: "", description: "", status: "DRAFT" }); setIsModalOpen(true); }}
+            onClick={() => { setFormData({ id: 0, title: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", eventId: "", description: "", status: "PUBLISHED" }); setIsModalOpen(true); }}
             className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 whitespace-nowrap"
           >
             + Buat Galeri
@@ -328,12 +344,12 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Status</label>
-            <select required value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full border rounded px-3 py-2">
-              <option value="DRAFT">DRAFT</option>
-              <option value="PUBLISHED">PUBLISHED</option>
-              <option value="ARCHIVED">ARCHIVED</option>
-            </select>
+            <label className="block text-sm font-medium mb-1">Upload Foto (Opsional, Maks 5MB per file)</label>
+            <input 
+              type="file" multiple accept="image/*" 
+              onChange={(e) => setUploadFiles(e.target.files)}
+              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            />
           </div>
           
           <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white py-2 rounded">
