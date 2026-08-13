@@ -9,6 +9,41 @@ import {
 } from "lucide-react";
 import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
+import { useState, useEffect } from "react";
+
+function BMKGClockWidget() {
+  const [time, setTime] = useState<Date | null>(null);
+
+  useEffect(() => {
+    setTime(new Date());
+    const interval = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (!time) return <div className="h-10 bg-gray-100 rounded-lg animate-pulse" />;
+
+  const formatter = new Intl.DateTimeFormat("id-ID", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZone: "Asia/Jakarta"
+  });
+  
+  const formatted = formatter.format(time).replace(/\./g, ":");
+
+  return (
+    <div className="flex flex-col items-center justify-center p-2 bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-sm text-white">
+      <span className="text-[10px] font-medium opacity-80 mb-0.5">Waktu Server (WIB)</span>
+      <span className="text-sm font-bold tracking-wider">{formatted}</span>
+    </div>
+  );
+}
 
 interface SidebarProps {
   session: Session | null;
@@ -87,17 +122,8 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
 
         {/* Footer Area */}
         <div className="absolute bottom-0 w-full p-4 border-t bg-gray-50 flex flex-col space-y-3">
-          {/* BMKG Clock iframe */}
-          <div className="w-full bg-white border rounded-lg overflow-hidden h-[40px] flex items-center justify-center">
-            <iframe 
-              src="https://jam.bmkg.go.id/JamServerFS.html" 
-              width="100%" 
-              height="40" 
-              style={{ border: "none", overflow: "hidden" }} 
-              title="Jam BMKG"
-              scrolling="no"
-            ></iframe>
-          </div>
+          {/* Clock Widget */}
+          <BMKGClockWidget />
 
           <Link href="/" className="flex items-center space-x-3 text-green-700 hover:text-green-800 font-medium text-sm transition-colors">
             <Globe size={18} />
