@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { Metadata } from "next";
 import { db } from "@/db";
 import { profiles } from "@/db/schema";
@@ -49,3 +50,4 @@ export default async function ProfilPage() {
     </div>
   );
 }
+

@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { Metadata } from "next";
 import { db } from "@/db";
 import { articles } from "@/db/schema";
@@ -80,3 +81,4 @@ export default async function BeritaPage() {
     </div>
   );
 }
+

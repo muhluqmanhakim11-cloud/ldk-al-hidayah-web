@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { Metadata } from "next";
 import { db } from "@/db";
 import { periods, divisions } from "@/db/schema";
@@ -32,3 +33,4 @@ export default async function RecruitmentDaftarPage() {
     </div>
   );
 }
+

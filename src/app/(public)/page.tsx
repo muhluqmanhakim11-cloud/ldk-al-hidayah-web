@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import Link from "next/link";
 import { db } from "@/db";
 import { events, articles } from "@/db/schema";
@@ -168,3 +169,4 @@ export default async function HomePage() {
     </div>
   );
 }
+

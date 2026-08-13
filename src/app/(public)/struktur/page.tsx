@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { Metadata } from "next";
 import { db } from "@/db";
 import { periods, divisions, positions, members } from "@/db/schema";
@@ -115,3 +116,4 @@ export default async function StrukturPage() {
     </div>
   );
 }
+

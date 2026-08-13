@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { Metadata } from "next";
 import Link from "next/link";
 import { db } from "@/db";
@@ -206,3 +207,4 @@ export default async function RecruitmentLandingPage() {
     </div>
   );
 }
+

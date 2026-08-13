@@ -98,3 +98,5 @@ export default async function BeritaDetailPage({ params }: { params: Promise<{ s
     </div>
   );
 }
+
+export const dynamic = 'force-dynamic';

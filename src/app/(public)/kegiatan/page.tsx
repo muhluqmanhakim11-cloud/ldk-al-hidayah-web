@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { Metadata } from "next";
 import { db } from "@/db";
 import { events } from "@/db/schema";
@@ -68,3 +69,4 @@ export default async function KegiatanPage() {
     </div>
   );
 }
+

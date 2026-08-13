@@ -83,6 +83,13 @@ export async function POST(req: Request) {
     }
     const validated = parsed.data;
 
+    if (!validated.slug || validated.slug.trim() === "") {
+      validated.slug = validated.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "") + "-" + Date.now();
+    } else {
+      // Clean up the user provided slug
+      validated.slug = validated.slug.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+    }
+
     if (session.user.role === "ADMIN_BIDANG") {
       if (validated.divisionId !== session.user.divisionId) {
         return NextResponse.json({ error: "Forbidden: Anda hanya dapat membuat program untuk bidang Anda sendiri" }, { status: 403 });
@@ -91,13 +98,14 @@ export async function POST(req: Request) {
 
     const [newProgram] = await db.insert(programs).values(validated).returning();
     return NextResponse.json(newProgram, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Program Creation Error:", error);
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: (error as any).errors[0].message }, { status: 400 });
     }
     // Handle unique constraint error for slug
-    if ((error as any).code === '23505') {
-      return NextResponse.json({ error: "Slug sudah digunakan" }, { status: 400 });
+    if (error.code === '23505' || (error.message && error.message.includes('unique constraint'))) {
+      return NextResponse.json({ error: "Slug sudah digunakan, silakan ganti atau kosongkan agar dibuat otomatis" }, { status: 400 });
     }
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }

@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { Metadata } from "next";
 import { db } from "@/db";
 import { galleries } from "@/db/schema";
@@ -81,3 +82,4 @@ export default async function GaleriPage() {
     </div>
   );
 }
+
