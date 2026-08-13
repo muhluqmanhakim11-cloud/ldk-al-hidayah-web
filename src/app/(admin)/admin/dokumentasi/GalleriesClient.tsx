@@ -87,31 +87,44 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
       const url = isEditing ? `/api/admin/galleries/${formData.id}` : "/api/admin/galleries";
       const method = isEditing ? "PATCH" : "POST";
 
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          eventId: formData.eventId ? parseInt(formData.eventId) : null
-        }),
-      });
+      if (isEditing) {
+        // Edit logic remains JSON
+        const res = await fetch(url, {
+          method,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...formData,
+            eventId: formData.eventId ? parseInt(formData.eventId) : null
+          }),
+        });
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.error || "Terjadi kesalahan");
+      } else {
+        // Create logic uses FormData
+        if (!uploadFiles || uploadFiles.length === 0) {
+          throw new Error("Wajib mengunggah minimal 1 foto.");
+        }
+        if (uploadFiles.length > 3) {
+          throw new Error("Maksimal 3 foto yang diizinkan.");
+        }
 
-      const result = await res.json();
-      if (!res.ok) throw new Error(result.error || "Terjadi kesalahan");
-
-      const targetGalleryId = result.id || formData.id;
-
-      if (uploadFiles && uploadFiles.length > 0) {
         const form = new FormData();
+        form.append("title", formData.title);
+        form.append("description", formData.description);
+        form.append("periodId", String(formData.periodId));
+        form.append("divisionId", String(formData.divisionId));
+        if (formData.eventId) form.append("eventId", formData.eventId);
+
         for (let i = 0; i < uploadFiles.length; i++) {
           form.append("images", uploadFiles[i]);
         }
-        const uploadRes = await fetch(`/api/admin/galleries/${targetGalleryId}/images`, {
-          method: "POST",
+
+        const res = await fetch(url, {
+          method,
           body: form,
         });
-        const uploadResult = await uploadRes.json();
-        if (!uploadRes.ok) throw new Error(uploadResult.error || "Gagal mengunggah foto");
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.error || "Terjadi kesalahan");
       }
 
       setUploadFiles(null);
@@ -262,22 +275,13 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
       {/* Detail & Upload Modal */}
       <Modal isOpen={isDetailOpen} onClose={() => { setIsDetailOpen(false); setSelectedGallery(null); }} title={selectedGallery?.title || "Galeri"}>
         <div className="space-y-6 text-black">
-          {!isReadOnly && (
-            <div className="bg-gray-50 p-4 rounded-lg border">
-              <h3 className="font-semibold mb-2">Upload Foto (Maks 5MB per file)</h3>
-              <form onSubmit={handleUpload} className="flex gap-2 flex-col sm:flex-row">
-                <input 
-                  type="file" multiple accept="image/*" 
-                  onChange={(e) => setUploadFiles(e.target.files)}
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                />
-                <button type="submit" disabled={uploading || !uploadFiles} className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50 whitespace-nowrap">
-                  {uploading ? "Mengunggah..." : "Upload"}
-                </button>
-              </form>
-              {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-            </div>
-          )}
+          <div className="bg-gray-50 p-4 rounded-lg border mb-4">
+            <h3 className="font-semibold mb-2 text-sm text-gray-700">Catatan</h3>
+            <p className="text-xs text-gray-500">
+              Galeri yang sudah dibuat tidak bisa ditambah fotonya lagi di halaman ini demi kesederhanaan sistem. 
+              Jika ingin menambah foto, buat Galeri baru atau edit Galeri lama jika diperlukan.
+            </p>
+          </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {selectedGallery?.images?.map((img: any) => (
@@ -343,14 +347,24 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
             <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full border rounded px-3 py-2" rows={2}></textarea>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Upload Foto (Opsional, Maks 5MB per file)</label>
-            <input 
-              type="file" multiple accept="image/*" 
-              onChange={(e) => setUploadFiles(e.target.files)}
-              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-            />
-          </div>
+          {!formData.id && (
+            <div>
+              <label className="block text-sm font-medium mb-1">Upload Foto (Wajib, Maks 3 Foto, Maks 5MB/file)</label>
+              <input 
+                type="file" multiple accept="image/*" 
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 3) {
+                    alert("Maksimal hanya 3 foto yang diizinkan!");
+                    e.target.value = ""; // reset
+                    setUploadFiles(null);
+                  } else {
+                    setUploadFiles(e.target.files);
+                  }
+                }}
+                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              />
+            </div>
+          )}
           
           <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white py-2 rounded">
             {loading ? "Menyimpan..." : "Simpan"}
