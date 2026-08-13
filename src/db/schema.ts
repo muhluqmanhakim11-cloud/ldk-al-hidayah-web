@@ -202,6 +202,9 @@ export const siteSettings = pgTable('site_settings', {
   tiktokUrl: varchar('tiktok_url', { length: 500 }),
   facebookUrl: varchar('facebook_url', { length: 500 }),
   vercelBadgeUrl: varchar('vercel_badge_url', { length: 1000 }),
+  popupEnabled: boolean('popup_enabled').default(false).notNull(),
+  popupImage: varchar('popup_image', { length: 500 }),
+  popupDuration: integer('popup_duration').default(10).notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 

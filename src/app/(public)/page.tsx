@@ -5,8 +5,11 @@ import { eq, desc } from "drizzle-orm";
 import Image from "next/image";
 import JadwalSholat from "@/components/public/JadwalSholat";
 import FiturCepat from "@/components/public/FiturCepat";
+import PopupBanner from "@/components/public/PopupBanner";
 
 export default async function HomePage() {
+  const settings = await db.query.siteSettings.findFirst();
+
   const latestEvents = await db.query.events.findMany({
     where: eq(events.status, 'PUBLISHED'), // Or UPCOMING if you prefer
     orderBy: [desc(events.date)],
@@ -22,6 +25,10 @@ export default async function HomePage() {
 
   return (
     <div className="bg-gray-50">
+      {settings?.popupEnabled && settings?.popupImage && (
+        <PopupBanner imageUrl={settings.popupImage} duration={settings.popupDuration} />
+      )}
+      
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-green-900 to-green-800 text-white overflow-hidden pb-12 pt-28 md:pt-36">
         <div className="absolute inset-0 z-0 opacity-[0.15] bg-[url('https://res.cloudinary.com/gtlcl9a0/image/upload/v1/ldk-alhidayah/galleries/hero-placeholder')] bg-cover bg-center mix-blend-overlay" />

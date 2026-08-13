@@ -31,6 +31,37 @@ export async function PUT(req: NextRequest) {
 
     const body = await req.json();
     
+    const { 
+      orgName, 
+      description, 
+      address, 
+      email, 
+      instagramUrl, 
+      youtubeUrl, 
+      tiktokUrl, 
+      facebookUrl,
+      vercelBadgeUrl,
+      popupEnabled,
+      popupImage,
+      popupDuration
+    } = body;
+
+    // Build update object based on provided fields
+    const updateData: any = { updatedAt: new Date() };
+    
+    if (orgName !== undefined) updateData.orgName = orgName;
+    if (description !== undefined) updateData.description = description;
+    if (address !== undefined) updateData.address = address;
+    if (email !== undefined) updateData.email = email;
+    if (instagramUrl !== undefined) updateData.instagramUrl = instagramUrl;
+    if (youtubeUrl !== undefined) updateData.youtubeUrl = youtubeUrl;
+    if (tiktokUrl !== undefined) updateData.tiktokUrl = tiktokUrl;
+    if (facebookUrl !== undefined) updateData.facebookUrl = facebookUrl;
+    if (vercelBadgeUrl !== undefined) updateData.vercelBadgeUrl = vercelBadgeUrl;
+    if (popupEnabled !== undefined) updateData.popupEnabled = popupEnabled;
+    if (popupImage !== undefined) updateData.popupImage = popupImage;
+    if (popupDuration !== undefined) updateData.popupDuration = popupDuration;
+
     let settings = await db.query.siteSettings.findFirst();
     
     if (!settings) {
@@ -38,10 +69,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json(newSettings);
     } else {
       const [updated] = await db.update(siteSettings)
-        .set({
-          ...body,
-          updatedAt: new Date(),
-        })
+        .set(updateData)
         .where(eq(siteSettings.id, settings.id))
         .returning();
       return NextResponse.json(updated);

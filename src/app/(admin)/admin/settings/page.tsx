@@ -17,7 +17,10 @@ export default function SettingsPage() {
     youtubeUrl: "",
     tiktokUrl: "",
     facebookUrl: "",
-    vercelBadgeUrl: ""
+    vercelBadgeUrl: "",
+    popupEnabled: false,
+    popupImage: "",
+    popupDuration: 10
   });
 
   useEffect(() => {
@@ -38,7 +41,10 @@ export default function SettingsPage() {
           youtubeUrl: data.youtubeUrl || "",
           tiktokUrl: data.tiktokUrl || "",
           facebookUrl: data.facebookUrl || "",
-          vercelBadgeUrl: data.vercelBadgeUrl || ""
+          vercelBadgeUrl: data.vercelBadgeUrl || "",
+          popupEnabled: data.popupEnabled || false,
+          popupImage: data.popupImage || "",
+          popupDuration: data.popupDuration || 10
         });
       }
     } catch (error) {
@@ -191,22 +197,102 @@ export default function SettingsPage() {
                   />
                 </div>
               </div>
-
+              
               <div className="border-t border-gray-100 mt-6 pt-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Pengaturan Server</h3>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Vercel Status Badge URL</label>
-                  <input
-                    type="url"
-                    name="vercelBadgeUrl"
-                    value={settings.vercelBadgeUrl}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
-                    placeholder="https://vercelbadge.vercel.app/api/..."
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    URL status badge dari Vercel untuk menampilkan status server secara langsung di admin panel.
-                  </p>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Pengaturan Popup Banner</h3>
+                <p className="text-sm text-gray-500 mb-6">Kelola banner pengumuman atau ucapan yang muncul di atas layar ketika pengunjung membuka website.</p>
+                
+                <div className="bg-gray-50 p-5 rounded-xl border border-gray-100 space-y-6">
+                  <div className="flex items-center justify-between bg-white p-4 rounded-lg border border-gray-200">
+                    <div>
+                      <h4 className="font-semibold text-gray-800 flex items-center"><svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>Status Popup</h4>
+                      <p className="text-xs text-gray-500 mt-1">Aktifkan untuk menampilkan banner popup di halaman beranda saat situs pertama kali dibuka.</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        name="popupEnabled"
+                        checked={settings.popupEnabled}
+                        onChange={(e) => setSettings(prev => ({ ...prev, popupEnabled: e.target.checked }))}
+                        className="sr-only peer" 
+                      />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                    </label>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Banner Ucapan / Pengumuman</label>
+                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center bg-white">
+                        {settings.popupImage ? (
+                          <div className="relative">
+                            <img src={settings.popupImage} alt="Popup Banner" className="max-h-40 mx-auto rounded-lg" />
+                            <button 
+                              type="button" 
+                              onClick={() => setSettings(prev => ({ ...prev, popupImage: "" }))}
+                              className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center py-4">
+                            <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 mb-3">
+                              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <label className="cursor-pointer bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-100 transition-colors">
+                              <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                              Unggah Banner
+                              <input 
+                                type="file" 
+                                accept="image/*"
+                                className="hidden" 
+                                onChange={async (e) => {
+                                  const file = e.target.files?.[0];
+                                  if (!file) return;
+                                  
+                                  const formData = new FormData();
+                                  formData.append("file", file);
+                                  formData.append("folder", "ldk-alhidayah/popup");
+                                  
+                                  try {
+                                    const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+                                    const data = await res.json();
+                                    if (res.ok) {
+                                      setSettings(prev => ({ ...prev, popupImage: data.url }));
+                                    } else {
+                                      alert(data.error || "Upload gagal");
+                                    }
+                                  } catch (err) {
+                                    alert("Terjadi kesalahan saat upload");
+                                  }
+                                }}
+                              />
+                            </label>
+                            <p className="text-[10px] text-gray-400 mt-2">Gunakan rasio gambar landscape atau persegi.</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                        <svg className="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Durasi Penayangan (Detik)
+                      </label>
+                      <p className="text-xs text-gray-500 mb-2">Tentukan berapa detik banner akan muncul sebelum tertutup secara otomatis.</p>
+                      <input
+                        type="number"
+                        name="popupDuration"
+                        value={settings.popupDuration}
+                        onChange={handleChange}
+                        min={3}
+                        max={60}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
+                        placeholder="10"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 
