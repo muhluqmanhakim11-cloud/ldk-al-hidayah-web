@@ -5,9 +5,10 @@ import { usePathname } from "next/navigation";
 import { 
   LayoutDashboard, Users, UserCog, Briefcase, 
   CalendarDays, Image as ImageIcon, FileText, 
-  Settings, Menu, X, Landmark, Flag
+  Settings, Menu, X, Landmark, Flag, Globe, LogOut
 } from "lucide-react";
 import { Session } from "next-auth";
+import { signOut } from "next-auth/react";
 
 interface SidebarProps {
   session: Session | null;
@@ -59,7 +60,7 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:inset-auto ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
+      <div className={`fixed flex flex-col inset-y-0 left-0 z-50 w-64 bg-white border-r transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:inset-auto ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex h-16 items-center justify-between px-4 border-b">
           <span className="text-lg font-bold text-blue-700">Admin LDK</span>
           <button onClick={() => setIsOpen(false)} className="lg:hidden text-gray-500">
@@ -67,7 +68,7 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
           </button>
         </div>
 
-        <div className="overflow-y-auto h-[calc(100vh-4rem)] p-4 space-y-1">
+        <div className="overflow-y-auto flex-1 p-4 pb-48 space-y-1">
           {menus.map((menu) => {
             const isActive = pathname === menu.href || (menu.href !== "/admin" && pathname.startsWith(menu.href));
             const Icon = menu.icon;
@@ -84,12 +85,47 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
           })}
         </div>
 
-        {vercelBadgeUrl && (
-          <div className="absolute bottom-0 w-full p-4 border-t bg-gray-50 flex flex-col items-center justify-center space-y-2">
-            <span className="text-xs text-gray-500 font-medium">Server Status (Vercel)</span>
-            <img src={vercelBadgeUrl} alt="Vercel Deployment Status" className="h-6" />
+        {/* Footer Area */}
+        <div className="absolute bottom-0 w-full p-4 border-t bg-gray-50 flex flex-col space-y-3">
+          {/* BMKG Clock iframe */}
+          <div className="w-full bg-white border rounded-lg overflow-hidden h-[40px] flex items-center justify-center">
+            <iframe 
+              src="https://jam.bmkg.go.id/JamServerFS.html" 
+              width="100%" 
+              height="40" 
+              style={{ border: "none", overflow: "hidden" }} 
+              title="Jam BMKG"
+              scrolling="no"
+            ></iframe>
           </div>
-        )}
+
+          <Link href="/" className="flex items-center space-x-3 text-green-700 hover:text-green-800 font-medium text-sm transition-colors">
+            <Globe size={18} />
+            <span>Kembali ke Publik</span>
+          </Link>
+
+          <div className="flex items-center p-2 bg-white border rounded-lg space-x-3 shadow-sm">
+            <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+            <div className="flex flex-col">
+              <span className="text-xs font-bold text-gray-700 leading-none">Status Server</span>
+              <span className="text-[10px] text-gray-500 mt-1">Sistem Aktif</span>
+            </div>
+          </div>
+
+          {vercelBadgeUrl && (
+            <div className="flex justify-center mt-1">
+              <img src={vercelBadgeUrl} alt="Vercel Status" className="h-4" />
+            </div>
+          )}
+
+          <button 
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            className="flex items-center space-x-3 text-red-600 hover:text-red-700 font-medium text-sm transition-colors pt-2 border-t"
+          >
+            <LogOut size={18} />
+            <span>Logout</span>
+          </button>
+        </div>
       </div>
     </>
   );
