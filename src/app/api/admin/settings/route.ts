@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { siteSettings } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
 
 export async function GET() {

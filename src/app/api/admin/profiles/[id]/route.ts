@@ -12,20 +12,21 @@ const profileSchema = z.object({
   status: z.enum(["DRAFT", "PUBLISHED"]).default("PUBLISHED"),
 });
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: any) {
   try {
     const session = await auth();
     if (!session || (session.user.role !== "SUPER_ADMIN" && session.user.role !== "KETUA")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const id = parseInt(params.id);
+    const resolvedParams = await params;
+    const id = parseInt(resolvedParams.id);
     if (isNaN(id)) return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
 
     const body = await req.json();
     const parsed = profileSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 });
+      return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
     }
 
     const [updated] = await db.update(profiles)
@@ -43,14 +44,15 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: any) {
   try {
     const session = await auth();
     if (!session || (session.user.role !== "SUPER_ADMIN" && session.user.role !== "KETUA")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const id = parseInt(params.id);
+    const resolvedParams = await params;
+    const id = parseInt(resolvedParams.id);
     if (isNaN(id)) return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
 
     const [deleted] = await db.delete(profiles).where(eq(profiles.id, id)).returning();
