@@ -138,11 +138,7 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
             </div>
           </div>
 
-          {vercelBadgeUrl && (
-            <div className="flex justify-center mt-1">
-              <img src={vercelBadgeUrl} alt="Vercel Status" className="h-4" />
-            </div>
-          )}
+
 
           <button 
             onClick={() => signOut({ callbackUrl: "/login" })}
