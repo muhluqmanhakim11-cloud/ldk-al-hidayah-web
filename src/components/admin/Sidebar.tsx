@@ -122,23 +122,22 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
 
         {/* Footer Area */}
         <div className="absolute bottom-0 w-full p-4 border-t bg-gray-50 flex flex-col space-y-3">
-          {/* Clock Widget */}
-          <BMKGClockWidget />
-
           <Link href="/" className="flex items-center space-x-3 text-green-700 hover:text-green-800 font-medium text-sm transition-colors">
             <Globe size={18} />
             <span>Kembali ke Publik</span>
           </Link>
 
-          <div className="flex items-center p-2 bg-white border rounded-lg space-x-3 shadow-sm">
-            <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
-            <div className="flex flex-col">
-              <span className="text-xs font-bold text-gray-700 leading-none">Status Server</span>
-              <span className="text-[10px] text-gray-500 mt-1">Sistem Aktif</span>
+          <div className="flex flex-col p-3 bg-white border rounded-lg shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-bold text-gray-700 leading-none">Status Server (Realtime)</span>
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
             </div>
+            {vercelBadgeUrl ? (
+              <img src={vercelBadgeUrl} alt="Vercel Status" className="h-5" />
+            ) : (
+              <span className="text-[10px] text-gray-500">Sistem Aktif</span>
+            )}
           </div>
-
-
 
           <button 
             onClick={() => signOut({ callbackUrl: "/login" })}

@@ -9,6 +9,8 @@ interface TopbarProps {
   setIsOpen: (open: boolean) => void;
 }
 
+import BMKGClockWidget from "./BMKGClockWidget";
+
 export default function Topbar({ session, setIsOpen }: TopbarProps) {
   const user = session?.user;
 
@@ -32,25 +34,24 @@ export default function Topbar({ session, setIsOpen }: TopbarProps) {
         <h1 className="text-xl font-semibold text-gray-800 hidden sm:block">Dashboard</h1>
       </div>
 
-      <div className="flex items-center space-x-4">
-        <div className="text-right hidden sm:block">
-          <p className="text-sm font-medium text-gray-900">{user?.name}</p>
-          <p className="text-xs text-gray-500">
-            {user?.role} {user?.role === "ADMIN_BIDANG" && `- ${getDivisionName(user.divisionId)}`}
-          </p>
+      <div className="flex items-center">
+        <div className="hidden sm:block">
+          <BMKGClockWidget />
         </div>
         
-        {/* Simple Avatar */}
-        <div className="h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold border border-blue-200">
-          {user?.name?.charAt(0) || "U"}
+        <div className="flex items-center space-x-3">
+          <div className="text-right hidden sm:block">
+            <p className="text-sm font-medium text-gray-900 leading-tight">{user?.name}</p>
+            <p className="text-xs text-gray-500">
+              {user?.role} {user?.role === "ADMIN_BIDANG" && `- ${getDivisionName(user.divisionId)}`}
+            </p>
+          </div>
+          
+          {/* Simple Avatar */}
+          <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold border border-blue-200 shadow-sm">
+            {user?.name?.charAt(0) || "U"}
+          </div>
         </div>
-
-        <button 
-          onClick={() => signOut({ callbackUrl: "/login" })}
-          className="text-sm text-red-600 hover:text-red-700 font-medium px-2 py-1 rounded hover:bg-red-50 transition"
-        >
-          Logout
-        </button>
       </div>
     </header>
   );
