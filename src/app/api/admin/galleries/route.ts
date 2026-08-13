@@ -4,15 +4,9 @@ import { galleries, events, galleryImages } from "@/db/schema";
 import { eq, and, ilike, desc } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import cloudinary from "@/lib/cloudinary";
 
-const gallerySchema = z.object({
-  title: z.string().min(1, "Judul galeri wajib diisi"),
-  eventId: z.coerce.number().optional().nullable(),
-  divisionId: z.coerce.number().min(1, "Bidang wajib diisi"),
-  periodId: z.coerce.number().min(1, "Periode wajib diisi"),
-  description: z.string().optional().nullable(),
-  status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).default("PUBLISHED"),
-});
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 export async function GET(req: Request) {
   try {
@@ -73,42 +67,110 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Forbidden: KETUA hanya dapat melihat data" }, { status: 403 });
     }
 
-    const body = await req.json();
-    const parsed = gallerySchema.safeParse(body);
-    if (!parsed.success) {
-      return NextResponse.json(
-        { success: false, message: 'Validasi gagal', errors: (parsed.error as any).errors.map((e: any) => e.message) },
-        { status: 400 }
-      );
+    const formData = await req.formData();
+    
+    const title = formData.get("title") as string;
+    const eventIdRaw = formData.get("eventId") as string;
+    let divisionId = parseInt(formData.get("divisionId") as string);
+    let periodId = parseInt(formData.get("periodId") as string);
+    const description = formData.get("description") as string;
+    
+    if (!title || isNaN(divisionId) || isNaN(periodId)) {
+       return NextResponse.json({ error: "Judul, Bidang, dan Periode wajib diisi" }, { status: 400 });
     }
-    const validated = parsed.data;
+
+    const eventId = eventIdRaw && eventIdRaw !== "null" && eventIdRaw !== "undefined" ? parseInt(eventIdRaw) : null;
 
     // Consistency Check
-    if (validated.eventId) {
+    if (eventId) {
       const event = await db.query.events.findFirst({
-        where: eq(events.id, validated.eventId)
+        where: eq(events.id, eventId)
       });
       if (!event) {
         return NextResponse.json({ error: "Event tidak ditemukan" }, { status: 404 });
       }
-      
-      // Override to ensure consistency
-      validated.divisionId = event.divisionId!;
-      validated.periodId = event.periodId;
+      divisionId = event.divisionId!;
+      periodId = event.periodId;
     }
 
     if (session.user.role === "ADMIN_BIDANG") {
-      if (validated.divisionId !== session.user.divisionId) {
+      if (divisionId !== session.user.divisionId) {
         return NextResponse.json({ error: "Forbidden: Galeri harus milik bidang Anda" }, { status: 403 });
       }
     }
 
-    const [newGallery] = await db.insert(galleries).values(validated).returning();
+    const files = formData.getAll("images") as File[];
+    if (files.length > 3) {
+      return NextResponse.json({ error: "Maksimal 3 foto yang diizinkan." }, { status: 400 });
+    }
+
+    // 1. Create Gallery Record
+    const [newGallery] = await db.insert(galleries).values({
+      title,
+      description,
+      eventId,
+      divisionId,
+      periodId,
+      status: "PUBLISHED"
+    }).returning();
+
+    // 2. Upload Images to Cloudinary
+    let coverImageUrl = null;
+    
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (file.size === 0) continue;
+      
+      if (!file.type.startsWith("image/")) {
+        continue;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+         continue; // skip large files or we could throw
+      }
+
+      const buffer = Buffer.from(await file.arrayBuffer());
+      
+      try {
+        const uploadResult: any = await new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            {
+              folder: "ldk-alhidayah/galleries",
+              fetch_format: "auto",
+              quality: "auto",
+              width: 1920,
+              crop: "limit"
+            },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result);
+            }
+          );
+          uploadStream.end(buffer);
+        });
+
+        if (i === 0) coverImageUrl = uploadResult.secure_url;
+
+        await db.insert(galleryImages).values({
+          galleryId: newGallery.id,
+          imageUrl: uploadResult.secure_url,
+          publicId: uploadResult.public_id,
+          format: uploadResult.format,
+          bytes: uploadResult.bytes,
+          width: uploadResult.width,
+          height: uploadResult.height,
+        });
+      } catch (err) {
+        console.error("Failed to upload file to Cloudinary", err);
+      }
+    }
+    
+    if (coverImageUrl) {
+        await db.update(galleries).set({ coverImage: coverImageUrl }).where(eq(galleries.id, newGallery.id));
+    }
+
     return NextResponse.json(newGallery, { status: 201 });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: (error as any).errors[0].message }, { status: 400 });
-    }
+    console.error(error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
