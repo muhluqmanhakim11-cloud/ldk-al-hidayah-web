@@ -56,6 +56,27 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
   const pathname = usePathname();
   const role = session?.user?.role;
   const divisionId = session?.user?.divisionId;
+  const [vercelStatus, setVercelStatus] = useState<"passing" | "building" | "failed" | "unknown">("unknown");
+
+  useEffect(() => {
+    if (!vercelBadgeUrl) return;
+    
+    const fetchStatus = async () => {
+      try {
+        const res = await fetch('/api/admin/vercel-status');
+        if (res.ok) {
+          const data = await res.json();
+          setVercelStatus(data.status);
+        }
+      } catch (err) {
+        // ignore
+      }
+    };
+    
+    fetchStatus();
+    const interval = setInterval(fetchStatus, 5000);
+    return () => clearInterval(interval);
+  }, [vercelBadgeUrl]);
 
   // Determine allowed menus based on role
   const getMenus = () => {
@@ -130,7 +151,11 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
           <div className="flex flex-col p-3 bg-white border rounded-lg shadow-sm">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-bold text-gray-700 leading-none">Status Server (Realtime)</span>
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+              <div className={`w-2 h-2 rounded-full ${
+                vercelStatus === 'building' ? 'bg-yellow-500 animate-pulse' :
+                vercelStatus === 'failed' ? 'bg-red-500' :
+                'bg-green-500'
+              } ${vercelStatus === 'passing' ? 'animate-pulse' : ''}`}></div>
             </div>
             {vercelBadgeUrl ? (
               <img src={vercelBadgeUrl} alt="Vercel Status" className="h-5" />
