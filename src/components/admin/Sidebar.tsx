@@ -149,19 +149,17 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
           </Link>
 
           <div className="flex flex-col p-3 bg-white border rounded-lg shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold text-gray-700 leading-none">Status Server (Realtime)</span>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs font-bold text-gray-700 leading-none">Status Server</span>
               <div className={`w-2 h-2 rounded-full ${
                 vercelStatus === 'building' ? 'bg-yellow-500 animate-pulse' :
                 vercelStatus === 'failed' ? 'bg-red-500' :
                 'bg-green-500'
               } ${vercelStatus === 'passing' ? 'animate-pulse' : ''}`}></div>
             </div>
-            {vercelBadgeUrl ? (
-              <img src={vercelBadgeUrl} alt="Vercel Status" className="h-5" />
-            ) : (
-              <span className="text-[10px] text-gray-500">Sistem Aktif</span>
-            )}
+            <span className="text-[10px] text-gray-500 font-medium capitalize">
+              {vercelStatus === 'unknown' ? 'Sistem Aktif' : vercelStatus === 'passing' ? 'Online & Ready' : vercelStatus}
+            </span>
           </div>
 
           <button 
