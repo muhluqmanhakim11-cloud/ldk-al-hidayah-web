@@ -36,42 +36,28 @@ export default async function HomePage() {
       )}
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-green-900 to-green-800 text-white overflow-hidden pb-12 pt-28 md:pt-36">
+      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-gradient-to-br from-green-900 to-green-800 text-white">
         <div className="absolute inset-0 z-0 opacity-[0.15] bg-[url('https://res.cloudinary.com/gtlcl9a0/image/upload/v1/ldk-alhidayah/galleries/hero-placeholder')] bg-cover bg-center mix-blend-overlay" />
         <div className="absolute top-0 right-0 w-96 h-96 bg-green-500/20 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-yellow-500/10 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
-        
-        <div className="container relative z-10 mx-auto px-4 lg:px-8 flex flex-col items-center text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm text-sm font-medium text-green-50 mb-6">
-            <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-            UKM Kerohanian Islam STMIK IKMI
-          </div>
-          
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight leading-tight max-w-4xl">
-            Langkah Pasti Menuju <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-yellow-200">Kampus Madani</span>
-          </h1>
-          <p className="text-lg md:text-xl text-green-50/90 max-w-2xl mb-10 leading-relaxed font-light">
-            Lembaga Dakwah Kampus Al-Hidayah adalah wadah pengembangan diri dan kerohanian Islam tingkat universitas.
-          </p>
-      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-green-50 to-white dark:from-green-900/20 dark:to-slate-900 z-0"></div>
         <div className="container mx-auto px-4 lg:px-8 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <div className="inline-block px-4 py-1.5 rounded-full bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 font-semibold text-sm mb-4 animate-fade-in-up">
-              Organisasi Mahasiswa Islam
+            <div className="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm text-green-50 font-semibold text-sm mb-4 animate-fade-in-up">
+              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse inline-block mr-2"></span>
+              UKM Kerohanian Islam STMIK IKMI
             </div>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 dark:text-white tracking-tight leading-[1.1] animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-              Membentuk Generasi <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-500">Rabbani</span> yang Prestatif
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+              Langkah Pasti Menuju <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-yellow-200">Kampus Madani</span>
             </h1>
-            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            <p className="text-lg md:text-xl text-green-50/90 max-w-2xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
               Wadah pembinaan mahasiswa muslim STMIK IKMI Cirebon untuk mengembangkan potensi spiritual, intelektual, dan sosial.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-              <Link href="/profil" className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-green-600 text-white font-semibold hover:bg-green-700 hover:shadow-lg hover:shadow-green-200 dark:hover:shadow-green-900/20 transition-all duration-300 flex items-center justify-center gap-2">
-                Kenali Kami Lebih Dekat <ArrowRight size={18} />
+              <Link href="/rekrutmen" className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white text-green-900 font-bold hover:scale-105 hover:shadow-xl transition-all duration-300 active:scale-95 shadow-lg shadow-white/10">
+                Bergabung Sekarang
               </Link>
-              <Link href="/kegiatan" className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-200 font-semibold border border-gray-200 dark:border-slate-700 hover:border-green-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all duration-300">
-                Lihat Kegiatan
+              <Link href="/profil" className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white/10 border border-white/30 backdrop-blur-sm text-white font-semibold hover:bg-white/20 transition-all duration-300 active:scale-95">
+                Kenali Kami
               </Link>
             </div>
           </div>
