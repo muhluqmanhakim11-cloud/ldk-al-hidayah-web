@@ -10,6 +10,7 @@ interface TopbarProps {
 }
 
 import BMKGClockWidget from "./BMKGClockWidget";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Topbar({ session, setIsOpen }: TopbarProps) {
   const user = session?.user;
@@ -40,8 +41,9 @@ export default function Topbar({ session, setIsOpen }: TopbarProps) {
         </div>
         
         <div className="flex items-center space-x-3">
+          <ThemeToggle />
           <div className="text-right hidden sm:block">
-            <p className="text-sm font-medium text-gray-900 leading-tight">{user?.name}</p>
+            <p className="text-sm font-medium text-gray-900 leading-tight dark:text-white">{user?.name}</p>
             <p className="text-xs text-gray-500">
               {user?.role} {user?.role === "ADMIN_BIDANG" && `- ${getDivisionName(user.divisionId)}`}
             </p>

@@ -97,6 +97,7 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
       { name: "Recruitment", href: "/admin/recruitment", icon: UserCog, show: true },
       
       { name: "Users", href: "/admin/users", icon: Users, show: role === "SUPER_ADMIN" },
+      { name: "Running Text", href: "/admin/running-text", icon: FileText, show: role === "SUPER_ADMIN" || role === "KETUA" },
       { name: "Pengaturan Situs", href: "/admin/settings", icon: Settings, show: role === "SUPER_ADMIN" },
     ];
 

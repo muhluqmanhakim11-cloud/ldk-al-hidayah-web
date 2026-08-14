@@ -210,15 +210,24 @@ export const siteSettings = pgTable('site_settings', {
 });
 
 // 14. profiles (for Profil LDK public page CRUD)
-export const profiles = pgTable('profiles', {
-  id: serial('id').primaryKey(),
-  title: varchar('title', { length: 255 }).notNull(),
-  content: text('content').notNull(),
-  imageUrl: varchar('image_url', { length: 500 }),
-  orderIndex: integer('order_index').default(0).notNull(),
-  status: varchar('status', { length: 20 }).default('PUBLISHED').notNull(), // DRAFT, PUBLISHED
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+export const profiles = pgTable("profiles", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  content: text("content").notNull(),
+  imageUrl: varchar("image_url", { length: 255 }),
+  orderIndex: integer("order_index").notNull().default(0),
+  status: varchar("status", { length: 20 }).notNull().default("PUBLISHED"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const runningTexts = pgTable("running_texts", {
+  id: serial("id").primaryKey(),
+  text: text("text").notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  orderIndex: integer("order_index").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 // Relations

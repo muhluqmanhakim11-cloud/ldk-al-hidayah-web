@@ -1,8 +1,8 @@
 export const dynamic = 'force-dynamic';
 import Link from "next/link";
 import { db } from "@/db";
-import { events, articles } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { events, articles, runningTexts } from "@/db/schema";
+import { eq, desc, asc } from "drizzle-orm";
 import Image from "next/image";
 import JadwalSholat from "@/components/public/JadwalSholat";
 import FiturCepat from "@/components/public/FiturCepat";
@@ -16,6 +16,11 @@ export default async function HomePage() {
     orderBy: [desc(events.date)],
     limit: 3,
     with: { division: true },
+  });
+
+  const activeRunningTexts = await db.query.runningTexts.findMany({
+    where: eq(runningTexts.isActive, true),
+    orderBy: [asc(runningTexts.orderIndex)],
   });
 
   const latestArticles = await db.query.articles.findMany({
@@ -48,13 +53,27 @@ export default async function HomePage() {
           <p className="text-lg md:text-xl text-green-50/90 max-w-2xl mb-10 leading-relaxed font-light">
             Lembaga Dakwah Kampus Al-Hidayah adalah wadah pengembangan diri dan kerohanian Islam tingkat universitas.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 mb-4">
-            <Link href="/rekrutmen" className="bg-white text-green-900 px-8 py-3.5 rounded-full font-bold hover:scale-105 hover:shadow-xl transition-all duration-300 active:scale-95 shadow-lg shadow-white/10">
-              Bergabung Sekarang
-            </Link>
-            <Link href="/profil" className="bg-white/10 border border-white/30 backdrop-blur-sm text-white px-8 py-3.5 rounded-full font-semibold hover:bg-white/20 transition-all duration-300 active:scale-95">
-              Kenali Kami
-            </Link>
+      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-green-50 to-white dark:from-green-900/20 dark:to-slate-900 z-0"></div>
+        <div className="container mx-auto px-4 lg:px-8 relative z-10">
+          <div className="max-w-4xl mx-auto text-center space-y-8">
+            <div className="inline-block px-4 py-1.5 rounded-full bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 font-semibold text-sm mb-4 animate-fade-in-up">
+              Organisasi Mahasiswa Islam
+            </div>
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 dark:text-white tracking-tight leading-[1.1] animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+              Membentuk Generasi <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-500">Rabbani</span> yang Prestatif
+            </h1>
+            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              Wadah pembinaan mahasiswa muslim STMIK IKMI Cirebon untuk mengembangkan potensi spiritual, intelektual, dan sosial.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+              <Link href="/profil" className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-green-600 text-white font-semibold hover:bg-green-700 hover:shadow-lg hover:shadow-green-200 dark:hover:shadow-green-900/20 transition-all duration-300 flex items-center justify-center gap-2">
+                Kenali Kami Lebih Dekat <ArrowRight size={18} />
+              </Link>
+              <Link href="/kegiatan" className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-200 font-semibold border border-gray-200 dark:border-slate-700 hover:border-green-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all duration-300">
+                Lihat Kegiatan
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -63,15 +82,18 @@ export default async function HomePage() {
       <JadwalSholat />
 
       {/* Ticker / Running Text */}
-      <section className="pt-12 pb-6 bg-gray-50 border-b border-gray-200/60 overflow-hidden">
+      <section className="pt-12 pb-6 bg-gray-50 dark:bg-slate-900 border-b border-gray-200/60 dark:border-slate-800 overflow-hidden transition-colors duration-300">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center gap-4">
-            <div className="bg-green-100 text-green-800 text-xs font-bold px-3 py-1.5 rounded-md shrink-0 uppercase tracking-widest shadow-sm border border-green-200">
+            <div className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 text-xs font-bold px-3 py-1.5 rounded-md shrink-0 uppercase tracking-widest shadow-sm border border-green-200 dark:border-green-800">
               Update
             </div>
             <div className="relative flex overflow-x-hidden w-full whitespace-nowrap mask-linear-fade">
-              <div className="animate-marquee inline-block text-sm font-medium text-gray-700">
-                🚀 Selamat datang di Website Resmi LDK Al-Hidayah STMIK IKMI Cirebon &nbsp;&nbsp;&bull;&nbsp;&nbsp; 📚 Mari bersama-sama membangun generasi rabbani yang berprestasi &nbsp;&nbsp;&bull;&nbsp;&nbsp; 🎉 Pendaftaran Anggota Baru telah dibuka! Segera daftarkan diri Anda! &nbsp;&nbsp;&bull;&nbsp;&nbsp; 🕌 Jadwal kajian rutin setiap Jumat sore di Masjid Al-Ikhlas.
+              <div className="animate-marquee inline-block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {activeRunningTexts.length > 0 
+                  ? activeRunningTexts.map(t => t.text).join(' \u00A0\u00A0\u2022\u00A0\u00A0 ')
+                  : "🚀 Selamat datang di Website Resmi LDK Al-Hidayah STMIK IKMI Cirebon"
+                }
               </div>
             </div>
           </div>
@@ -81,26 +103,26 @@ export default async function HomePage() {
       <FiturCepat />
 
       {/* Kegiatan Terbaru */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gray-50 dark:bg-slate-800/50 transition-colors duration-300">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex justify-between items-end mb-10">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Kegiatan Terdekat</h2>
-              <p className="text-gray-500">Ikuti berbagai kegiatan seru dari LDK Al-Hidayah.</p>
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Kegiatan Terdekat</h2>
+              <p className="text-gray-500 dark:text-gray-400">Ikuti berbagai kegiatan seru dari LDK Al-Hidayah.</p>
             </div>
-            <Link href="/kegiatan" className="hidden sm:block text-green-600 font-medium hover:underline">
+            <Link href="/kegiatan" className="hidden sm:block text-green-600 dark:text-green-400 font-medium hover:underline">
               Lihat Semua &rarr;
             </Link>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {latestEvents.length > 0 ? latestEvents.map(event => (
-              <div key={event.id} className="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
+              <div key={event.id} className="bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
                 <div className="p-6">
                   <div className="text-xs font-bold text-green-600 uppercase tracking-wider mb-2">{event.division?.name || 'UMUM'}</div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-green-700 transition-colors">{event.name}</h3>
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">{event.description}</p>
-                  <div className="flex items-center text-sm text-gray-500 mb-2">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-green-700 transition-colors">{event.name}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">{event.description}</p>
+                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-2">
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                     {event.date ? new Date(event.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' }) : '-'}
                   </div>
