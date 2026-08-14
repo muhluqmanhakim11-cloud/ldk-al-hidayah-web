@@ -8,6 +8,7 @@ import { z } from "zod";
 const profileSchema = z.object({
   title: z.string().min(1, "Judul wajib diisi"),
   content: z.string().min(1, "Konten wajib diisi"),
+  imageUrl: z.string().nullable().optional(),
   orderIndex: z.coerce.number().default(0),
   status: z.enum(["DRAFT", "PUBLISHED"]).default("PUBLISHED"),
 });

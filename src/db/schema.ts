@@ -194,6 +194,7 @@ export const mediaAssets = pgTable('media_assets', {
 export const siteSettings = pgTable('site_settings', {
   id: serial('id').primaryKey(),
   orgName: varchar('org_name', { length: 255 }).notNull().default('LDK Al-Hidayah'),
+  logoUrl: varchar('logo_url', { length: 500 }),
   description: text('description').default('Unit Kegiatan Mahasiswa tingkat Universitas yang bergerak di bidang kerohanian Islam, bertujuan untuk mewujudkan kampus madani.'),
   address: text('address').default('Gedung Student Center Lt. 2 Universitas Telkom, Bandung'), // Default dari referensi tapi nanti disesuaikan user
   email: varchar('email', { length: 255 }).default('halo@ldkalhidayah.com'),
@@ -213,6 +214,7 @@ export const profiles = pgTable('profiles', {
   id: serial('id').primaryKey(),
   title: varchar('title', { length: 255 }).notNull(),
   content: text('content').notNull(),
+  imageUrl: varchar('image_url', { length: 500 }),
   orderIndex: integer('order_index').default(0).notNull(),
   status: varchar('status', { length: 20 }).default('PUBLISHED').notNull(), // DRAFT, PUBLISHED
   createdAt: timestamp('created_at').defaultNow().notNull(),

@@ -37,6 +37,11 @@ export default async function ProfilPage() {
             profileSections.map((section) => (
               <section key={section.id}>
                 <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b pb-2">{section.title}</h2>
+                {section.imageUrl && (
+                  <div className="mb-6 flex justify-center">
+                    <img src={section.imageUrl} alt={section.title} className="max-w-full h-auto max-h-64 object-contain rounded-lg shadow-sm" />
+                  </div>
+                )}
                 <div 
                   className="prose max-w-none text-gray-700 whitespace-pre-wrap"
                   dangerouslySetInnerHTML={{ __html: section.content }}

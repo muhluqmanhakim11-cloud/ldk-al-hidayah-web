@@ -33,6 +33,7 @@ export async function PUT(req: NextRequest) {
     
     const { 
       orgName, 
+      logoUrl,
       description, 
       address, 
       email, 
@@ -50,6 +51,7 @@ export async function PUT(req: NextRequest) {
     const updateData: any = { updatedAt: new Date() };
     
     if (orgName !== undefined) updateData.orgName = orgName;
+    if (logoUrl !== undefined) updateData.logoUrl = logoUrl;
     if (description !== undefined) updateData.description = description;
     if (address !== undefined) updateData.address = address;
     if (email !== undefined) updateData.email = email;
