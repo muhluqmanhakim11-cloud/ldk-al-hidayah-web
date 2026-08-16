@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { Plus, Eye, Check, X, RefreshCw } from "lucide-react";
+import { Plus, Eye, Check, X, RefreshCw, Trash2 } from "lucide-react";
 import DataTable from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
 
@@ -104,6 +104,21 @@ export default function PengumumanClient() {
     }
   };
 
+  const handleDelete = async (id: number) => {
+    if (!confirm("Yakin ingin menghapus pengumuman ini?")) return;
+    try {
+      const res = await fetch(`/api/admin/announcements/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        toast.success("Pengumuman berhasil dihapus");
+        fetchAnnouncements();
+      } else {
+        toast.error("Gagal menghapus pengumuman");
+      }
+    } catch (error) {
+      toast.error("Terjadi kesalahan jaringan");
+    }
+  };
+
   const columns: any[] = [
     { header: "Tanggal", accessor: (row: Announcement) => new Date(row.createdAt).toLocaleDateString("id-ID") },
     { header: "Judul", accessor: "title" },
@@ -112,13 +127,22 @@ export default function PengumumanClient() {
     {
       header: "Aksi",
       accessor: (row: Announcement) => (
-        <button
-          onClick={() => handleViewAcks(row.id)}
-          className="text-blue-600 hover:text-blue-800 transition-colors p-2 bg-blue-50 rounded-lg flex items-center gap-2"
-          title="Lihat Laporan"
-        >
-          <Eye size={18} /> Laporan
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => handleViewAcks(row.id)}
+            className="text-blue-600 hover:text-blue-800 transition-colors p-2 bg-blue-50 rounded-lg flex items-center gap-2"
+            title="Lihat Laporan"
+          >
+            <Eye size={18} /> Laporan
+          </button>
+          <button
+            onClick={() => handleDelete(row.id)}
+            className="text-red-600 hover:text-red-800 transition-colors p-2 bg-red-50 rounded-lg flex items-center gap-2"
+            title="Hapus Pengumuman"
+          >
+            <Trash2 size={18} />
+          </button>
+        </div>
       )
     }
   ];
