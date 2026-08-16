@@ -12,7 +12,14 @@ import {
 import { relations } from 'drizzle-orm';
 
 // Enums
-export const roleEnum = pgEnum('role', ['SUPER_ADMIN', 'KETUA', 'ADMIN_BIDANG']);
+export const roleEnum = pgEnum('role', [
+  'super_admin',
+  'admin_dkm',
+  'admin_kaderisasi',
+  'admin_kominfo',
+  'admin_pensos',
+  'admin_seni_olahraga',
+]);
 export const programStatusEnum = pgEnum('program_status', ['DRAFT', 'PUBLISHED', 'COMPLETED', 'CANCELLED']);
 export const eventStatusEnum = pgEnum('event_status', ['UPCOMING', 'ONGOING', 'DONE', 'DRAFT', 'PUBLISHED', 'COMPLETED', 'CANCELLED']);
 export const articleStatusEnum = pgEnum('article_status', ['DRAFT', 'PUBLISHED']);
@@ -25,7 +32,7 @@ export const users = pgTable('users', {
   name: varchar('name', { length: 255 }).notNull(),
   email: varchar('email', { length: 255 }).notNull().unique(),
   passwordHash: varchar('password_hash', { length: 255 }).notNull(),
-  role: roleEnum('role').default('ADMIN_BIDANG').notNull(),
+  role: roleEnum('role').default('super_admin').notNull(),
   divisionId: integer('division_id'), // FK to divisions
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -368,3 +375,166 @@ export const recruitmentLogsRelations = relations(recruitmentLogs, ({ one }) => 
 }));
 
 export const mediaAssetsRelations = relations(mediaAssets, () => ({}));
+
+// ==========================================
+// NEW MODULES: DIVISION SPECIFIC TABLES
+// ==========================================
+
+// 1. DKM Module
+export const dkmJadwalPetugas = pgTable('dkm_jadwal_petugas', {
+  id: serial('id').primaryKey(),
+  tanggal: timestamp('tanggal').notNull(),
+  waktu: varchar('waktu', { length: 50 }).notNull(),
+  jenisTugas: varchar('jenis_tugas', { length: 50 }).notNull(),
+  namaPetugas: varchar('nama_petugas', { length: 150 }).notNull(),
+  kontak: varchar('kontak', { length: 50 }),
+  statusKonfirmasi: varchar('status_konfirmasi', { length: 50 }).default('Menunggu Konfirmasi'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const dkmInventaris = pgTable('dkm_inventaris', {
+  id: serial('id').primaryKey(),
+  kodeBarang: varchar('kode_barang', { length: 50 }).unique().notNull(),
+  namaBarang: varchar('nama_barang', { length: 150 }).notNull(),
+  kategori: varchar('kategori', { length: 100 }), // Audio/Ibadah/Kebersihan
+  jumlah: integer('jumlah').default(1).notNull(),
+  kondisi: varchar('kondisi', { length: 50 }).notNull(),
+  lokasi: varchar('lokasi', { length: 100 }).notNull(),
+  tglAudit: timestamp('tgl_audit').notNull(),
+  fotoUrl: varchar('foto_url', { length: 500 }),
+});
+
+export const dkmPiketKebersihan = pgTable('dkm_piket_kebersihan', {
+  id: serial('id').primaryKey(),
+  tanggal: timestamp('tanggal').notNull(),
+  zonaArea: varchar('zona_area', { length: 100 }).notNull(),
+  penanggungJawab: varchar('penanggung_jawab', { length: 150 }).notNull(),
+  checklistTugas: text('checklist_tugas'),
+  statusKebersihan: varchar('status_kebersihan', { length: 50 }).default('Belum Selesai'),
+});
+
+// 2. Kaderisasi Module
+export const kaderDatabase = pgTable('kader_database', {
+  id: serial('id').primaryKey(),
+  nim: varchar('nim', { length: 50 }).unique().notNull(),
+  nama: varchar('nama', { length: 150 }).notNull(),
+  prodiAngkatan: varchar('prodi_angkatan', { length: 100 }),
+  gender: varchar('gender', { length: 20 }), // Ikhwan/Akhwat
+  noWa: varchar('no_wa', { length: 50 }),
+  divisi: varchar('divisi', { length: 100 }),
+  statusKaderisasi: varchar('status_kaderisasi', { length: 100 }),
+  skills: text('skills'),
+});
+
+export const kaderMentoringAbsensi = pgTable('kader_mentoring_absensi', {
+  id: serial('id').primaryKey(),
+  namaHalaqah: varchar('nama_halaqah', { length: 150 }).notNull(),
+  mentor: varchar('mentor', { length: 150 }).notNull(),
+  tanggal: timestamp('tanggal').notNull(),
+  materi: varchar('materi', { length: 255 }),
+  daftarHadir: text('daftar_hadir'), // Storing JSON string for simplicity or comma separated
+  evaluasi: text('evaluasi'),
+});
+
+// 3. Kominfo Module
+export const kominfoContentPlanner = pgTable('kominfo_content_planner', {
+  id: serial('id').primaryKey(),
+  judulKonten: varchar('judul_konten', { length: 255 }).notNull(),
+  platform: varchar('platform', { length: 100 }).notNull(),
+  format: varchar('format', { length: 100 }),
+  pic: varchar('pic', { length: 150 }), // PIC Desainer/Copywriter
+  status: varchar('status', { length: 50 }).default('Draft'),
+  tanggalPosting: timestamp('tanggal_posting'),
+});
+
+// 4. Pensos Module
+export const pensosKajianKelas = pgTable('pensos_kajian_kelas', {
+  id: serial('id').primaryKey(),
+  namaKelas: varchar('nama_kelas', { length: 150 }).notNull(),
+  kategori: varchar('kategori', { length: 100 }),
+  level: varchar('level', { length: 50 }),
+  noPertemuan: integer('no_pertemuan'),
+  deskripsiMateri: text('deskripsi_materi'),
+  linkFile: varchar('link_file', { length: 500 }),
+});
+
+export const pensosKegiatanSosial = pgTable('pensos_kegiatan_sosial', {
+  id: serial('id').primaryKey(),
+  namaAgenda: varchar('nama_agenda', { length: 255 }).notNull(),
+  tanggal: timestamp('tanggal').notNull(),
+  totalAnggaran: varchar('total_anggaran', { length: 150 }),
+  targetLokasi: varchar('target_lokasi', { length: 255 }),
+  jumlahPenerima: integer('jumlah_penerima'),
+  pic: varchar('pic', { length: 150 }),
+  statusLpj: varchar('status_lpj', { length: 50 }).default('Belum Selesai'),
+});
+
+export const pensosRelasiFsldk = pgTable('pensos_relasi_fsldk', {
+  id: serial('id').primaryKey(),
+  namaKampus: varchar('nama_kampus', { length: 255 }).notNull(),
+  levelWilayah: varchar('level_wilayah', { length: 100 }), // Puskomda/Puskomnas
+  namaHumas: varchar('nama_humas', { length: 150 }),
+  noTelp: varchar('no_telp', { length: 50 }),
+  agendaKolaborasi: text('agenda_kolaborasi'),
+});
+
+// 5. Seni & Olahraga Module
+export const seniOlahragaAgenda = pgTable('seni_olahraga_agenda', {
+  id: serial('id').primaryKey(),
+  topikLatihan: varchar('topik_latihan', { length: 255 }).notNull(),
+  kategori: varchar('kategori', { length: 100 }).notNull(), // Seni/Hadrah/Taklim vs Olahraga
+  jadwal: timestamp('jadwal').notNull(),
+  lokasi: varchar('lokasi', { length: 255 }),
+  pemateri: varchar('pemateri', { length: 150 }),
+  targetPeserta: varchar('target_peserta', { length: 150 }),
+  status: varchar('status', { length: 50 }).default('Terjadwal'),
+});
+
+// 6. Announcements Module
+export const announcements = pgTable('announcements', {
+  id: serial('id').primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  content: text('content').notNull(),
+  targetRole: varchar('target_role', { length: 50 }).notNull(), // 'ALL', 'admin_dkm', etc.
+  isActive: boolean('is_active').default(true).notNull(),
+  createdBy: integer('created_by').notNull().references(() => users.id),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const announcementAcknowledgments = pgTable('announcement_acknowledgments', {
+  id: serial('id').primaryKey(),
+  announcementId: integer('announcement_id').notNull().references(() => announcements.id, { onDelete: 'cascade' }),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  isRead: boolean('is_read').default(true).notNull(),
+  replyMessage: text('reply_message'),
+  repliedAt: timestamp('replied_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  unq: unique('announcement_user_idx').on(table.announcementId, table.userId)
+}));
+
+// --- DIVISION NOTES ---
+export const divisionNotes = pgTable('division_notes', {
+  id: serial('id').primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  content: text('content').notNull(),
+  divisionId: integer('division_id'), // Nullable if superadmin general note
+  createdBy: integer('created_by'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+
+// --- PENSOS KUNJUNGAN TOKOH ---
+export const pensosKunjunganTokoh = pgTable('pensos_kunjungan_tokoh', {
+  id: serial('id').primaryKey(),
+  namaTokoh: varchar('nama_tokoh', { length: 255 }).notNull(),
+  kategori: varchar('kategori', { length: 100 }).notNull(), // Ulama / Tokoh Masyarakat / Pejabat
+  tanggal: timestamp('tanggal').notNull(),
+  tujuan: text('tujuan').notNull(),
+  hasilKunjungan: text('hasil_kunjungan'),
+  pic: varchar('pic', { length: 255 }).notNull(),
+  status: varchar('status', { length: 50 }).default('Terjadwal').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});

@@ -8,27 +8,32 @@ async function seed() {
   console.log("Seeding database...");
 
   // 1. Create Period
-  const [period] = await db.insert(periods).values({
+  await db.insert(periods).values({
     name: "2026/2027",
     isActive: true,
-  }).returning();
+  }).onConflictDoNothing();
+  
+  const allPeriods = await db.select().from(periods);
+  const period = allPeriods[0];
 
   // 2. Create Divisions
-  const divs = await db.insert(divisions).values([
+  await db.insert(divisions).values([
     { name: "DKM", slug: "dkm", periodId: period.id, isActive: true, description: "Dewan Kemakmuran Masjid" },
     { name: "Kaderisasi", slug: "kaderisasi", periodId: period.id, isActive: true, description: "Kaderisasi dan Pembinaan" },
     { name: "Kominfo", slug: "kominfo", periodId: period.id, isActive: true, description: "Komunikasi dan Informasi" },
     { name: "Pendidikan dan Sosial", slug: "pensos", periodId: period.id, isActive: true, description: "Pendidikan dan Sosial (Pensos)" },
     { name: "Seni dan Olahraga", slug: "seni-olahraga", periodId: period.id, isActive: true, description: "Seni dan Olahraga" }
-  ]).returning();
-  const dkm = divs[0];
-  const kaderisasi = divs[1];
-  const kominfo = divs[2];
-  const pensos = divs[3];
-  const seni = divs[4];
+  ]).onConflictDoNothing();
+  
+  const allDivs = await db.select().from(divisions);
+  const dkm = allDivs.find(d => d.slug === "dkm")!;
+  const kaderisasi = allDivs.find(d => d.slug === "kaderisasi")!;
+  const kominfo = allDivs.find(d => d.slug === "kominfo")!;
+  const pensos = allDivs.find(d => d.slug === "pensos")!;
+  const seni = allDivs.find(d => d.slug === "seni-olahraga")!;
 
   // 3. Create Positions
-  const pos = await db.insert(positions).values([
+  await db.insert(positions).values([
     { name: "Pembina", level: 1 },
     { name: "Dewan Penasehat", level: 2 },
     { name: "Ketua Umum", level: 3 },
@@ -36,15 +41,16 @@ async function seed() {
     { name: "Bendahara Umum", level: 5 },
     { name: "Koordinator Bidang", level: 6 },
     { name: "Anggota", level: 7 }
-  ]).returning();
+  ]).onConflictDoNothing();
 
-  const posPembina = pos[0];
-  const posPenasehat = pos[1];
-  const posKetua = pos[2];
-  const posSekjen = pos[3];
-  const posBendum = pos[4];
-  const posKoor = pos[5];
-  const posAnggota = pos[6];
+  const allPos = await db.select().from(positions);
+  const posPembina = allPos.find(p => p.name === "Pembina")!;
+  const posPenasehat = allPos.find(p => p.name === "Dewan Penasehat")!;
+  const posKetua = allPos.find(p => p.name === "Ketua Umum")!;
+  const posSekjen = allPos.find(p => p.name === "Sekretaris Jenderal")!;
+  const posBendum = allPos.find(p => p.name === "Bendahara Umum")!;
+  const posKoor = allPos.find(p => p.name === "Koordinator Bidang")!;
+  const posAnggota = allPos.find(p => p.name === "Anggota")!;
 
   // 4. Create Members
   await db.insert(members).values([
@@ -59,44 +65,29 @@ async function seed() {
     { name: "Jakariana", periodId: period.id, positionId: posKoor.id, divisionId: kominfo.id },
     { name: "Muhammad Ikhlasul Amal", periodId: period.id, positionId: posKoor.id, divisionId: pensos.id },
     { name: "Alfat Maulana", periodId: period.id, positionId: posKoor.id, divisionId: seni.id },
-  ]);
+  ]).onConflictDoNothing();
 
-  // 5. Create Users (Admins)
-  const superAdminEmail = process.env.INITIAL_ADMIN_EMAIL || "super@test.com";
-  const superAdminPassword = process.env.INITIAL_ADMIN_PASSWORD || "super123";
-  const superAdminHash = await hash(superAdminPassword, 10);
-  await db.insert(users).values({
-    name: "Super Admin",
-    email: superAdminEmail,
-    passwordHash: superAdminHash,
-    role: "SUPER_ADMIN",
-  });
+  // 5. Create Users (Admins based on new RBAC)
+  const accounts = [
+    { name: "Muhammad Luqman Hakim", email: "ketua.ldk@alhidayah.ac.id", password: "SuperKetua2026!", role: "super_admin" },
+    { name: "Pariz Hapis Zudin", email: "sekretaris.ldk@alhidayah.ac.id", password: "SuperSekjen2026!", role: "super_admin" },
+    { name: "Bidang DKM", email: "dkm.ldk@alhidayah.ac.id", password: "DkmAlhidayah2026!", role: "admin_dkm", divisionId: dkm.id },
+    { name: "Bidang Kaderisasi", email: "kaderisasi.ldk@alhidayah.ac.id", password: "KaderAlhidayah2026!", role: "admin_kaderisasi", divisionId: kaderisasi.id },
+    { name: "Bidang Kominfo", email: "kominfo.ldk@alhidayah.ac.id", password: "KominfoAlhidayah2026!", role: "admin_kominfo", divisionId: kominfo.id },
+    { name: "Bidang Pensos", email: "pensos.ldk@alhidayah.ac.id", password: "PensosAlhidayah2026!", role: "admin_pensos", divisionId: pensos.id },
+    { name: "Bidang Seni & Olahraga", email: "senior.ldk@alhidayah.ac.id", password: "SeniOrAlhidayah2026!", role: "admin_seni_olahraga", divisionId: seni.id },
+  ];
 
-  const ketuaHash = await hash("ketua123", 10);
-  await db.insert(users).values({
-    name: "Muhammad Luqman Hakim",
-    email: "ketua@ldkalhidayah.com",
-    passwordHash: ketuaHash,
-    role: "KETUA",
-  });
-
-  const dkmHash = await hash("dkm123", 10);
-  await db.insert(users).values({
-    name: "Muhtadin",
-    email: "admin.dkm@ldkalhidayah.com",
-    passwordHash: dkmHash,
-    role: "ADMIN_BIDANG",
-    divisionId: dkm.id,
-  });
-
-  const kominfoHash = await hash("kominfo123", 10);
-  await db.insert(users).values({
-    name: "Jakariana",
-    email: "admin.kominfo@ldkalhidayah.com",
-    passwordHash: kominfoHash,
-    role: "ADMIN_BIDANG",
-    divisionId: kominfo.id,
-  });
+  for (const acc of accounts) {
+    const pwHash = await hash(acc.password, 10);
+    await db.insert(users).values({
+      name: acc.name,
+      email: acc.email,
+      passwordHash: pwHash,
+      role: acc.role as any,
+      divisionId: acc.divisionId,
+    }).onConflictDoNothing();
+  }
 
   console.log("Seeding complete!");
   process.exit(0);

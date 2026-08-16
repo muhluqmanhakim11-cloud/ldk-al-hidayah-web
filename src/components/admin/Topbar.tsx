@@ -32,7 +32,6 @@ export default function Topbar({ session, setIsOpen }: TopbarProps) {
         >
           <Menu size={24} />
         </button>
-        <h1 className="text-xl font-semibold text-gray-800 hidden sm:block">Dashboard</h1>
       </div>
 
       <div className="flex items-center">

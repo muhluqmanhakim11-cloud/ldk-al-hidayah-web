@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import { 
   LayoutDashboard, Users, UserCog, Briefcase, 
   CalendarDays, Image as ImageIcon, FileText, 
-  Settings, Menu, X, Landmark, Flag, Globe, LogOut
+  Settings, Menu, X, Landmark, Flag, Globe, LogOut, Megaphone,
+  Layers, ChevronDown, ChevronRight
 } from "lucide-react";
 import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
@@ -54,9 +55,12 @@ interface SidebarProps {
 
 export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: SidebarProps) {
   const pathname = usePathname();
-  const role = session?.user?.role;
+  const role = (session?.user as any)?.realRole || session?.user?.role;
   const divisionId = session?.user?.divisionId;
   const [vercelStatus, setVercelStatus] = useState<"passing" | "building" | "failed" | "unknown">("unknown");
+  
+  // State for Accordion
+  const [isDivisionsOpen, setIsDivisionsOpen] = useState(false);
 
   useEffect(() => {
     if (!vercelBadgeUrl) return;
@@ -78,33 +82,63 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
     return () => clearInterval(interval);
   }, [vercelBadgeUrl]);
 
-  // Determine allowed menus based on role
-  const getMenus = () => {
-    const menus = [
-      { name: "Dashboard", href: "/admin", icon: LayoutDashboard, show: true },
-      { name: "Profil LDK", href: "/admin/profil", icon: Landmark, show: role === "SUPER_ADMIN" || role === "KETUA" },
-      { name: "Periode", href: "/admin/periode", icon: CalendarDays, show: role === "SUPER_ADMIN" || role === "KETUA" },
-      { name: "Struktur Organisasi", href: "/admin/struktur", icon: Briefcase, show: role === "SUPER_ADMIN" || role === "KETUA" },
-      { name: "Bidang/Divisi", href: "/admin/bidang", icon: Flag, show: role === "SUPER_ADMIN" || role === "KETUA" },
-      { name: "Pengurus", href: "/admin/pengurus", icon: Users, show: role === "SUPER_ADMIN" || role === "KETUA" },
-      
-      { name: "Program Kerja", href: "/admin/programs", icon: FileText, show: true },
-      { name: "Agenda / Kegiatan", href: "/admin/events", icon: CalendarDays, show: true },
-      
-      { name: "Artikel & Berita", href: "/admin/artikel", icon: FileText, show: true },
-      { name: "Dokumentasi & Galeri", href: "/admin/dokumentasi", icon: ImageIcon, show: true },
-      
-      { name: "Recruitment", href: "/admin/recruitment", icon: UserCog, show: true },
-      
-      { name: "Users", href: "/admin/users", icon: Users, show: role === "SUPER_ADMIN" },
-      { name: "Running Text", href: "/admin/running-text", icon: FileText, show: role === "SUPER_ADMIN" || role === "KETUA" },
-      { name: "Pengaturan Situs", href: "/admin/settings", icon: Settings, show: role === "SUPER_ADMIN" },
-    ];
+  const isSuperAdmin = role === "super_admin";
+  const isDkm = role === "admin_dkm";
+  const isKader = role === "admin_kaderisasi";
+  const isKominfo = role === "admin_kominfo";
+  const isPensos = role === "admin_pensos";
+  const isSeni = role === "admin_seni_olahraga";
 
-    return menus.filter(menu => menu.show);
-  };
+  // General Menus
+  const mainMenus = [
+    { name: "Dashboard", href: "/admin", icon: LayoutDashboard, show: true },
+    { name: "Profil LDK", href: "/admin/profil", icon: Landmark, show: isSuperAdmin },
+    { name: "Pengumuman & Instruksi", href: "/admin/pengumuman", icon: Megaphone, show: isSuperAdmin },
+    { name: "Periode", href: "/admin/periode", icon: CalendarDays, show: isSuperAdmin },
+    { name: "Struktur Organisasi", href: "/admin/struktur", icon: Briefcase, show: isSuperAdmin },
+    { name: "Bidang/Divisi", href: "/admin/bidang", icon: Flag, show: isSuperAdmin },
+    { name: "Pengurus", href: "/admin/pengurus", icon: Users, show: isSuperAdmin },
+    { name: "Program Kerja", href: "/admin/programs", icon: FileText, show: isSuperAdmin },
+    { name: "Agenda / Kegiatan", href: "/admin/events", icon: CalendarDays, show: isSuperAdmin || isKader },
+    { name: "Artikel & Berita", href: "/admin/artikel", icon: FileText, show: isSuperAdmin || isKominfo },
+    { name: "Dokumentasi & Galeri", href: "/admin/dokumentasi", icon: ImageIcon, show: isSuperAdmin || isKominfo },
+    { name: "Recruitment", href: "/admin/recruitment", icon: UserCog, show: isSuperAdmin || isKader },
+    { name: "Running Text", href: "/admin/running-text", icon: FileText, show: isSuperAdmin || isKominfo },
+  ].filter(m => m.show);
 
-  const menus = getMenus();
+  // Division Specific Menus
+  const divisionMenus = [
+    // DKM
+    { name: "Jadwal Petugas", href: "/admin/dkm/petugas", icon: CalendarDays, show: isSuperAdmin || isDkm, group: "DKM" },
+    { name: "Inventaris Musala", href: "/admin/dkm/inventaris", icon: FileText, show: isSuperAdmin || isDkm, group: "DKM" },
+    { name: "Piket Kebersihan", href: "/admin/dkm/piket", icon: FileText, show: isSuperAdmin || isDkm, group: "DKM" },
+    { name: "Catatan DKM", href: "/admin/dkm/catatan", icon: FileText, show: isSuperAdmin || isDkm, group: "DKM" },
+    
+    // Kaderisasi
+    { name: "Database Kader", href: "/admin/kaderisasi/database", icon: Users, show: isSuperAdmin || isKader, group: "Kaderisasi" },
+    { name: "Absensi Mentoring", href: "/admin/kaderisasi/absensi", icon: FileText, show: isSuperAdmin || isKader, group: "Kaderisasi" },
+    { name: "Catatan Kaderisasi", href: "/admin/kaderisasi/catatan", icon: FileText, show: isSuperAdmin || isKader, group: "Kaderisasi" },
+
+    // Kominfo
+    { name: "Content Planner", href: "/admin/kominfo/planner", icon: FileText, show: isSuperAdmin || isKominfo, group: "Kominfo" },
+    { name: "Catatan Kominfo", href: "/admin/kominfo/catatan", icon: FileText, show: isSuperAdmin || isKominfo, group: "Kominfo" },
+
+    // Pensos
+    { name: "Silabus Kajian & IT", href: "/admin/pensos/kajian", icon: FileText, show: isSuperAdmin || isPensos, group: "Pensos" },
+    { name: "Log Baksos", href: "/admin/pensos/bansos", icon: FileText, show: isSuperAdmin || isPensos, group: "Pensos" },
+    { name: "Kunjungan Tokoh/Ulama", href: "/admin/pensos/kunjungan", icon: Users, show: isSuperAdmin || isPensos, group: "Pensos" },
+    { name: "Relasi FSLDK", href: "/admin/pensos/fsldk", icon: Users, show: isSuperAdmin || isPensos, group: "Pensos" },
+    { name: "Catatan Pensos", href: "/admin/pensos/catatan", icon: FileText, show: isSuperAdmin || isPensos, group: "Pensos" },
+
+    // Seni & Olahraga
+    { name: "Agenda Latihan", href: "/admin/seni-olahraga/agenda", icon: CalendarDays, show: isSuperAdmin || isSeni, group: "Seni & Olahraga" },
+    { name: "Catatan Seni & Olahraga", href: "/admin/seni-olahraga/catatan", icon: FileText, show: isSuperAdmin || isSeni, group: "Seni & Olahraga" },
+  ].filter(m => m.show);
+
+  const systemMenus = [
+    { name: "Users", href: "/admin/users", icon: Users, show: isSuperAdmin },
+    { name: "Pengaturan Situs", href: "/admin/settings", icon: Settings, show: isSuperAdmin },
+  ].filter(m => m.show);
 
   return (
     <>
@@ -125,21 +159,107 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
           </button>
         </div>
 
-        <div className="overflow-y-auto flex-1 p-4 pb-48 space-y-1">
-          {menus.map((menu) => {
-            const isActive = pathname === menu.href || (menu.href !== "/admin" && pathname.startsWith(menu.href));
-            const Icon = menu.icon;
-            return (
-              <Link 
-                key={menu.name}
-                href={menu.href}
-                className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700 hover:bg-gray-100'}`}
-              >
-                <Icon size={20} className={isActive ? 'text-blue-600' : 'text-gray-500'} />
-                <span>{menu.name}</span>
-              </Link>
-            );
-          })}
+        <div className="overflow-y-auto flex-1 p-4 pb-48 space-y-4">
+          
+          {/* Main Menus */}
+          <div className="space-y-1">
+            {mainMenus.map((menu) => {
+              const isActive = pathname === menu.href || (menu.href !== "/admin" && pathname.startsWith(menu.href));
+              const Icon = menu.icon;
+              return (
+                <Link 
+                  key={menu.name}
+                  href={menu.href}
+                  className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700 hover:bg-gray-100'}`}
+                >
+                  <Icon size={20} className={isActive ? 'text-blue-600' : 'text-gray-500'} />
+                  <span>{menu.name}</span>
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Division Menus */}
+          {divisionMenus.length > 0 && (
+            <div className="space-y-1">
+              {isSuperAdmin ? (
+                // Accordion for Super Admin
+                <div className="pt-2 border-t">
+                  <button 
+                    onClick={() => setIsDivisionsOpen(!isDivisionsOpen)}
+                    className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Layers size={20} className="text-gray-500" />
+                      <span className="font-semibold text-sm">Modul Bidang / Divisi</span>
+                    </div>
+                    {isDivisionsOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+                  </button>
+                  
+                  {isDivisionsOpen && (
+                    <div className="mt-1 ml-4 pl-3 border-l-2 border-gray-100 space-y-1">
+                      {divisionMenus.map((menu) => {
+                        const isActive = pathname === menu.href || pathname.startsWith(menu.href);
+                        const Icon = menu.icon;
+                        return (
+                          <Link 
+                            key={menu.name}
+                            href={menu.href}
+                            className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors text-sm ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-100'}`}
+                          >
+                            <Icon size={16} className={isActive ? 'text-blue-600' : 'text-gray-400'} />
+                            <span>{menu.name}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                // Flat List for Admin Divisi
+                <div className="pt-2 border-t space-y-1">
+                  <div className="px-3 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    Modul Divisi
+                  </div>
+                  {divisionMenus.map((menu) => {
+                    const isActive = pathname === menu.href || pathname.startsWith(menu.href);
+                    const Icon = menu.icon;
+                    return (
+                      <Link 
+                        key={menu.name}
+                        href={menu.href}
+                        className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700 hover:bg-gray-100'}`}
+                      >
+                        <Icon size={20} className={isActive ? 'text-blue-600' : 'text-gray-500'} />
+                        <span>{menu.name}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* System Settings */}
+          {systemMenus.length > 0 && (
+            <div className="pt-2 border-t space-y-1">
+              {systemMenus.map((menu) => {
+                const isActive = pathname === menu.href || pathname.startsWith(menu.href);
+                const Icon = menu.icon;
+                return (
+                  <Link 
+                    key={menu.name}
+                    href={menu.href}
+                    className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700 hover:bg-gray-100'}`}
+                  >
+                    <Icon size={20} className={isActive ? 'text-blue-600' : 'text-gray-500'} />
+                    <span>{menu.name}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+
         </div>
 
         {/* Footer Area */}

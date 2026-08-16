@@ -40,15 +40,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role;
-        token.divisionId = (user as any).divisionId;
+        const u = user as any;
+        token.realRole = u.role;
+        
+        // Map to legacy roles to maintain zero-touch on existing modules
+        if (u.role === 'super_admin') {
+          token.role = 'SUPER_ADMIN';
+        } else if (u.role && u.role.startsWith('admin_')) {
+          token.role = 'ADMIN_BIDANG';
+        } else {
+          token.role = u.role;
+        }
+        
+        token.divisionId = u.divisionId;
         token.id = user.id;
       }
       return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
-        (session.user as any).role = token.role;
+        (session.user as any).role = token.role; // Legacy mapped role for old modules
+        (session.user as any).realRole = token.realRole; // Exact new role for new modules
         (session.user as any).divisionId = token.divisionId;
         (session.user as any).id = token.id;
       }

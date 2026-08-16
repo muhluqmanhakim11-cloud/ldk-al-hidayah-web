@@ -106,10 +106,30 @@ export default function PengurusClient({ initialData, periods, divisions, positi
   return (
     <div>
       {!isReadOnly && (
-        <div className="mb-4">
+        <div className="mb-4 flex gap-3">
+          <button 
+            onClick={async () => {
+              if (!confirm("Peringatan Keras: Anda yakin ingin menghapus SEMUA data pengurus? Aksi ini tidak dapat dibatalkan!")) return;
+              try {
+                // Here we would call an endpoint to delete all. Let's create it if needed.
+                const res = await fetch("/api/admin/members?action=deleteAll", { method: "DELETE" });
+                if (res.ok) {
+                  toast.success("Seluruh data berhasil dihapus");
+                  router.refresh();
+                } else {
+                  toast.error("Gagal menghapus semua data");
+                }
+              } catch (error) {
+                toast.error("Terjadi kesalahan jaringan");
+              }
+            }}
+            className="bg-red-50 hover:bg-red-100 text-red-600 px-5 py-2.5 rounded-lg flex items-center gap-2 transition-all shadow-sm font-medium"
+          >
+            Hapus Semua
+          </button>
           <button 
             onClick={() => { setFormData({ id: 0, periodId: periods[0]?.id || 0, positionId: positions[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? String(userDivisionId) : "", name: "", nim: "", email: "", contact: "" }); setIsModalOpen(true); }}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="bg-blue-600 text-white px-5 py-2.5 rounded-lg hover:bg-blue-700 shadow-sm"
           >
             + Tambah Pengurus
           </button>

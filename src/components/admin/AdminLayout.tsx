@@ -4,6 +4,7 @@ import { useState } from "react";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import { Session } from "next-auth";
+import AnnouncementPopup from "./AnnouncementPopup";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -15,7 +16,7 @@ export default function AdminLayout({ children, session, vercelBadgeUrl }: Admin
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen bg-gray-50 overflow-hidden relative">
       <Sidebar session={session} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} vercelBadgeUrl={vercelBadgeUrl} />
       
       <div className="flex-1 flex flex-col min-w-0">
@@ -25,6 +26,8 @@ export default function AdminLayout({ children, session, vercelBadgeUrl }: Admin
           {children}
         </main>
       </div>
+      
+      <AnnouncementPopup />
     </div>
   );
 }
