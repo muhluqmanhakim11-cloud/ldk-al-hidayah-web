@@ -201,7 +201,7 @@ export const mediaAssets = pgTable('media_assets', {
 export const siteSettings = pgTable('site_settings', {
   id: serial('id').primaryKey(),
   orgName: varchar('org_name', { length: 255 }).notNull().default('LDK Al-Hidayah'),
-  logoUrl: varchar('logo_url', { length: 500 }),
+  logoUrl: varchar('logo_url', { length: 500 }).default('/logo-stmik.jpg'),
   description: text('description').default('Unit Kegiatan Mahasiswa tingkat Institut yang bergerak di bidang kerohanian Islam, bertujuan untuk mewujudkan kampus madani.'),
   address: text('address').default('Gedung Student Center STMIK IKMI CIREBON'), // Default dari referensi tapi nanti disesuaikan user
   email: varchar('email', { length: 255 }).default('halo@ldkalhidayah.com'),
