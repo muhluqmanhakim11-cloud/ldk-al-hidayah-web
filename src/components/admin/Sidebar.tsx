@@ -104,6 +104,7 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
     { name: "Dokumentasi & Galeri", href: "/admin/dokumentasi", icon: ImageIcon, show: isSuperAdmin || isKominfo },
     { name: "Recruitment", href: "/admin/recruitment", icon: UserCog, show: isSuperAdmin || isKader },
     { name: "Running Text", href: "/admin/running-text", icon: FileText, show: isSuperAdmin || isKominfo },
+    { name: "Catatan Ketua", href: "/admin/ketua/catatan", icon: FileText, show: isSuperAdmin },
   ].filter(m => m.show);
 
   // Division Specific Menus
