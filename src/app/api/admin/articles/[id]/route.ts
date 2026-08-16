@@ -38,7 +38,7 @@ export async function PATCH(req: Request, { params }: any) {
     }
 
     if (session.user.role === "ADMIN_BIDANG") {
-      divisionId = session.user.divisionId;
+      divisionId = session.user.divisionId || null || null;
     }
 
     let coverImageUrl = existingArticle.coverImage;

@@ -19,7 +19,7 @@ export default async function JabatanPage() {
           <p className="text-gray-500">Kelola hierarki jabatan organisasi</p>
         </div>
       </div>
-      <JabatanClient initialData={positions} userRole={session.user.role} />
+      <JabatanClient initialData={positions} userRole={session.user.role || ""} />
     </div>
   );
 }

@@ -69,7 +69,7 @@ export async function POST(req: Request) {
     }
 
     if (session.user.role === "ADMIN_BIDANG") {
-      divisionId = session.user.divisionId;
+      divisionId = session.user.divisionId || null || null;
     }
 
     // Generate slug

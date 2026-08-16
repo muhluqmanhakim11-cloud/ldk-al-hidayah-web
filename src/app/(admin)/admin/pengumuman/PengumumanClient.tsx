@@ -104,8 +104,8 @@ export default function PengumumanClient() {
     }
   };
 
-  const columns = [
-    { header: "Tanggal", accessor: (row: Announcement) => new Date(row.repliedAt).toLocaleDateString("id-ID") },
+  const columns: any[] = [
+    { header: "Tanggal", accessor: (row: Announcement) => new Date(row.createdAt).toLocaleDateString("id-ID") },
     { header: "Judul", accessor: "title" },
     { header: "Target", accessor: (row: Announcement) => row.targetRole === "ALL" ? "Semua Divisi" : row.targetRole.replace("admin_", "").toUpperCase() },
     { header: "Status", accessor: (row: Announcement) => row.isActive ? <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">Aktif</span> : <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">Selesai</span> },
@@ -198,7 +198,7 @@ export default function PengumumanClient() {
                       <p className="text-sm text-gray-500">{ack.user.name}</p>
                     </div>
                     <span className="text-xs text-gray-400 bg-white px-2 py-1 rounded border">
-                      {new Date(ack.repliedAt || ack.createdAt).toLocaleString('id-ID')}
+                      {new Date(ack.repliedAt || "").toLocaleString('id-ID')}
                     </span>
                   </div>
                   {ack.replyMessage ? (

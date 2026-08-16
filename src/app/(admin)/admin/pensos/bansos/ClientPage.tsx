@@ -68,9 +68,9 @@ export default function ClientPage() {
     try {
       const payload = { ...formData };
       // Convert dates to ISO string if exists
-      if ('tanggal' in payload) payload.tanggal = new Date(payload.tanggal).toISOString();
-      if ('tanggalPosting' in payload) payload.tanggalPosting = new Date(payload.tanggalPosting).toISOString();
-      if ('jadwal' in payload) payload.jadwal = new Date(payload.jadwal).toISOString();
+      if ('tanggal' in payload) payload.tanggal = new Date(payload.tanggal as string).toISOString();
+      if ('tanggalPosting' in payload) payload.tanggalPosting = new Date(payload.tanggalPosting as string).toISOString();
+      if ('jadwal' in payload) payload.jadwal = new Date(payload.jadwal as string).toISOString();
 
       const res = await fetch("/api/admin/pensos/bansos", {
         method: "POST",

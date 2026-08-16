@@ -22,7 +22,7 @@ export default async function BidangPage() {
           <p className="text-gray-500">Kelola bidang dalam organisasi</p>
         </div>
       </div>
-      <BidangClient initialData={divisions} periods={periods} userRole={session.user.role} />
+      <BidangClient initialData={divisions} periods={periods} userRole={session.user.role || ""} />
     </div>
   );
 }
