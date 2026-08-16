@@ -94,7 +94,7 @@ export default function ClientPage() {
 
   const columns = [
 
-    { header: "Jadwal", accessor: (row: any) => new Date(row.jadwal).toLocaleDateString("id-ID") },
+    { header: "Jadwal", accessor: (row: any) => new Date(row.jadwal as string).toLocaleDateString("id-ID") },
     { header: "Topik Latihan", accessor: "topikLatihan" },
     { header: "Kategori", accessor: "kategori" },
     { header: "Lokasi", accessor: "lokasi" },

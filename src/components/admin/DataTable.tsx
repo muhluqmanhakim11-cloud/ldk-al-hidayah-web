@@ -12,6 +12,7 @@ interface DataTableProps<T> {
   onDelete?: (row: T) => void;
   canEdit?: (row: T) => boolean;
   canDelete?: (row: T) => boolean;
+  searchPlaceholder?: string;
 }
 
 export default function DataTable<T extends { id: number | string }>({ 

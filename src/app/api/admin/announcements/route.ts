@@ -40,7 +40,7 @@ export async function POST(req: Request) {
     const parsed = announcementSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(
-        { success: false, message: 'Validasi gagal', errors: parsed.error.errors.map(e => e.message) },
+        { success: false, message: 'Validasi gagal', errors: parsed.error.errors.map((e: any) => e.message) },
         { status: 400 }
       );
     }

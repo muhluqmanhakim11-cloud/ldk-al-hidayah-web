@@ -94,7 +94,7 @@ export default function ClientPage() {
 
   const columns = [
 
-    { header: "Tgl Posting", accessor: (row: any) => new Date(row.tanggalPosting).toLocaleDateString("id-ID") },
+    { header: "Tgl Posting", accessor: (row: any) => new Date(row.tanggalPosting as string).toLocaleDateString("id-ID") },
     { header: "Judul Konten", accessor: "judulKonten" },
     { header: "Platform", accessor: "platform" },
     { header: "PIC", accessor: "pic" },

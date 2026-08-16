@@ -90,7 +90,7 @@ export default function ClientPage() {
   };
 
   const columns = [
-    { header: "Tanggal", accessor: (row: any) => new Date(row.tanggal).toLocaleDateString("id-ID") },
+    { header: "Tanggal", accessor: (row: any) => new Date(row.tanggal as string).toLocaleDateString("id-ID") },
     { header: "Nama Tokoh/Ulama", accessor: "namaTokoh" },
     { header: "Kategori", accessor: "kategori" },
     { header: "PIC", accessor: "pic" },

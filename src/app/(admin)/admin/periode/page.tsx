@@ -19,7 +19,7 @@ export default async function PeriodePage() {
           <p className="text-gray-500">Kelola periode kepengurusan LDK</p>
         </div>
       </div>
-      <PeriodeClient initialData={periods} userRole={session.user.role} />
+      <PeriodeClient initialData={periods} userRole={session.user.role || ""} />
     </div>
   );
 }

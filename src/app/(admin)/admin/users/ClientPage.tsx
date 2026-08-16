@@ -80,7 +80,7 @@ export default function ClientPage() {
         {row.role.replace('admin_', 'Admin ').toUpperCase()}
       </span>
     ) },
-    { header: "Terdaftar", accessor: (row: any) => new Date(row.createdAt).toLocaleDateString("id-ID") },
+    { header: "Terdaftar", accessor: (row: any) => new Date(row.createdAt as string).toLocaleDateString("id-ID") },
     {
       header: "Aksi",
       accessor: (row: any) => (

@@ -86,7 +86,7 @@ export default function ClientPage() {
   };
 
   const columns = [
-    { header: "Tanggal", accessor: (row: any) => new Date(row.createdAt).toLocaleDateString("id-ID") },
+    { header: "Tanggal", accessor: (row: any) => new Date(row.createdAt as string).toLocaleDateString("id-ID") },
     { header: "Judul Catatan", accessor: "title" },
     { header: "Isi Catatan", accessor: (row: any) => <div className="max-w-xs truncate">{row.content}</div> },
     { header: "Penulis", accessor: "authorName" },

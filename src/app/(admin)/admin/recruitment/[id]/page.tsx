@@ -152,7 +152,7 @@ export default async function RecruitmentDetailPage({ params }: { params: Promis
           <RecruitmentStatusForm 
              recruitmentId={data.id} 
              currentStatus={data.status} 
-             userRole={session.user.role} 
+             userRole={session.user.role || ""} 
           />
         </div>
       </div>

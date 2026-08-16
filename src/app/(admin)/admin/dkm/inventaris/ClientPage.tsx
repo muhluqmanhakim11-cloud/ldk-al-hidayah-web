@@ -77,7 +77,7 @@ export default function ClientPage() {
     { header: "Jumlah", accessor: "jumlah" },
     { header: "Kondisi", accessor: "kondisi" },
     { header: "Lokasi", accessor: "lokasi" },
-    { header: "Tgl Audit", accessor: (row: any) => new Date(row.tglAudit).toLocaleDateString("id-ID") },
+    { header: "Tgl Audit", accessor: (row: any) => new Date(row.tglAudit as string).toLocaleDateString("id-ID") },
     {
       header: "Aksi",
       accessor: (row: any) => (
