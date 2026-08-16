@@ -3,7 +3,7 @@ import { siteSettings } from "./src/db/schema";
 import { eq } from "drizzle-orm";
 
 async function main() {
-  await db.update(siteSettings).set({ logoUrl: "/logo-stmik.jpg" });
+  await db.update(siteSettings).set({ logoUrl: "/logo-stmik.png" });
   console.log("Logo updated successfully.");
 }
 
