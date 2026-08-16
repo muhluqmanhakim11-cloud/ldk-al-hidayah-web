@@ -28,7 +28,7 @@ export default function DataTable<T extends { id: number | string }>({
 
   return (
     <div className="overflow-x-auto bg-white border rounded-lg shadow-sm">
-      <table className="w-full text-sm text-left">
+      <table className="w-full text-sm text-left text-gray-900">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">
           <tr>
             {columns.map((col, idx) => (
