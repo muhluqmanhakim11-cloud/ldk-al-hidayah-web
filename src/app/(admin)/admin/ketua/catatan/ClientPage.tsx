@@ -93,7 +93,7 @@ export default function ClientPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+      <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100 gap-4 sm:gap-0">
         <div>
           <div className="flex items-center space-x-3 mb-1">
              <div className="p-2 bg-blue-100 text-blue-700 rounded-lg">
@@ -103,10 +103,10 @@ export default function ClientPage() {
           </div>
           <p className="text-gray-500 mt-1 ml-11">Simpan notulensi, instruksi, atau ide penting</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 w-full sm:w-auto">
           <button
             onClick={() => setIsFormOpen(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-sm font-medium"
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl flex justify-center items-center gap-2 transition-all shadow-sm font-medium"
           >
             <Plus size={20} /> Tulis Catatan
           </button>
