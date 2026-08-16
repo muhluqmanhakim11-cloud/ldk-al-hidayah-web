@@ -113,9 +113,11 @@ export default async function AdminRecruitmentPage({
           <div>
              <form action={async () => {
                 'use server';
+                const { revalidatePath } = await import('next/cache');
                 const newState = !currentPeriodInfo.isRecruitmentOpen;
                 await db.update(periods).set({ isRecruitmentOpen: newState }).where(eq(periods.id, currentPeriodInfo.id));
-                // Needs revalidation or refresh, ideally we use redirect or revalidatePath
+                revalidatePath('/admin/recruitment');
+                revalidatePath('/rekrutmen/daftar');
              }}>
                 <button type="submit" className={`px-6 py-2 rounded-lg font-bold text-sm flex items-center gap-2 ${currentPeriodInfo.isRecruitmentOpen ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-red-600 text-white hover:bg-red-700'}`}>
                   <div className={`w-3 h-3 rounded-full ${currentPeriodInfo.isRecruitmentOpen ? 'bg-green-300' : 'bg-red-300'}`}></div>
