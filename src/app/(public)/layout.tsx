@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     template: "%s | LDK Al-Hidayah",
     default: "LDK Al-Hidayah - Unit Kegiatan Mahasiswa Islam",
   },
-  description: "Unit Kegiatan Mahasiswa tingkat Universitas yang bergerak di bidang kerohanian Islam untuk mewujudkan kampus madani.",
+  description: "Unit Kegiatan Mahasiswa tingkat Institut yang bergerak di bidang kerohanian Islam untuk mewujudkan kampus madani.",
 };
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {

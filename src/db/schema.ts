@@ -202,8 +202,8 @@ export const siteSettings = pgTable('site_settings', {
   id: serial('id').primaryKey(),
   orgName: varchar('org_name', { length: 255 }).notNull().default('LDK Al-Hidayah'),
   logoUrl: varchar('logo_url', { length: 500 }),
-  description: text('description').default('Unit Kegiatan Mahasiswa tingkat Universitas yang bergerak di bidang kerohanian Islam, bertujuan untuk mewujudkan kampus madani.'),
-  address: text('address').default('Gedung Student Center Lt. 2 Universitas Telkom, Bandung'), // Default dari referensi tapi nanti disesuaikan user
+  description: text('description').default('Unit Kegiatan Mahasiswa tingkat Institut yang bergerak di bidang kerohanian Islam, bertujuan untuk mewujudkan kampus madani.'),
+  address: text('address').default('Gedung Student Center STMIK IKMI CIREBON'), // Default dari referensi tapi nanti disesuaikan user
   email: varchar('email', { length: 255 }).default('halo@ldkalhidayah.com'),
   instagramUrl: varchar('instagram_url', { length: 500 }),
   youtubeUrl: varchar('youtube_url', { length: 500 }),

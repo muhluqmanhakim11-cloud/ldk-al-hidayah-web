@@ -14,8 +14,8 @@ export default function PrintHeader({ title }: PrintHeaderProps) {
             <span className="font-bold text-xl text-gray-500">LDK</span>
           </div>
           <div>
-            <h1 className="text-2xl font-bold uppercase tracking-wide text-gray-900">LDK Al-Hidayah</h1>
-            <p className="text-sm text-gray-600">Gedung Student Center Lt. 2 Universitas Telkom, Bandung</p>
+            <h2 className="text-xl font-bold text-gray-800 uppercase tracking-wide">LDK Al-Hidayah STMIK IKMI CIREBON</h2>
+            <p className="text-sm text-gray-600">Gedung Student Center STMIK IKMI CIREBON</p>
             <p className="text-sm text-gray-600">Email: halo@ldkalhidayah.com | Instagram: @ldkalhidayah</p>
           </div>
         </div>

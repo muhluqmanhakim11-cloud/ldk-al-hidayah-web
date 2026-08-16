@@ -5,12 +5,12 @@ export default async function Footer() {
   const settings = await db.query.siteSettings.findFirst();
 
   const orgName = settings?.orgName || "LDK Al-Hidayah";
-  const description = settings?.description || "Unit Kegiatan Mahasiswa tingkat Universitas yang bergerak di bidang kerohanian Islam, bertujuan untuk mewujudkan kampus madani.";
+  const description = settings?.description || "Unit Kegiatan Mahasiswa tingkat Institut yang bergerak di bidang kerohanian Islam, bertujuan untuk mewujudkan kampus madani.";
   const instagramUrl = settings?.instagramUrl || "#";
   const youtubeUrl = settings?.youtubeUrl || "#";
   const tiktokUrl = settings?.tiktokUrl || "#";
   const facebookUrl = settings?.facebookUrl || "#";
-  const address = settings?.address || "Gedung Student Center Lt. 2 Universitas Telkom, Bandung";
+  const address = settings?.address || "Gedung Student Center STMIK IKMI CIREBON";
   const email = settings?.email || "halo@ldkalhidayah.com";
 
   return (
