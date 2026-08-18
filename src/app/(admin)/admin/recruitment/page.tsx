@@ -165,9 +165,18 @@ export default async function AdminRecruitmentPage({
             <label className="block text-xs font-bold text-gray-700 mb-1">Cari NIM</label>
             <input type="text" name="nim" defaultValue={searchNim || ""} placeholder="NIM..." className="border rounded-md p-2 text-sm bg-gray-50" />
           </div>
-          <div>
+          <div className="flex gap-2">
             <button type="submit" className="bg-gray-900 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-gray-800">Filter</button>
-            <Link href="/admin/recruitment" className="ml-2 text-sm text-gray-500 hover:underline">Reset</Link>
+            <Link href="/admin/recruitment" className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm font-bold hover:bg-gray-300">Reset</Link>
+            
+            <a 
+              href={`/admin/recruitment/print?periodId=${targetPeriodId || ''}&divisionId=${divisionFilter || ''}&status=${statusFilter || ''}`} 
+              target="_blank"
+              className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-blue-700 flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+              Cetak PDF
+            </a>
           </div>
         </form>
       </div>
