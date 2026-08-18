@@ -2,13 +2,20 @@
 
 import { useState, useEffect } from "react";
 import DataTable from "@/components/admin/DataTable";
-import { format } from "date-fns";
-import { id } from "date-fns/locale";
 
 export default function LogAktivitasClient({ divisions }: { divisions: any[] }) {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterDivision, setFilterDivision] = useState("");
+
+  const formatter = new Intl.DateTimeFormat("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Asia/Jakarta"
+  });
 
   const fetchData = async () => {
     setLoading(true);
@@ -36,7 +43,7 @@ export default function LogAktivitasClient({ divisions }: { divisions: any[] }) 
       header: "Waktu", 
       accessor: (row: any) => (
         <span className="text-sm font-medium text-gray-700">
-          {format(new Date(row.createdAt), "dd MMM yyyy, HH:mm", { locale: id })}
+          {formatter.format(new Date(row.createdAt)).replace(/\./g, ":")}
         </span>
       ) 
     },
