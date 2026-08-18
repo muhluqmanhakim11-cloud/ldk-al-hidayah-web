@@ -74,8 +74,8 @@ export default async function HomePage() {
             <div className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 text-xs font-bold px-3 py-1.5 rounded-md shrink-0 uppercase tracking-widest shadow-sm border border-green-200 dark:border-green-800">
               Update
             </div>
-            <div className="relative flex overflow-x-hidden w-full whitespace-nowrap mask-linear-fade">
-              <div className="animate-marquee inline-block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div className="relative flex overflow-x-hidden w-full whitespace-nowrap mask-linear-fade items-center">
+              <div className="animate-marquee inline-block text-base md:text-lg font-semibold text-gray-800 dark:text-gray-200">
                 {activeRunningTexts.length > 0 
                   ? activeRunningTexts.map(t => t.text).join(' \u00A0\u00A0\u2022\u00A0\u00A0 ')
                   : "🚀 Selamat datang di Website Resmi LDK Al-Hidayah STMIK IKMI Cirebon"
