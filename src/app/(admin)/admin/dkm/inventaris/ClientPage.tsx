@@ -122,18 +122,18 @@ export default function ClientPage() {
           <h1 className="text-2xl font-bold text-gray-800">Inventaris Musala</h1>
           <p className="text-gray-500 mt-1">Kelola data inventaris musala</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3 w-full md:w-auto">
           <button onClick={() => window.print()} className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-sm"><Printer size={20} /> Cetak PDF</button>
           
           <button
             onClick={handleDeleteAll}
-            className="bg-red-50 hover:bg-red-100 text-red-600 px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-sm font-medium"
+            className="bg-red-50 hover:bg-red-100 text-red-600 px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm font-medium flex-1 sm:flex-none"
           >
             <Trash2 size={20} /> Hapus Semua
           </button>
 <button
             onClick={() => setIsFormOpen(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-sm"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm flex-1 sm:flex-none"
           >
             <Plus size={20} /> Tambah Data
           </button>
