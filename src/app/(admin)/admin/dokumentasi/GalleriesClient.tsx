@@ -8,6 +8,8 @@ import { useState, useEffect } from "react";
 import DataTable from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
 
+import imageCompression from 'browser-image-compression';
+
 export default function GalleriesClient({ periods, divisions, events, userRole, userDivisionId }: any) {
   const [data, setData] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -100,7 +102,7 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
         
         const textRes = await res.text();
         let result;
-        try { result = JSON.parse(textRes); } catch(e) { result = { error: "Terjadi kesalahan server (Mungkin ukuran file terlalu besar)." } }
+        try { result = JSON.parse(textRes); } catch(e) { result = { error: "Terjadi kesalahan server." } }
         
         if (!res.ok) throw new Error(result.error || "Terjadi kesalahan");
       } else {
@@ -111,14 +113,6 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
         if (uploadFiles.length > 3) {
           throw new Error("Maksimal 3 foto yang diizinkan.");
         }
-        
-        let totalSize = 0;
-        for (let i = 0; i < uploadFiles.length; i++) {
-          totalSize += uploadFiles[i].size;
-        }
-        if (totalSize > 4 * 1024 * 1024) {
-          throw new Error("Total ukuran foto tidak boleh lebih dari 4MB (Batas maksimal server). Silakan kompres foto Anda terlebih dahulu.");
-        }
 
         const form = new FormData();
         form.append("title", formData.title);
@@ -127,8 +121,21 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
         form.append("divisionId", String(formData.divisionId));
         if (formData.eventId) form.append("eventId", formData.eventId);
 
+        const options = {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+        };
+
         for (let i = 0; i < uploadFiles.length; i++) {
-          form.append("images", uploadFiles[i]);
+          const file = uploadFiles[i];
+          try {
+            const compressedFile = await imageCompression(file, options);
+            form.append("images", compressedFile, file.name);
+          } catch (error) {
+            console.error("Compression error:", error);
+            form.append("images", file);
+          }
         }
 
         const res = await fetch(url, {
@@ -171,22 +178,25 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
     e.preventDefault();
     if (!uploadFiles || uploadFiles.length === 0) return;
 
-    let totalSize = 0;
-    for (let i = 0; i < uploadFiles.length; i++) {
-      totalSize += uploadFiles[i].size;
-    }
-    if (totalSize > 4 * 1024 * 1024) {
-      setError("Total ukuran foto tidak boleh lebih dari 4MB. Silakan kompres foto Anda terlebih dahulu.");
-      setUploading(false);
-      return;
-    }
-
     setUploading(true);
     setError("");
 
     const form = new FormData();
+    const options = {
+      maxSizeMB: 0.5,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+
     for (let i = 0; i < uploadFiles.length; i++) {
-      form.append("images", uploadFiles[i]);
+      const file = uploadFiles[i];
+      try {
+        const compressedFile = await imageCompression(file, options);
+        form.append("images", compressedFile, file.name);
+      } catch (error) {
+        console.error("Compression error:", error);
+        form.append("images", file);
+      }
     }
 
     try {
@@ -378,7 +388,7 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
 
           {!formData.id && (
             <div>
-              <label className="block text-sm font-medium mb-1">Upload Foto (Wajib, Maks 3 Foto, Total Maks 4MB)</label>
+              <label className="block text-sm font-medium mb-1">Upload Foto (Wajib, Maks 3 Foto - Otomatis dikompres)</label>
               <input 
                 type="file" multiple accept="image/*" 
                 onChange={(e) => {
