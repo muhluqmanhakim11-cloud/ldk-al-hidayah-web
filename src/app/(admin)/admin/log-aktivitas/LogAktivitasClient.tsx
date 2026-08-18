@@ -17,8 +17,8 @@ export default function LogAktivitasClient({ divisions }: { divisions: any[] }) 
     timeZone: "Asia/Jakarta"
   });
 
-  const fetchData = async () => {
-    setLoading(true);
+  const fetchData = async (silent = false) => {
+    if (!silent) setLoading(true);
     try {
       const params = new URLSearchParams();
       if (filterDivision) params.append("divisionId", filterDivision);
@@ -30,12 +30,18 @@ export default function LogAktivitasClient({ divisions }: { divisions: any[] }) 
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchData();
+    // Realtime polling every 3 seconds
+    const interval = setInterval(() => {
+      fetchData(true);
+    }, 3000);
+    
+    return () => clearInterval(interval);
   }, [filterDivision]);
 
   const columns = [

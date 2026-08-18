@@ -7,16 +7,19 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request) {
   try {
     const session = await auth();
-    if (!session || session.user.role !== "super_admin") {
+    const u = session?.user as any;
+    if (!session || (u.role !== "SUPER_ADMIN" && u.realRole !== "super_admin")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const url = new URL(req.url);
     const limit = parseInt(url.searchParams.get("limit") || "50");
-    const divisionId = url.searchParams.get("divisionId");
+    let divisionId = url.searchParams.get("divisionId");
 
     const conditions = [];
-    if (divisionId) conditions.push(eq(activityLogs.divisionId, parseInt(divisionId)));
+    if (divisionId) {
+      conditions.push(eq(activityLogs.divisionId, parseInt(divisionId)));
+    }
 
     const queryWhere = conditions.length > 0 ? and(...conditions) : undefined;
 
