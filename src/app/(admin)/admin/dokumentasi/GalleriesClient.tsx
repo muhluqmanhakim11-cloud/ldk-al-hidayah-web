@@ -97,7 +97,11 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
             eventId: formData.eventId ? parseInt(formData.eventId) : null
           }),
         });
-        const result = await res.json();
+        
+        const textRes = await res.text();
+        let result;
+        try { result = JSON.parse(textRes); } catch(e) { result = { error: "Terjadi kesalahan server (Mungkin ukuran file terlalu besar)." } }
+        
         if (!res.ok) throw new Error(result.error || "Terjadi kesalahan");
       } else {
         // Create logic uses FormData
@@ -106,6 +110,14 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
         }
         if (uploadFiles.length > 3) {
           throw new Error("Maksimal 3 foto yang diizinkan.");
+        }
+        
+        let totalSize = 0;
+        for (let i = 0; i < uploadFiles.length; i++) {
+          totalSize += uploadFiles[i].size;
+        }
+        if (totalSize > 4 * 1024 * 1024) {
+          throw new Error("Total ukuran foto tidak boleh lebih dari 4MB (Batas maksimal server). Silakan kompres foto Anda terlebih dahulu.");
         }
 
         const form = new FormData();
@@ -123,7 +135,11 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
           method,
           body: form,
         });
-        const result = await res.json();
+        
+        const textRes = await res.text();
+        let result;
+        try { result = JSON.parse(textRes); } catch(e) { result = { error: res.status === 413 ? "Ukuran file terlalu besar (Maksimal 4MB total). Silakan kompres foto Anda." : "Terjadi kesalahan server." } }
+
         if (!res.ok) throw new Error(result.error || "Terjadi kesalahan");
       }
 
@@ -155,6 +171,16 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
     e.preventDefault();
     if (!uploadFiles || uploadFiles.length === 0) return;
 
+    let totalSize = 0;
+    for (let i = 0; i < uploadFiles.length; i++) {
+      totalSize += uploadFiles[i].size;
+    }
+    if (totalSize > 4 * 1024 * 1024) {
+      setError("Total ukuran foto tidak boleh lebih dari 4MB. Silakan kompres foto Anda terlebih dahulu.");
+      setUploading(false);
+      return;
+    }
+
     setUploading(true);
     setError("");
 
@@ -169,7 +195,10 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
         body: form,
       });
 
-      const result = await res.json();
+      const textRes = await res.text();
+      let result;
+      try { result = JSON.parse(textRes); } catch(e) { result = { error: res.status === 413 ? "Ukuran file terlalu besar (Maksimal 4MB total)." : "Terjadi kesalahan server." } }
+
       if (!res.ok) throw new Error(result.error || "Gagal mengunggah foto");
 
       setUploadFiles(null);
@@ -349,7 +378,7 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
 
           {!formData.id && (
             <div>
-              <label className="block text-sm font-medium mb-1">Upload Foto (Wajib, Maks 3 Foto, Maks 5MB/file)</label>
+              <label className="block text-sm font-medium mb-1">Upload Foto (Wajib, Maks 3 Foto, Total Maks 4MB)</label>
               <input 
                 type="file" multiple accept="image/*" 
                 onChange={(e) => {
