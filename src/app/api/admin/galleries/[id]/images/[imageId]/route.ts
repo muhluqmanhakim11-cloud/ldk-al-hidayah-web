@@ -4,6 +4,7 @@ import { galleries, galleryImages } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary";
+import { logActivity } from "@/lib/logger";
 
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string, imageId: string }> }) {
   try {
@@ -46,6 +47,15 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
 
     await db.delete(galleryImages).where(eq(galleryImages.id, imgId));
 
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "GALLERIES_[ID]_IMAGES_[IMAGEID]",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

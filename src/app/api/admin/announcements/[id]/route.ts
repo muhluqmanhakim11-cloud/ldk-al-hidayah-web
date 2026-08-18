@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { announcements } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { logActivity } from "@/lib/logger";
 
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -16,6 +17,15 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
 
     await db.delete(announcements).where(eq(announcements.id, announcementId));
 
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "ANNOUNCEMENTS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("DELETE announcement error:", error);

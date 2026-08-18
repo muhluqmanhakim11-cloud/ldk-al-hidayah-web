@@ -4,6 +4,7 @@ import { events, programs } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { logActivity } from "@/lib/logger";
 
 const eventSchema = z.object({
   name: z.string().min(1, "Nama kegiatan wajib diisi"),
@@ -31,7 +32,16 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     const body = await req.json();
     const parsed = eventSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json(
+      
+    try {
+      await logActivity({
+        action: "UPDATE",
+        entityType: "EVENTS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
+    return NextResponse.json(
         { success: false, message: 'Validasi gagal', errors: (parsed.error as any).errors.map((e: any) => e.message) },
         { status: 400 }
       );
@@ -82,6 +92,15 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       updatedAt: new Date()
     }).where(eq(events.id, id)).returning();
     
+    
+    try {
+      await logActivity({
+        action: "UPDATE",
+        entityType: "EVENTS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(updated);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -114,6 +133,15 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     }
 
     await db.delete(events).where(eq(events.id, id));
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "EVENTS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

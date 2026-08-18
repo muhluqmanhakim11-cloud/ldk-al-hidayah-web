@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import cloudinary from "@/lib/cloudinary";
+import { logActivity } from "@/lib/logger";
 
 const gallerySchema = z.object({
   title: z.string().min(1, "Judul galeri wajib diisi"),
@@ -28,7 +29,16 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     const body = await req.json();
     const parsed = gallerySchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json(
+      
+    try {
+      await logActivity({
+        action: "UPDATE",
+        entityType: "GALLERIES",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
+    return NextResponse.json(
         { success: false, message: 'Validasi gagal', errors: (parsed.error as any).errors.map((e: any) => e.message) },
         { status: 400 }
       );
@@ -66,6 +76,15 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     }
 
     const [updated] = await db.update(galleries).set({ ...validated, updatedAt: new Date() }).where(eq(galleries.id, id)).returning();
+    
+    try {
+      await logActivity({
+        action: "UPDATE",
+        entityType: "GALLERIES",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(updated);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -115,6 +134,15 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     }
 
     await db.delete(galleries).where(eq(galleries.id, id));
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "GALLERIES",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

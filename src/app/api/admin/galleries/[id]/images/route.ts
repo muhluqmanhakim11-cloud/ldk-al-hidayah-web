@@ -4,6 +4,7 @@ import { galleries, galleryImages } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary";
+import { logActivity } from "@/lib/logger";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -43,7 +44,16 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         return NextResponse.json({ error: `File ${file.name} bukan gambar` }, { status: 400 });
       }
       if (file.size > MAX_FILE_SIZE) {
-        return NextResponse.json({ error: `File ${file.name} terlalu besar (maks 5MB)` }, { status: 400 });
+        
+    try {
+      await logActivity({
+        action: "CREATE",
+        entityType: "GALLERIES_[ID]_IMAGES",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
+    return NextResponse.json({ error: `File ${file.name} terlalu besar (maks 5MB)` }, { status: 400 });
       }
 
       const buffer = Buffer.from(await file.arrayBuffer());
@@ -103,6 +113,15 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         .where(eq(galleries.id, galleryId));
     }
 
+    
+    try {
+      await logActivity({
+        action: "CREATE",
+        entityType: "GALLERIES_[ID]_IMAGES",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(uploadedImages, { status: 201 });
   } catch (error) {
     console.error(error);

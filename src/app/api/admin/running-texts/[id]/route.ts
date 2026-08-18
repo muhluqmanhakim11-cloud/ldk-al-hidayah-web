@@ -4,6 +4,7 @@ import { runningTexts } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { logActivity } from "@/lib/logger";
 
 const runningTextSchema = z.object({
   text: z.string().min(1, "Teks wajib diisi"),
@@ -37,6 +38,15 @@ export async function PATCH(req: Request, { params }: any) {
       return NextResponse.json({ error: "Running Text tidak ditemukan" }, { status: 404 });
     }
 
+    
+    try {
+      await logActivity({
+        action: "UPDATE",
+        entityType: "RUNNING_TEXTS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(updated);
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
@@ -59,6 +69,15 @@ export async function DELETE(req: Request, { params }: any) {
       return NextResponse.json({ error: "Running Text tidak ditemukan" }, { status: 404 });
     }
 
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "RUNNING_TEXTS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ message: "Berhasil dihapus" });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

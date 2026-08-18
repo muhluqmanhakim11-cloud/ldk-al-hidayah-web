@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { divisionNotes, users } from "@/db/schema";
 import { eq, desc, isNull } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { logActivity } from "@/lib/logger";
 
 export async function GET(req: Request) {
   try {
@@ -65,6 +66,15 @@ export async function POST(req: Request) {
       divisionId: null // Global / Ketua notes have no specific division
     }).returning();
     
+    
+    try {
+      await logActivity({
+        action: "CREATE",
+        entityType: "KETUA_CATATAN",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(newNote, { status: 201 });
   } catch (error: any) {
     console.error("POST ketua notes error:", error);

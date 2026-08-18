@@ -92,6 +92,7 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
   // General Menus
   const mainMenus = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard, show: true },
+    { name: "Riwayat Aktivitas", href: "/admin/log-aktivitas", icon: FileText, show: isSuperAdmin },
     { name: "Profil LDK", href: "/admin/profil", icon: Landmark, show: isSuperAdmin },
     { name: "Pengumuman & Instruksi", href: "/admin/pengumuman", icon: Megaphone, show: isSuperAdmin },
     { name: "Periode", href: "/admin/periode", icon: CalendarDays, show: isSuperAdmin },

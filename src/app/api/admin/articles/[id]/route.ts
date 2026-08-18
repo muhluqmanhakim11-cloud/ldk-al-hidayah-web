@@ -4,6 +4,7 @@ import { articles } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary";
+import { logActivity } from "@/lib/logger";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -47,7 +48,16 @@ export async function PATCH(req: Request, { params }: any) {
         return NextResponse.json({ error: "File cover harus berupa gambar" }, { status: 400 });
       }
       if (file.size > MAX_FILE_SIZE) {
-        return NextResponse.json({ error: "Ukuran gambar terlalu besar (maks 5MB)" }, { status: 400 });
+        
+    try {
+      await logActivity({
+        action: "UPDATE",
+        entityType: "ARTICLES",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
+    return NextResponse.json({ error: "Ukuran gambar terlalu besar (maks 5MB)" }, { status: 400 });
       }
       const buffer = Buffer.from(await file.arrayBuffer());
       const uploadResult: any = await new Promise((resolve, reject) => {
@@ -67,6 +77,15 @@ export async function PATCH(req: Request, { params }: any) {
       coverImage: coverImageUrl,
     }).where(eq(articles.id, id)).returning();
 
+    
+    try {
+      await logActivity({
+        action: "UPDATE",
+        entityType: "ARTICLES",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(updatedArticle);
   } catch (error) {
     console.error(error);
@@ -94,6 +113,15 @@ export async function DELETE(req: Request, { params }: any) {
     }
 
     const [deleted] = await db.delete(articles).where(eq(articles.id, id)).returning();
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "ARTICLES",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(deleted);
   } catch (error) {
     console.error(error);

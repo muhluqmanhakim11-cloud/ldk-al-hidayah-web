@@ -5,6 +5,7 @@ import { eq, and, ilike, desc } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import cloudinary from "@/lib/cloudinary";
+import { logActivity } from "@/lib/logger";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -168,6 +169,15 @@ export async function POST(req: Request) {
         await db.update(galleries).set({ coverImage: coverImageUrl }).where(eq(galleries.id, newGallery.id));
     }
 
+    
+    try {
+      await logActivity({
+        action: "CREATE",
+        entityType: "GALLERIES",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(newGallery, { status: 201 });
   } catch (error) {
     console.error(error);
@@ -181,6 +191,15 @@ export async function DELETE(req: Request) {
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     // Optional: Add strict role check here if needed, but we trust the route's existing auth
     await db.delete(galleries);
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "GALLERIES",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

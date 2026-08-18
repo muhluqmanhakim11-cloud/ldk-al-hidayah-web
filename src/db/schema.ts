@@ -538,3 +538,26 @@ export const pensosKunjunganTokoh = pgTable('pensos_kunjungan_tokoh', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
+
+// --- ACTIVITY LOGS ---
+export const activityLogs = pgTable('activity_logs', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id),
+  divisionId: integer('division_id').references(() => divisions.id),
+  action: varchar('action', { length: 50 }).notNull(), // CREATE, UPDATE, DELETE
+  entityType: varchar('entity_type', { length: 50 }).notNull(), // e.g., PROGRAM, EVENT, ARTICLE
+  entityName: varchar('entity_name', { length: 255 }).notNull(),
+  details: text('details'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const activityLogsRelations = relations(activityLogs, ({ one }) => ({
+  user: one(users, {
+    fields: [activityLogs.userId],
+    references: [users.id],
+  }),
+  division: one(divisions, {
+    fields: [activityLogs.divisionId],
+    references: [divisions.id],
+  }),
+}));

@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { users } from "@/db/schema";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { logActivity } from "@/lib/logger";
 
 export async function GET(req: Request) {
   try {
@@ -53,6 +54,15 @@ export async function POST(req: Request) {
       email: users.email
     });
     
+    
+    try {
+      await logActivity({
+        action: "CREATE",
+        entityType: "USERS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(newUser, { status: 201 });
   } catch (error: any) {
     console.error("POST users error:", error);
@@ -69,6 +79,15 @@ export async function DELETE(req: Request) {
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     // Optional: Add strict role check here if needed, but we trust the route's existing auth
     await db.delete(users);
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "USERS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

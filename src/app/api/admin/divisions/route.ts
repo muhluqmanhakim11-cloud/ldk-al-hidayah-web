@@ -4,6 +4,7 @@ import { divisions } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { logActivity } from "@/lib/logger";
 
 const divisionSchema = z.object({
   periodId: z.coerce.number().min(1, "Periode harus dipilih"),
@@ -44,7 +45,16 @@ export async function POST(req: Request) {
     const body = await req.json();
     const parsed = divisionSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json(
+      
+    try {
+      await logActivity({
+        action: "CREATE",
+        entityType: "DIVISIONS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
+    return NextResponse.json(
         { success: false, message: 'Validasi gagal', errors: (parsed.error as any).errors.map((e: any) => e.message) },
         { status: 400 }
       );
@@ -58,6 +68,15 @@ export async function POST(req: Request) {
     }
 
     const [newDivision] = await db.insert(divisions).values(validated).returning();
+    
+    try {
+      await logActivity({
+        action: "CREATE",
+        entityType: "DIVISIONS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(newDivision, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -73,6 +92,15 @@ export async function DELETE(req: Request) {
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     // Optional: Add strict role check here if needed, but we trust the route's existing auth
     await db.delete(divisions);
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "DIVISIONS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

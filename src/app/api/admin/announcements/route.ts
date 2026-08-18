@@ -4,6 +4,7 @@ import { announcements } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { logActivity } from "@/lib/logger";
 
 const announcementSchema = z.object({
   title: z.string().min(1, "Judul wajib diisi"),
@@ -39,7 +40,16 @@ export async function POST(req: Request) {
     const body = await req.json();
     const parsed = announcementSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json(
+      
+    try {
+      await logActivity({
+        action: "CREATE",
+        entityType: "ANNOUNCEMENTS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
+    return NextResponse.json(
         { success: false, message: 'Validasi gagal', errors: (parsed.error as any).errors.map((e: any) => e.message) },
         { status: 400 }
       );
@@ -50,6 +60,15 @@ export async function POST(req: Request) {
       createdBy: parseInt(session.user.id),
     }).returning();
 
+    
+    try {
+      await logActivity({
+        action: "CREATE",
+        entityType: "ANNOUNCEMENTS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(newAnnouncement, { status: 201 });
   } catch (error) {
     console.error("Announcement Creation Error:", error);
@@ -63,6 +82,15 @@ export async function DELETE(req: Request) {
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     // Optional: Add strict role check here if needed, but we trust the route's existing auth
     await db.delete(announcements);
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "ANNOUNCEMENTS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

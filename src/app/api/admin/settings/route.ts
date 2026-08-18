@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { siteSettings } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
+import { logActivity } from "@/lib/logger";
 
 export async function GET() {
   try {
@@ -88,6 +89,15 @@ export async function DELETE(req: Request) {
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     // Optional: Add strict role check here if needed, but we trust the route's existing auth
     await db.delete(siteSettings);
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "SETTINGS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

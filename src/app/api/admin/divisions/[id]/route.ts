@@ -4,6 +4,7 @@ import { divisions, members } from "@/db/schema";
 import { eq, and, ne } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { logActivity } from "@/lib/logger";
 
 const divisionSchema = z.object({
   periodId: z.coerce.number().min(1, "Periode harus dipilih"),
@@ -26,7 +27,16 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     const body = await req.json();
     const parsed = divisionSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json(
+      
+    try {
+      await logActivity({
+        action: "UPDATE",
+        entityType: "DIVISIONS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
+    return NextResponse.json(
         { success: false, message: 'Validasi gagal', errors: (parsed.error as any).errors.map((e: any) => e.message) },
         { status: 400 }
       );
@@ -41,6 +51,15 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     }
 
     const [updated] = await db.update(divisions).set(validated).where(eq(divisions.id, id)).returning();
+    
+    try {
+      await logActivity({
+        action: "UPDATE",
+        entityType: "DIVISIONS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(updated);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -69,6 +88,15 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     }
 
     await db.delete(divisions).where(eq(divisions.id, id));
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "DIVISIONS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

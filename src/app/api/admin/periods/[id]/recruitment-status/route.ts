@@ -4,6 +4,7 @@ import { periods } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { auth } from "@/auth";
+import { logActivity } from "@/lib/logger";
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -33,7 +34,16 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
     const parsed = schema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json(
+      
+    try {
+      await logActivity({
+        action: "UPDATE",
+        entityType: "PERIODS_[ID]_RECRUITMENT_STATUS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
+    return NextResponse.json(
         { success: false, message: "Validasi gagal", errors: (parsed.error as any).errors.map((e: any) => e.message) },
         { status: 400 }
       );
@@ -52,6 +62,15 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       .where(eq(periods.id, periodId))
       .returning();
 
+    
+    try {
+      await logActivity({
+        action: "UPDATE",
+        entityType: "PERIODS_[ID]_RECRUITMENT_STATUS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({
       success: true,
       message: `Pendaftaran rekrutmen berhasil ${parsed.data.isOpen ? 'dibuka' : 'ditutup'}.`,

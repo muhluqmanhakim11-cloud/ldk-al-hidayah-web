@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { divisionNotes, users, divisions } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { logActivity } from "@/lib/logger";
 
 export async function GET(req: Request) {
   try {
@@ -65,6 +66,15 @@ export async function POST(req: Request) {
       divisionId: divId
     }).returning();
     
+    
+    try {
+      await logActivity({
+        action: "CREATE",
+        entityType: "KOMINFO_CATATAN",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(newNote, { status: 201 });
   } catch (error: any) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
@@ -77,6 +87,15 @@ export async function DELETE(req: Request) {
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     // Optional: Add strict role check here if needed, but we trust the route's existing auth
     await db.delete(divisionNotes);
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "KOMINFO_CATATAN",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

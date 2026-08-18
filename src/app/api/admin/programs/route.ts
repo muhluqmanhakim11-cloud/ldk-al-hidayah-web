@@ -4,6 +4,7 @@ import { programs } from "@/db/schema";
 import { eq, and, or, ilike, desc } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { logActivity } from "@/lib/logger";
 
 const programSchema = z.object({
   name: z.string().min(1, "Nama program wajib diisi"),
@@ -76,7 +77,16 @@ export async function POST(req: Request) {
     const body = await req.json();
     const parsed = programSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json(
+      
+    try {
+      await logActivity({
+        action: "CREATE",
+        entityType: "PROGRAMS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
+    return NextResponse.json(
         { success: false, message: 'Validasi gagal', errors: (parsed.error as any).errors.map((e: any) => e.message) },
         { status: 400 }
       );
@@ -97,6 +107,15 @@ export async function POST(req: Request) {
     }
 
     const [newProgram] = await db.insert(programs).values(validated).returning();
+    
+    try {
+      await logActivity({
+        action: "CREATE",
+        entityType: "PROGRAMS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(newProgram, { status: 201 });
   } catch (error: any) {
     console.error("Program Creation Error:", error);
@@ -117,6 +136,15 @@ export async function DELETE(req: Request) {
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     // Optional: Add strict role check here if needed, but we trust the route's existing auth
     await db.delete(programs);
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "PROGRAMS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

@@ -4,6 +4,7 @@ import { programs, events } from "@/db/schema";
 import { eq, and, ne } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { logActivity } from "@/lib/logger";
 
 const programSchema = z.object({
   name: z.string().min(1, "Nama program wajib diisi"),
@@ -29,7 +30,16 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     const body = await req.json();
     const parsed = programSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json(
+      
+    try {
+      await logActivity({
+        action: "UPDATE",
+        entityType: "PROGRAMS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
+    return NextResponse.json(
         { success: false, message: 'Validasi gagal', errors: (parsed.error as any).errors.map((e: any) => e.message) },
         { status: 400 }
       );
@@ -62,6 +72,15 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     }
 
     const [updated] = await db.update(programs).set({ ...validated, updatedAt: new Date() }).where(eq(programs.id, id)).returning();
+    
+    try {
+      await logActivity({
+        action: "UPDATE",
+        entityType: "PROGRAMS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(updated);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -100,6 +119,15 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     }
 
     await db.delete(programs).where(eq(programs.id, id));
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "PROGRAMS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

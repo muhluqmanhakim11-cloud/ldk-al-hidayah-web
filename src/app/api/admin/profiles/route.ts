@@ -4,6 +4,7 @@ import { profiles } from "@/db/schema";
 import { asc } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { logActivity } from "@/lib/logger";
 
 const profileSchema = z.object({
   title: z.string().min(1, "Judul wajib diisi"),
@@ -38,6 +39,15 @@ export async function POST(req: Request) {
     }
 
     const [newProfile] = await db.insert(profiles).values(parsed.data).returning();
+    
+    try {
+      await logActivity({
+        action: "CREATE",
+        entityType: "PROFILES",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(newProfile, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
@@ -50,6 +60,15 @@ export async function DELETE(req: Request) {
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     // Optional: Add strict role check here if needed, but we trust the route's existing auth
     await db.delete(profiles);
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "PROFILES",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

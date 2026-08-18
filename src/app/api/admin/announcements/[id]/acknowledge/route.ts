@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { db } from "@/db";
 import { announcementAcknowledgments } from "@/db/schema";
 import { NextResponse } from "next/server";
+import { logActivity } from "@/lib/logger";
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -32,6 +33,15 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       }
     }).returning();
 
+    
+    try {
+      await logActivity({
+        action: "CREATE",
+        entityType: "ANNOUNCEMENTS_[ID]_ACKNOWLEDGE",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(ack, { status: 200 });
   } catch (error) {
     console.error("Acknowledge Error:", error);

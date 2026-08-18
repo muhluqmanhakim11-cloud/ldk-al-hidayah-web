@@ -4,6 +4,7 @@ import { runningTexts } from "@/db/schema";
 import { asc } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { logActivity } from "@/lib/logger";
 
 const runningTextSchema = z.object({
   text: z.string().min(1, "Teks wajib diisi"),
@@ -36,6 +37,15 @@ export async function POST(req: Request) {
     }
 
     const [newItem] = await db.insert(runningTexts).values(parsed.data).returning();
+    
+    try {
+      await logActivity({
+        action: "CREATE",
+        entityType: "RUNNING_TEXTS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(newItem, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
@@ -48,6 +58,15 @@ export async function DELETE(req: Request) {
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     // Optional: Add strict role check here if needed, but we trust the route's existing auth
     await db.delete(runningTexts);
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "RUNNING_TEXTS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { kaderMentoringAbsensi } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { logActivity } from "@/lib/logger";
 
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -14,6 +15,15 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     const { id } = await params;
     await db.delete(kaderMentoringAbsensi).where(eq(kaderMentoringAbsensi.id, parseInt(id)));
     
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "KADERISASI_ABSENSI",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("DELETE error:", error);

@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { seniOlahragaAgenda } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { logActivity } from "@/lib/logger";
 
 export async function GET(req: Request) {
   try {
@@ -29,6 +30,15 @@ export async function POST(req: Request) {
     const body = await req.json();
     const [newData] = await db.insert(seniOlahragaAgenda).values(body).returning();
     
+    
+    try {
+      await logActivity({
+        action: "CREATE",
+        entityType: "SENI_OLAHRAGA_AGENDA",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(newData, { status: 201 });
   } catch (error) {
     console.error("POST error:", error);
@@ -42,6 +52,15 @@ export async function DELETE(req: Request) {
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     // Optional: Add strict role check here if needed, but we trust the route's existing auth
     await db.delete(seniOlahragaAgenda);
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "SENI_OLAHRAGA_AGENDA",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

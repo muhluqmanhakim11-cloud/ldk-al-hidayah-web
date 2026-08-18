@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { divisionNotes } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { logActivity } from "@/lib/logger";
 
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -25,6 +26,15 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     }
 
     await db.delete(divisionNotes).where(eq(divisionNotes.id, noteId));
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "KADERISASI_CATATAN",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

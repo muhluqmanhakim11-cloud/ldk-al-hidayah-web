@@ -4,6 +4,7 @@ import { periods, divisions, members } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { logActivity } from "@/lib/logger";
 
 const periodSchema = z.object({
   name: z.string().min(1, "Nama periode wajib diisi"),
@@ -23,7 +24,16 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     const body = await req.json();
     const parsed = periodSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json(
+      
+    try {
+      await logActivity({
+        action: "UPDATE",
+        entityType: "PERIODS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
+    return NextResponse.json(
         { success: false, message: 'Validasi gagal', errors: (parsed.error as any).errors.map((e: any) => e.message) },
         { status: 400 }
       );
@@ -35,6 +45,15 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     }
 
     const [updated] = await db.update(periods).set(validated).where(eq(periods.id, id)).returning();
+    
+    try {
+      await logActivity({
+        action: "UPDATE",
+        entityType: "PERIODS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(updated);
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
@@ -61,6 +80,15 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     }
 
     await db.delete(periods).where(eq(periods.id, id));
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "PERIODS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

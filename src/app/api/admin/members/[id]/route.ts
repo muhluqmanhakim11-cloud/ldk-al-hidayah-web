@@ -4,6 +4,7 @@ import { members } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { logActivity } from "@/lib/logger";
 
 const memberSchema = z.object({
   periodId: z.coerce.number().min(1, "Periode harus dipilih"),
@@ -32,7 +33,16 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     const body = await req.json();
     const parsed = memberSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json(
+      
+    try {
+      await logActivity({
+        action: "UPDATE",
+        entityType: "MEMBERS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
+    return NextResponse.json(
         { success: false, message: 'Validasi gagal', errors: (parsed.error as any).errors.map((e: any) => e.message) },
         { status: 400 }
       );
@@ -56,6 +66,15 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     }
 
     const [updated] = await db.update(members).set(validated).where(eq(members.id, id)).returning();
+    
+    try {
+      await logActivity({
+        action: "UPDATE",
+        entityType: "MEMBERS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json(updated);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -87,6 +106,15 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     }
 
     await db.delete(members).where(eq(members.id, id));
+    
+    try {
+      await logActivity({
+        action: "DELETE",
+        entityType: "MEMBERS",
+        entityName: "Data",
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
