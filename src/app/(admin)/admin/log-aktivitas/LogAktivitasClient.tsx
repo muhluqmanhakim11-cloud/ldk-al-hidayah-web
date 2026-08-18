@@ -92,7 +92,7 @@ export default function LogAktivitasClient({ divisions }: { divisions: any[] }) 
             ))}
           </select>
           <button 
-            onClick={fetchData}
+            onClick={() => fetchData(false)}
             className="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors"
           >
             Refresh
