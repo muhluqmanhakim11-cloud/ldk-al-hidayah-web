@@ -81,10 +81,10 @@ export default function JabatanClient({ initialData, userRole }: { initialData: 
   return (
     <div>
       {isSuperAdmin && (
-        <div className="mb-4">
+        <div className="mb-5 flex justify-end">
           <button 
             onClick={() => { setFormData({ id: 0, name: "", level: 0 }); setIsModalOpen(true); }}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 active:bg-blue-800 transition-colors shadow-sm w-full sm:w-auto"
           >
             + Tambah Jabatan
           </button>
@@ -100,21 +100,23 @@ export default function JabatanClient({ initialData, userRole }: { initialData: 
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={formData.id ? "Edit Jabatan" : "Tambah Jabatan"}>
         <form onSubmit={handleSubmit} className="space-y-4 text-black">
-          {error && <div className="text-red-500 text-sm bg-red-50 p-2 rounded">{error}</div>}
+          {error && <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg border border-red-100">{error}</div>}
           
           <div>
-            <label className="block text-sm font-medium mb-1">Nama Jabatan</label>
-            <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full border rounded px-3 py-2" />
+            <label className="block text-sm font-medium mb-1.5 text-gray-700">Nama Jabatan</label>
+            <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="Contoh: Ketua, Sekretaris" />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Level (Order Hierarki)</label>
-            <input type="number" required value={formData.level} onChange={e => setFormData({...formData, level: parseInt(e.target.value)})} className="w-full border rounded px-3 py-2" />
-            <p className="text-xs text-gray-500 mt-1">Makin kecil angkanya, makin tinggi jabatannya (contoh: 1 = Pembina, 2 = Ketua).</p>
+            <label className="block text-sm font-medium mb-1.5 text-gray-700">Level (Order Hierarki)</label>
+            <input type="number" required value={formData.level} onChange={e => setFormData({...formData, level: parseInt(e.target.value)})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+            <p className="text-xs text-gray-500 mt-2 bg-gray-50 p-2 rounded border border-gray-100">💡 Makin kecil angkanya, makin tinggi jabatannya (contoh: 1 = Pembina, 2 = Ketua).</p>
           </div>
           
-          <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white py-2 rounded">
-            {loading ? "Menyimpan..." : "Simpan"}
-          </button>
+          <div className="pt-4 border-t mt-4">
+            <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+              {loading ? "Menyimpan..." : "Simpan Jabatan"}
+            </button>
+          </div>
         </form>
       </Modal>
     </div>

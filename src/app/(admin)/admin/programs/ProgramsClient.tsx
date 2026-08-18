@@ -114,26 +114,26 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <div className="bg-white p-4 rounded-lg shadow-sm border flex flex-wrap gap-4 items-center justify-between">
-        <div className="flex flex-wrap gap-4">
+      <div className="bg-white p-4 md:p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col lg:flex-row gap-4 lg:items-center justify-between">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-row gap-3 lg:gap-4 w-full lg:w-auto">
           <input 
             type="text" placeholder="Cari program..." 
-            className="border rounded px-3 py-2 text-sm"
+            className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full lg:w-48 transition-all"
             value={search} onChange={e => setSearch(e.target.value)}
           />
-          <select className="border rounded px-3 py-2 text-sm" value={filterPeriod} onChange={e => setFilterPeriod(e.target.value)}>
+          <select className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full lg:w-auto bg-white transition-all" value={filterPeriod} onChange={e => setFilterPeriod(e.target.value)}>
             <option value="">Semua Periode</option>
             {periods.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
           </select>
           <select 
-            className="border rounded px-3 py-2 text-sm" 
+            className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full lg:w-auto bg-white transition-all disabled:bg-gray-50" 
             value={filterDivision} onChange={e => setFilterDivision(e.target.value)}
             disabled={userRole === "ADMIN_BIDANG"}
           >
             <option value="">Semua Bidang</option>
             {availableDivisions.map((d: any) => <option key={d.id} value={d.id}>{d.name}</option>)}
           </select>
-          <select className="border rounded px-3 py-2 text-sm" value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+          <select className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full lg:w-auto bg-white transition-all" value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
             <option value="">Semua Status</option>
             <option value="DRAFT">DRAFT</option>
             <option value="PUBLISHED">PUBLISHED</option>
@@ -145,7 +145,7 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
         {!isReadOnly && (
           <button 
             onClick={() => { setFormData({ id: 0, name: "", slug: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", description: "", objective: "", schedule: "", status: "PUBLISHED" }); setIsModalOpen(true); }}
-            className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700 whitespace-nowrap"
+            className="bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 active:bg-blue-800 transition-colors whitespace-nowrap shadow-sm w-full lg:w-auto"
           >
             + Tambah Program
           </button>
@@ -174,16 +174,16 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
         <form onSubmit={handleSubmit} className="space-y-4 text-black">
           {error && <div className="text-red-500 text-sm bg-red-50 p-2 rounded">{error}</div>}
           
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Periode</label>
-              <select required value={formData.periodId} onChange={e => setFormData({...formData, periodId: parseInt(e.target.value)})} className="w-full border rounded px-3 py-2">
+              <label className="block text-sm font-medium mb-1.5 text-gray-700">Periode</label>
+              <select required value={formData.periodId} onChange={e => setFormData({...formData, periodId: parseInt(e.target.value)})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
                 <option value="">Pilih Periode</option>
                 {periods.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Bidang / Divisi</label>
+              <label className="block text-sm font-medium mb-1.5 text-gray-700">Bidang / Divisi</label>
               <select 
                 required 
                 value={formData.divisionId} 
@@ -197,38 +197,40 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
             </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Nama Program</label>
-              <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full border rounded px-3 py-2" />
+              <label className="block text-sm font-medium mb-1.5 text-gray-700">Nama Program</label>
+              <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Slug (Opsional)</label>
-              <input type="text" value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} className="w-full border rounded px-3 py-2" placeholder="contoh: program-1" />
+              <label className="block text-sm font-medium mb-1.5 text-gray-700">Slug (Opsional)</label>
+              <input type="text" value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="contoh: program-1" />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Tujuan</label>
-            <input type="text" value={formData.objective} onChange={e => setFormData({...formData, objective: e.target.value})} className="w-full border rounded px-3 py-2" />
+            <label className="block text-sm font-medium mb-1.5 text-gray-700">Tujuan</label>
+            <input type="text" value={formData.objective} onChange={e => setFormData({...formData, objective: e.target.value})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Deskripsi Singkat</label>
-            <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full border rounded px-3 py-2" rows={2}></textarea>
+            <label className="block text-sm font-medium mb-1.5 text-gray-700">Deskripsi Singkat</label>
+            <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none" rows={3}></textarea>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Jadwal (Contoh: Setiap Bulan)</label>
-              <input type="text" value={formData.schedule} onChange={e => setFormData({...formData, schedule: e.target.value})} className="w-full border rounded px-3 py-2" />
+              <label className="block text-sm font-medium mb-1.5 text-gray-700">Jadwal (Contoh: Setiap Bulan)</label>
+              <input type="text" value={formData.schedule} onChange={e => setFormData({...formData, schedule: e.target.value})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
             </div>
 
           </div>
           
-          <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white py-2 rounded">
-            {loading ? "Menyimpan..." : "Simpan"}
-          </button>
+          <div className="pt-4 border-t mt-4">
+            <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+              {loading ? "Menyimpan..." : "Simpan Program"}
+            </button>
+          </div>
         </form>
       </Modal>
     </div>
