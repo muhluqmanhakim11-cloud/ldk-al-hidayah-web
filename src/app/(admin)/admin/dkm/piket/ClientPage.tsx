@@ -115,24 +115,24 @@ export default function ClientPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Piket Kebersihan</h1>
           <p className="text-gray-500 mt-1">Kelola data piket kebersihan</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           
           <button
             onClick={handleDeleteAll}
-            className="bg-red-50 hover:bg-red-100 text-red-600 px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-sm font-medium"
+            className="bg-red-50 hover:bg-red-100 text-red-600 px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm font-medium flex-1 sm:flex-none"
           >
-            <Trash2 size={20} /> Hapus Semua
+            <Trash2 size={20} /> <span className="whitespace-nowrap">Hapus Semua</span>
           </button>
-<button
+          <button
             onClick={() => setIsFormOpen(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-sm"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm flex-1 sm:flex-none"
           >
-            <Plus size={20} /> Tambah Data
+            <Plus size={20} /> <span className="whitespace-nowrap">Tambah Data</span>
           </button>
         </div>
       </div>
