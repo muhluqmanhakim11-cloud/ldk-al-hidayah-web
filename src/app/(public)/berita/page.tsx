@@ -18,7 +18,7 @@ export default async function BeritaPage() {
   });
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-20">
+    <div className="bg-gray-50 dark:bg-slate-950 min-h-screen pb-20">
       <div className="bg-green-800 text-white pt-32 pb-16 md:pt-40 md:pb-24">
         <div className="container mx-auto px-4 lg:px-8 text-center">
           <h1 className="text-3xl md:text-5xl font-bold mb-4">Berita & Artikel</h1>
@@ -30,8 +30,8 @@ export default async function BeritaPage() {
         {publishedArticles.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {publishedArticles.map(article => (
-              <Link href={`/berita/${article.slug}`} key={article.id} className="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col">
-                <div className="relative h-56 bg-gray-200 w-full overflow-hidden">
+              <Link href={`/berita/${article.slug}`} key={article.id} className="bg-white dark:bg-slate-900 border rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col">
+                <div className="relative h-56 bg-gray-200 dark:bg-slate-700 w-full overflow-hidden">
                   {article.coverImage ? (
                     <Image 
                       src={article.coverImage} 
@@ -50,17 +50,17 @@ export default async function BeritaPage() {
                   )}
                 </div>
                 <div className="p-6 flex-grow flex flex-col">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-green-700 transition-colors line-clamp-2">{article.title}</h3>
-                  <div className="text-sm text-gray-600 line-clamp-3 mb-4" dangerouslySetInnerHTML={{ __html: (article.content || "").substring(0, 150) + "..." }} />
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 group-hover:text-green-700 dark:text-green-400 transition-colors line-clamp-2">{article.title}</h3>
+                  <div className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 mb-4" dangerouslySetInnerHTML={{ __html: (article.content || "").substring(0, 150) + "..." }} />
                   
-                  <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
+                  <div className="mt-auto pt-4 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between">
                     <div className="flex items-center">
-                      <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-xs mr-3">
+                      <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 dark:text-green-400 font-bold text-xs mr-3">
                         {article.author?.name ? article.author.name.charAt(0) : 'A'}
                       </div>
                       <div className="text-xs">
-                        <p className="font-medium text-gray-900">{article.author?.name || 'Admin'}</p>
-                        <p className="text-gray-500">{article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' }) : '-'}</p>
+                        <p className="font-medium text-gray-900 dark:text-gray-100">{article.author?.name || 'Admin'}</p>
+                        <p className="text-gray-500 dark:text-gray-400">{article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' }) : '-'}</p>
                       </div>
                     </div>
                   </div>
@@ -69,12 +69,12 @@ export default async function BeritaPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center p-12 bg-white border border-dashed rounded-xl shadow-sm">
+          <div className="text-center p-12 bg-white dark:bg-slate-900 border border-dashed rounded-xl shadow-sm">
             <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
             </svg>
-            <h3 className="text-lg font-medium text-gray-900">Belum ada artikel</h3>
-            <p className="mt-1 text-gray-500">Belum ada tulisan atau berita yang dipublikasikan.</p>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Belum ada artikel</h3>
+            <p className="mt-1 text-gray-500 dark:text-gray-400">Belum ada tulisan atau berita yang dipublikasikan.</p>
           </div>
         )}
       </div>

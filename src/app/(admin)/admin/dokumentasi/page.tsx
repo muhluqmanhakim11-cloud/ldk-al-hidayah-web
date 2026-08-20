@@ -29,8 +29,8 @@ export default async function GalleriesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dokumentasi & Galeri</h1>
-          <p className="text-gray-500">Kelola dokumentasi LDK berdasarkan kegiatan</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Dokumentasi & Galeri</h1>
+          <p className="text-gray-500 dark:text-gray-400">Kelola dokumentasi LDK berdasarkan kegiatan</p>
         </div>
       </div>
       <GalleriesClient 

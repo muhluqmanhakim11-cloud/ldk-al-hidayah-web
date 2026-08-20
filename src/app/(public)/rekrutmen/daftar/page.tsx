@@ -26,7 +26,7 @@ export default async function RecruitmentDaftarPage() {
   });
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-20 pt-10">
+    <div className="bg-gray-50 dark:bg-slate-950 min-h-screen pb-20 pt-10">
       <div className="container mx-auto px-4 lg:px-8">
         <RecruitmentForm divisions={activeDivisions} />
       </div>

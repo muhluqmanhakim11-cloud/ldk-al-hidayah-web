@@ -5,14 +5,14 @@ export const confirmDialog = (message: string): Promise<boolean> => {
     toast(
       (t) => (
         <div className= "flex flex-col gap-3 p-1 min-w-[250px]" >
-        <p className="font-medium text-gray-900" > { message } </p>
+        <p className="font-medium text-gray-900 dark:text-gray-100" > { message } </p>
     < div className = "flex justify-end gap-2 mt-2" >
     <button
               onClick={() => {
   toast.dismiss(t.id);
   resolve(false);
 }}
-className = "px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+className = "px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:bg-slate-700 rounded-md transition-colors"
   >
   Batal
   </button>

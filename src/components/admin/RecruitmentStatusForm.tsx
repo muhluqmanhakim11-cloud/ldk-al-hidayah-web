@@ -46,11 +46,11 @@ export default function RecruitmentStatusForm({ recruitmentId, currentStatus, us
   const isAdminBidang = userRole === "ADMIN_BIDANG";
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border h-full">
-      <h3 className="font-bold text-gray-900 mb-4 pb-2 border-b">Ubah Status</h3>
+    <div className="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border h-full">
+      <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 pb-2 border-b">Ubah Status</h3>
       
       {error && (
-        <div className="bg-red-50 text-red-600 text-sm p-3 rounded-md mb-4 border border-red-200">
+        <div className="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm p-3 rounded-md mb-4 border border-red-200">
           {error}
         </div>
       )}
@@ -87,7 +87,7 @@ export default function RecruitmentStatusForm({ recruitmentId, currentStatus, us
         )}
 
         {isAdminBidang && (
-           <div className="text-sm text-gray-500 mt-2 p-3 bg-gray-50 rounded-md border border-dashed">
+           <div className="text-sm text-gray-500 dark:text-gray-400 mt-2 p-3 bg-gray-50 dark:bg-slate-950 rounded-md border border-dashed">
              Admin Bidang hanya dapat merubah status menjadi REVIEWED.
            </div>
         )}

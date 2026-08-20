@@ -17,7 +17,7 @@ export default async function ProfilPage() {
   });
 
   return (
-    <div className="bg-white pb-20">
+    <div className="bg-white dark:bg-slate-900 pb-20">
       {/* Page Header */}
       <div className="bg-green-800 text-white pt-32 pb-16 md:pt-40 md:pb-24">
         <div className="container mx-auto px-4 lg:px-8 text-center">
@@ -27,23 +27,23 @@ export default async function ProfilPage() {
       </div>
 
       <div className="container mx-auto px-4 lg:px-8 mt-12 md:mt-16">
-        <div className="max-w-4xl mx-auto space-y-12 text-gray-700 leading-relaxed text-lg">
+        <div className="max-w-4xl mx-auto space-y-12 text-gray-700 dark:text-gray-300 leading-relaxed text-lg">
           
           {profileSections.length === 0 ? (
-            <div className="text-center text-gray-500 py-10">
+            <div className="text-center text-gray-500 dark:text-gray-400 py-10">
               Belum ada informasi profil yang dipublikasikan.
             </div>
           ) : (
             profileSections.map((section) => (
               <section key={section.id}>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b pb-2">{section.title}</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 border-b pb-2">{section.title}</h2>
                 {section.imageUrl && (
                   <div className="mb-6 flex justify-center">
                     <img src={section.imageUrl} alt={section.title} className="max-w-full h-auto max-h-64 object-contain rounded-lg shadow-sm" />
                   </div>
                 )}
                 <div 
-                  className="prose max-w-none text-gray-700 whitespace-pre-wrap"
+                  className="prose max-w-none text-gray-700 dark:text-gray-300 whitespace-pre-wrap"
                   dangerouslySetInnerHTML={{ __html: section.content }}
                 />
               </section>

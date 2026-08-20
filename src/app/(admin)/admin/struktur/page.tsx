@@ -35,15 +35,15 @@ export default async function StrukturPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Struktur Organisasi</h1>
-          <p className="text-gray-500">Bagan pengurus LDK Al-Hidayah periode aktif ({activePeriod?.name || "Belum ada periode aktif"})</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Struktur Organisasi</h1>
+          <p className="text-gray-500 dark:text-gray-400">Bagan pengurus LDK Al-Hidayah periode aktif ({activePeriod?.name || "Belum ada periode aktif"})</p>
         </div>
       </div>
       
       {activePeriod ? (
         <StrukturClient members={allMembers} divisions={allDivisions} positions={positions} />
       ) : (
-        <div className="p-8 text-center text-gray-500 bg-white border rounded-lg shadow-sm">
+        <div className="p-8 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-slate-900 border rounded-lg shadow-sm">
           Harap aktifkan salah satu periode terlebih dahulu di menu Periode.
         </div>
       )}
