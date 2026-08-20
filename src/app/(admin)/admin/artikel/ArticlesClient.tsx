@@ -57,14 +57,14 @@ export default function ArticlesClient({ divisions, userRole, userDivisionId }: 
         <div className="relative w-16 h-12 rounded overflow-hidden">
           <Image src={row.coverImage} alt={row.title} fill className="object-cover" />
         </div> : 
-        <div className="w-16 h-12 bg-gray-100 dark:bg-slate-800 rounded flex items-center justify-center text-xs text-gray-400">No Image</div>
+        <div className="w-16 h-12 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-400">No Image</div>
     },
     { 
       header: "Judul", 
       accessor: (row: any) => (
         <div>
-          <p className="font-medium text-gray-900 dark:text-gray-100">{row.title}</p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">Oleh: {row.author?.name} • {new Date(row.createdAt).toLocaleDateString("id-ID")}</p>
+          <p className="font-medium text-gray-900">{row.title}</p>
+          <p className="text-xs text-gray-500">Oleh: {row.author?.name} • {new Date(row.createdAt).toLocaleDateString("id-ID")}</p>
         </div>
       )
     },
@@ -72,7 +72,7 @@ export default function ArticlesClient({ divisions, userRole, userDivisionId }: 
     { 
       header: "Status", 
       accessor: (row: any) => (
-        <span className="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-700 dark:text-green-400">
+        <span className="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-700">
           PUBLISHED
         </span>
       )
@@ -134,7 +134,7 @@ export default function ArticlesClient({ divisions, userRole, userDivisionId }: 
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <div className="bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border flex flex-wrap gap-4 items-center justify-between">
+      <div className="bg-white p-4 rounded-lg shadow-sm border flex flex-wrap gap-4 items-center justify-between">
         <div className="flex flex-wrap gap-4">
           <input 
             type="text" placeholder="Cari artikel..." 
@@ -166,7 +166,7 @@ export default function ArticlesClient({ divisions, userRole, userDivisionId }: 
       </div>
 
       {fetchLoading ? (
-        <div className="p-8 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-slate-900 border rounded-lg shadow-sm">Loading data...</div>
+        <div className="p-8 text-center text-gray-500 bg-white border rounded-lg shadow-sm">Loading data...</div>
       ) : (
         <DataTable 
           data={data} 
@@ -183,7 +183,7 @@ export default function ArticlesClient({ divisions, userRole, userDivisionId }: 
       {/* CRUD Modal */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={formData.id ? "Edit Artikel" : "Buat Artikel Baru"}>
         <form onSubmit={handleSubmit} className="space-y-4 text-black">
-          {error && <div className="text-red-500 text-sm bg-red-50 dark:bg-red-900/30 p-2 rounded">{error}</div>}
+          {error && <div className="text-red-500 text-sm bg-red-50 p-2 rounded">{error}</div>}
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-4">
@@ -202,14 +202,14 @@ export default function ArticlesClient({ divisions, userRole, userDivisionId }: 
                   <option value="">Umum (LDK)</option>
                   {availableDivisions.map((d: any) => <option key={d.id} value={d.id}>{d.name}</option>)}
                 </select>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Pilih "Umum" jika ini adalah berita LDK pusat.</p>
+                <p className="text-xs text-gray-500 mt-1">Pilih "Umum" jika ini adalah berita LDK pusat.</p>
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Gambar Cover (Opsional)</label>
                 <input 
                   type="file" accept="image/*" 
                   onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
-                  className="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 dark:bg-blue-900/30 file:text-blue-700 dark:text-blue-400 hover:file:bg-blue-100"
+                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                 />
               </div>
             </div>
@@ -226,7 +226,7 @@ export default function ArticlesClient({ divisions, userRole, userDivisionId }: 
             </div>
           </div>
           
-          <div className="pt-4 border-t border-gray-100 dark:border-slate-800 flex justify-end">
+          <div className="pt-4 border-t border-gray-100 flex justify-end">
             <button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-medium transition-colors">
               {loading ? "Menyimpan..." : (formData.id ? "Simpan Perubahan" : "Publish Artikel")}
             </button>

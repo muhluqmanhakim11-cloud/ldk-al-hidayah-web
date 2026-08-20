@@ -110,16 +110,16 @@ export default function RunningTextClient() {
 
   if (loading) {
     return <div className="animate-pulse space-y-4">
-      <div className="h-10 bg-gray-200 dark:bg-slate-700 rounded w-full"></div>
-      <div className="h-20 bg-gray-200 dark:bg-slate-700 rounded w-full"></div>
+      <div className="h-10 bg-gray-200 rounded w-full"></div>
+      <div className="h-20 bg-gray-200 rounded w-full"></div>
     </div>;
   }
 
   return (
     <>
-      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border overflow-hidden">
-        <div className="p-4 border-b flex justify-between items-center bg-gray-50 dark:bg-slate-950">
-          <h2 className="font-semibold text-gray-700 dark:text-gray-300">Daftar Running Text</h2>
+      <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+        <div className="p-4 border-b flex justify-between items-center bg-gray-50">
+          <h2 className="font-semibold text-gray-700">Daftar Running Text</h2>
           <button
             onClick={openAddModal}
             className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
@@ -130,8 +130,8 @@ export default function RunningTextClient() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-gray-600 dark:text-gray-400">
-            <thead className="bg-gray-50 dark:bg-slate-950 border-b text-gray-700 dark:text-gray-300">
+          <table className="w-full text-left text-sm text-gray-600">
+            <thead className="bg-gray-50 border-b text-gray-700">
               <tr>
                 <th className="px-6 py-4 font-medium">Teks</th>
                 <th className="px-6 py-4 font-medium">Status Aktif</th>
@@ -142,19 +142,19 @@ export default function RunningTextClient() {
             <tbody className="divide-y">
               {texts.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                  <td colSpan={4} className="px-6 py-8 text-center text-gray-500">
                     Belum ada running text
                   </td>
                 </tr>
               ) : (
                 texts.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 dark:bg-slate-950">
+                  <tr key={item.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 font-medium">{item.text}</td>
                     <td className="px-6 py-4">
                       <button 
                         onClick={() => toggleStatus(item)}
                         className={`px-3 py-1 text-xs font-semibold rounded-full ${
-                          item.isActive ? 'bg-green-100 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-400'
+                          item.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
                         }`}
                       >
                         {item.isActive ? 'Aktif' : 'Nonaktif'}
@@ -165,13 +165,13 @@ export default function RunningTextClient() {
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => openEditModal(item)}
-                          className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:bg-blue-900/30 rounded-lg transition-colors"
+                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                         >
                           <Edit2 size={18} />
                         </button>
                         <button
                           onClick={() => handleDelete(item.id)}
-                          className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:bg-red-900/30 rounded-lg transition-colors"
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         >
                           <Trash2 size={18} />
                         </button>
@@ -217,7 +217,7 @@ export default function RunningTextClient() {
               id="isActive" 
               checked={formData.isActive} 
               onChange={e => setFormData({...formData, isActive: e.target.checked})}
-              className="w-4 h-4 text-blue-600 dark:text-blue-400"
+              className="w-4 h-4 text-blue-600"
             />
             <label htmlFor="isActive" className="text-sm font-medium">Tampilkan teks ini</label>
           </div>
@@ -226,7 +226,7 @@ export default function RunningTextClient() {
             <button
               type="button"
               onClick={() => setIsModalOpen(false)}
-              className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 dark:bg-slate-800 rounded-lg transition-colors"
+              className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
             >
               Batal
             </button>

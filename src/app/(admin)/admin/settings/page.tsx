@@ -89,10 +89,10 @@ export default function SettingsPage() {
     <>
 
       <div className="p-4 md:p-6 lg:p-8">
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden max-w-4xl">
-          <div className="p-6 border-b border-gray-100 dark:border-slate-800">
-            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">Profil & Footer Website</h2>
-            <p className="text-gray-500 dark:text-gray-400 mt-1">Ubah informasi organisasi yang tampil di bagian bawah halaman publik (Footer) dan halaman lainnya.</p>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden max-w-4xl">
+          <div className="p-6 border-b border-gray-100">
+            <h2 className="text-xl font-bold text-gray-800">Profil & Footer Website</h2>
+            <p className="text-gray-500 mt-1">Ubah informasi organisasi yang tampil di bagian bawah halaman publik (Footer) dan halaman lainnya.</p>
           </div>
 
           {loading ? (
@@ -103,10 +103,10 @@ export default function SettingsPage() {
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Logo Organisasi</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Logo Organisasi</label>
                   <div className="flex items-center gap-4">
                     {settings.logoUrl ? (
-                      <div className="relative w-16 h-16 rounded-full overflow-hidden border border-gray-200 dark:border-slate-700">
+                      <div className="relative w-16 h-16 rounded-full overflow-hidden border border-gray-200">
                         <img src={settings.logoUrl} alt="Logo" className="w-full h-full object-cover" />
                         <button 
                           type="button" 
@@ -117,11 +117,11 @@ export default function SettingsPage() {
                         </button>
                       </div>
                     ) : (
-                      <div className="w-16 h-16 bg-gray-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-gray-400 border border-gray-200 dark:border-slate-700">
+                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 border border-gray-200">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                       </div>
                     )}
-                    <label className="cursor-pointer bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-100 transition-colors">
+                    <label className="cursor-pointer bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-100 transition-colors">
                       <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                       Unggah Logo
                       <input 
@@ -154,112 +154,112 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Nama Organisasi</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Nama Organisasi</label>
                   <input
                     type="text"
                     name="orgName"
                     value={settings.orgName}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
                     placeholder="Contoh: LDK Al-Hidayah"
                     required
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Deskripsi Singkat (Tampil di Footer)</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Deskripsi Singkat (Tampil di Footer)</label>
                   <textarea
                     name="description"
                     value={settings.description}
                     onChange={handleChange}
                     rows={3}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all resize-none"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all resize-none"
                     placeholder="Unit Kegiatan Mahasiswa..."
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Alamat Lengkap</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Alamat Lengkap</label>
                   <textarea
                     name="address"
                     value={settings.address}
                     onChange={handleChange}
                     rows={2}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all resize-none"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all resize-none"
                     placeholder="Gedung Student Center..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Email Kontak</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Email Kontak</label>
                   <input
                     type="email"
                     name="email"
                     value={settings.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
                     placeholder="halo@domain.com"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Link Instagram</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Link Instagram</label>
                   <input
                     type="url"
                     name="instagramUrl"
                     value={settings.instagramUrl}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
                     placeholder="https://instagram.com/..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Link YouTube</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Link YouTube</label>
                   <input
                     type="url"
                     name="youtubeUrl"
                     value={settings.youtubeUrl}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
                     placeholder="https://youtube.com/..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Link TikTok</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Link TikTok</label>
                   <input
                     type="url"
                     name="tiktokUrl"
                     value={settings.tiktokUrl}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
                     placeholder="https://tiktok.com/@..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Link Facebook</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Link Facebook</label>
                   <input
                     type="url"
                     name="facebookUrl"
                     value={settings.facebookUrl}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
                     placeholder="https://facebook.com/..."
                   />
                 </div>
               </div>
               
-              <div className="border-t border-gray-100 dark:border-slate-800 mt-6 pt-6">
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Pengaturan Popup Banner</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Kelola banner pengumuman atau ucapan yang muncul di atas layar ketika pengunjung membuka website.</p>
+              <div className="border-t border-gray-100 mt-6 pt-6">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Pengaturan Popup Banner</h3>
+                <p className="text-sm text-gray-500 mb-6">Kelola banner pengumuman atau ucapan yang muncul di atas layar ketika pengunjung membuka website.</p>
                 
-                <div className="bg-gray-50 dark:bg-slate-950 p-5 rounded-xl border border-gray-100 dark:border-slate-800 space-y-6">
-                  <div className="flex items-center justify-between bg-white dark:bg-slate-900 p-4 rounded-lg border border-gray-200 dark:border-slate-700">
+                <div className="bg-gray-50 p-5 rounded-xl border border-gray-100 space-y-6">
+                  <div className="flex items-center justify-between bg-white p-4 rounded-lg border border-gray-200">
                     <div>
-                      <h4 className="font-semibold text-gray-800 dark:text-gray-200 flex items-center"><svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>Status Popup</h4>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Aktifkan untuk menampilkan banner popup di halaman beranda saat situs pertama kali dibuka.</p>
+                      <h4 className="font-semibold text-gray-800 flex items-center"><svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>Status Popup</h4>
+                      <p className="text-xs text-gray-500 mt-1">Aktifkan untuk menampilkan banner popup di halaman beranda saat situs pertama kali dibuka.</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input 
@@ -269,14 +269,14 @@ export default function SettingsPage() {
                         onChange={(e) => setSettings(prev => ({ ...prev, popupEnabled: e.target.checked }))}
                         className="sr-only peer" 
                       />
-                      <div className="w-11 h-6 bg-gray-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white dark:bg-slate-900 after:border-gray-300 dark:border-slate-600 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
                     </label>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Banner Ucapan / Pengumuman</label>
-                      <div className="border-2 border-dashed border-gray-300 dark:border-slate-600 rounded-xl p-6 text-center bg-white dark:bg-slate-900">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Banner Ucapan / Pengumuman</label>
+                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center bg-white">
                         {settings.popupImage ? (
                           <div className="relative">
                             <img src={settings.popupImage} alt="Popup Banner" className="max-h-40 mx-auto rounded-lg" />
@@ -290,10 +290,10 @@ export default function SettingsPage() {
                           </div>
                         ) : (
                           <div className="flex flex-col items-center justify-center py-4">
-                            <div className="w-12 h-12 bg-gray-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-gray-400 mb-3">
+                            <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 mb-3">
                               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                             </div>
-                            <label className="cursor-pointer bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-100 transition-colors">
+                            <label className="cursor-pointer bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-100 transition-colors">
                               <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                               Unggah Banner
                               <input 
@@ -329,11 +329,11 @@ export default function SettingsPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                        <svg className="w-4 h-4 mr-1 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                        <svg className="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Durasi Penayangan (Detik)
                       </label>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Tentukan berapa detik banner akan muncul sebelum tertutup secara otomatis.</p>
+                      <p className="text-xs text-gray-500 mb-2">Tentukan berapa detik banner akan muncul sebelum tertutup secara otomatis.</p>
                       <input
                         type="number"
                         name="popupDuration"
@@ -341,7 +341,7 @@ export default function SettingsPage() {
                         onChange={handleChange}
                         min={3}
                         max={60}
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
                         placeholder="10"
                       />
                     </div>
@@ -349,7 +349,7 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-gray-100 dark:border-slate-800 flex justify-end">
+              <div className="pt-4 border-t border-gray-100 flex justify-end">
                 <button
                   type="submit"
                   disabled={saving}

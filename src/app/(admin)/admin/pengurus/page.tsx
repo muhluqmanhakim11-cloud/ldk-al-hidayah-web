@@ -34,8 +34,8 @@ export default async function PengurusPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Data Pengurus</h1>
-          <p className="text-gray-500 dark:text-gray-400">Kelola data anggota kepengurusan LDK</p>
+          <h1 className="text-2xl font-bold text-gray-900">Data Pengurus</h1>
+          <p className="text-gray-500">Kelola data anggota kepengurusan LDK</p>
         </div>
       </div>
       <PengurusClient 

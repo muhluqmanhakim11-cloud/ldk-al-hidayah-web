@@ -47,7 +47,7 @@ export default async function RecruitmentPrintPage({
   });
 
   return (
-    <div className="bg-white dark:bg-slate-900 text-black p-8 max-w-4xl mx-auto min-h-screen">
+    <div className="bg-white text-black p-8 max-w-4xl mx-auto min-h-screen">
       <div className="text-center mb-8 border-b-2 border-black pb-4">
         <h1 className="text-2xl font-bold uppercase">Laporan Pendaftar LDK Al-Hidayah</h1>
         <p className="text-sm mt-1">Dicetak pada: {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' })}</p>
@@ -57,7 +57,7 @@ export default async function RecruitmentPrintPage({
 
       <table className="w-full text-left text-sm border-collapse border border-black">
         <thead>
-          <tr className="bg-gray-100 dark:bg-slate-800">
+          <tr className="bg-gray-100">
             <th className="border border-black p-2 font-bold">No</th>
             <th className="border border-black p-2 font-bold">NIM</th>
             <th className="border border-black p-2 font-bold">Nama Lengkap</th>

@@ -29,7 +29,7 @@ export default function PeriodeClient({ initialData, userRole }: { initialData: 
     { 
       header: "Status", 
       accessor: (row: Period) => (
-        <span className={`px-2 py-1 rounded text-xs font-medium ${row.isActive ? 'bg-green-100 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300'}`}>
+        <span className={`px-2 py-1 rounded text-xs font-medium ${row.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
           {row.isActive ? 'Aktif' : 'Nonaktif'}
         </span>
       )
@@ -108,7 +108,7 @@ export default function PeriodeClient({ initialData, userRole }: { initialData: 
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={formData.id ? "Edit Periode" : "Tambah Periode"}>
         <form onSubmit={handleSubmit} className="space-y-4 text-black">
-          {error && <div className="text-red-500 text-sm bg-red-50 dark:bg-red-900/30 p-2 rounded">{error}</div>}
+          {error && <div className="text-red-500 text-sm bg-red-50 p-2 rounded">{error}</div>}
           
           <div>
             <label className="block text-sm font-medium mb-1">Nama Periode (Contoh: 2026/2027)</label>

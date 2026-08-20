@@ -34,12 +34,12 @@ export default function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/30 text-red-500 p-3 rounded text-sm border border-red-200">
+        <div className="bg-red-50 text-red-500 p-3 rounded text-sm border border-red-200">
           {error}
         </div>
       )}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
         <input
           type="email"
           required
@@ -50,7 +50,7 @@ export default function LoginForm() {
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
         <input
           type="password"
           required

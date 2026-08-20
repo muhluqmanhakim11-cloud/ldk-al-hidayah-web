@@ -18,8 +18,8 @@ export default async function BidangPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Data Bidang / Divisi</h1>
-          <p className="text-gray-500 dark:text-gray-400">Kelola bidang dalam organisasi</p>
+          <h1 className="text-2xl font-bold text-gray-900">Data Bidang / Divisi</h1>
+          <p className="text-gray-500">Kelola bidang dalam organisasi</p>
         </div>
       </div>
       <BidangClient initialData={divisions} periods={periods} userRole={session.user.role || ""} />

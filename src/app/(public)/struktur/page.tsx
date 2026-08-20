@@ -16,10 +16,10 @@ export default async function StrukturPage() {
 
   if (!activePeriod) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex items-center justify-center py-20">
-        <div className="text-center p-8 bg-white dark:bg-slate-900 border rounded-xl shadow-sm max-w-md w-full">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Struktur Pengurus</h1>
-          <p className="text-gray-500 dark:text-gray-400">Belum ada periode kepengurusan yang aktif saat ini.</p>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-20">
+        <div className="text-center p-8 bg-white border rounded-xl shadow-sm max-w-md w-full">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Struktur Pengurus</h1>
+          <p className="text-gray-500">Belum ada periode kepengurusan yang aktif saat ini.</p>
         </div>
       </div>
     );
@@ -54,7 +54,7 @@ export default async function StrukturPage() {
   }));
 
   return (
-    <div className="bg-gray-50 dark:bg-slate-950 min-h-screen pb-20 overflow-x-hidden">
+    <div className="bg-gray-50 min-h-screen pb-20 overflow-x-hidden">
       <div className="bg-green-800 text-white pt-32 pb-16 md:pt-40 md:pb-24 mb-12">
         <div className="container mx-auto px-4 lg:px-8 text-center">
           <h1 className="text-3xl md:text-5xl font-bold mb-4">Struktur Organisasi</h1>
@@ -67,17 +67,17 @@ export default async function StrukturPage() {
           
           {/* BPH (Badan Pengurus Harian) */}
           {bphMembers.length > 0 && (
-            <div className="w-full bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl p-6 md:p-8 mb-6 shadow-sm">
-              <h2 className="text-lg md:text-xl font-bold text-blue-800 dark:text-blue-300 text-center mb-4">
+            <div className="w-full bg-white border border-gray-200 rounded-xl p-6 md:p-8 mb-6 shadow-sm">
+              <h2 className="text-lg md:text-xl font-bold text-blue-800 text-center mb-4">
                 Badan Pengurus Harian & Penasehat
               </h2>
               <div className="w-full h-[2px] bg-blue-600 mb-8"></div>
               
               <div className="flex flex-col items-center gap-4">
                 {bphMembers.map((member) => (
-                  <div key={member.id} className="bg-blue-50 dark:bg-blue-900/30 border border-blue-100 rounded-lg p-4 w-64 md:w-80 text-center">
-                    <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm md:text-base">{member.name}</h3>
-                    <p className="text-blue-700 dark:text-blue-400 text-xs font-semibold mt-1">{member.position?.name}</p>
+                  <div key={member.id} className="bg-blue-50 border border-blue-100 rounded-lg p-4 w-64 md:w-80 text-center">
+                    <h3 className="font-bold text-gray-900 text-sm md:text-base">{member.name}</h3>
+                    <p className="text-blue-700 text-xs font-semibold mt-1">{member.position?.name}</p>
                   </div>
                 ))}
               </div>
@@ -88,7 +88,7 @@ export default async function StrukturPage() {
           {groupedByDivision.length > 0 && (
             <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {groupedByDivision.map((div) => (
-                <div key={div.id} className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl p-6 shadow-sm">
+                <div key={div.id} className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="font-bold text-green-800 text-center mb-4 text-sm md:text-base">
                     {div.name}
                   </h3>
@@ -97,8 +97,8 @@ export default async function StrukturPage() {
                   {div.members.length > 0 ? (
                     <div className="flex flex-col items-center gap-3">
                       {div.members.map(member => (
-                        <div key={member.id} className="bg-green-50 dark:bg-green-900/30 border border-green-100 rounded-lg p-3 w-full text-center">
-                          <h4 className="font-bold text-gray-900 dark:text-gray-100 text-sm leading-snug">{member.name}</h4>
+                        <div key={member.id} className="bg-green-50 border border-green-100 rounded-lg p-3 w-full text-center">
+                          <h4 className="font-bold text-gray-900 text-sm leading-snug">{member.name}</h4>
                           <p className="text-green-600 text-xs font-semibold mt-1">{member.position?.name}</p>
                         </div>
                       ))}

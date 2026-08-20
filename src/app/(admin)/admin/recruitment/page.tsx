@@ -74,41 +74,41 @@ export default async function AdminRecruitmentPage({
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Kelola Pendaftar</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Periode: {currentPeriodInfo?.name || 'Semua'}</p>
+          <h1 className="text-2xl font-bold text-gray-900">Kelola Pendaftar</h1>
+          <p className="text-gray-500 text-sm mt-1">Periode: {currentPeriodInfo?.name || 'Semua'}</p>
         </div>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border">
-          <p className="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase mb-1">Total</p>
-          <p className="text-2xl font-black text-gray-900 dark:text-gray-100">{total}</p>
+        <div className="bg-white p-4 rounded-xl shadow-sm border">
+          <p className="text-xs text-gray-500 font-bold uppercase mb-1">Total</p>
+          <p className="text-2xl font-black text-gray-900">{total}</p>
         </div>
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-l-4 border-l-yellow-500">
-          <p className="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase mb-1">Pending</p>
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-l-4 border-l-yellow-500">
+          <p className="text-xs text-gray-500 font-bold uppercase mb-1">Pending</p>
           <p className="text-2xl font-black text-yellow-600">{pending}</p>
         </div>
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-l-4 border-l-blue-500">
-          <p className="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase mb-1">Reviewed</p>
-          <p className="text-2xl font-black text-blue-600 dark:text-blue-400">{reviewed}</p>
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-l-4 border-l-blue-500">
+          <p className="text-xs text-gray-500 font-bold uppercase mb-1">Reviewed</p>
+          <p className="text-2xl font-black text-blue-600">{reviewed}</p>
         </div>
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-l-4 border-l-green-500">
-          <p className="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase mb-1">Accepted</p>
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-l-4 border-l-green-500">
+          <p className="text-xs text-gray-500 font-bold uppercase mb-1">Accepted</p>
           <p className="text-2xl font-black text-green-600">{accepted}</p>
         </div>
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-l-4 border-l-red-500">
-          <p className="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase mb-1">Rejected</p>
-          <p className="text-2xl font-black text-red-600 dark:text-red-400">{rejected}</p>
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-l-4 border-l-red-500">
+          <p className="text-xs text-gray-500 font-bold uppercase mb-1">Rejected</p>
+          <p className="text-2xl font-black text-red-600">{rejected}</p>
         </div>
       </div>
 
       {/* Control Status Pendaftaran (Super Admin / Ketua) */}
       {(session.user.role === 'SUPER_ADMIN' || session.user.role === 'KETUA') && currentPeriodInfo && (
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border mb-6 flex items-center justify-between">
+        <div className="bg-white p-6 rounded-xl shadow-sm border mb-6 flex items-center justify-between">
           <div>
-            <h3 className="font-bold text-gray-900 dark:text-gray-100">Status Pendaftaran Periode {currentPeriodInfo.name}</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Buka atau tutup akses formulir pendaftaran untuk publik.</p>
+            <h3 className="font-bold text-gray-900">Status Pendaftaran Periode {currentPeriodInfo.name}</h3>
+            <p className="text-sm text-gray-500">Buka atau tutup akses formulir pendaftaran untuk publik.</p>
           </div>
           <div>
              <form action={async () => {
@@ -129,27 +129,27 @@ export default async function AdminRecruitmentPage({
       )}
 
       {/* Filters */}
-      <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border mb-6">
+      <div className="bg-white p-4 rounded-xl shadow-sm border mb-6">
         <form className="flex flex-wrap gap-4 items-end">
           <div>
-            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Periode</label>
-            <select name="periodId" defaultValue={targetPeriodId || ""} className="border rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-950 min-w-[120px]">
+            <label className="block text-xs font-bold text-gray-700 mb-1">Periode</label>
+            <select name="periodId" defaultValue={targetPeriodId || ""} className="border rounded-md p-2 text-sm bg-gray-50 min-w-[120px]">
               <option value="">Semua</option>
               {allPeriods.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
           </div>
           {session.user.role !== 'ADMIN_BIDANG' && (
             <div>
-              <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Divisi</label>
-              <select name="divisionId" defaultValue={divisionFilter || ""} className="border rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-950 min-w-[150px]">
+              <label className="block text-xs font-bold text-gray-700 mb-1">Divisi</label>
+              <select name="divisionId" defaultValue={divisionFilter || ""} className="border rounded-md p-2 text-sm bg-gray-50 min-w-[150px]">
                 <option value="">Semua Divisi</option>
                 {allDivisions.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
               </select>
             </div>
           )}
           <div>
-            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Status</label>
-            <select name="status" defaultValue={statusFilter || ""} className="border rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-950 min-w-[120px]">
+            <label className="block text-xs font-bold text-gray-700 mb-1">Status</label>
+            <select name="status" defaultValue={statusFilter || ""} className="border rounded-md p-2 text-sm bg-gray-50 min-w-[120px]">
               <option value="">Semua</option>
               <option value="PENDING">PENDING</option>
               <option value="REVIEWED">REVIEWED</option>
@@ -158,16 +158,16 @@ export default async function AdminRecruitmentPage({
             </select>
           </div>
           <div>
-            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Cari Nama</label>
-            <input type="text" name="name" defaultValue={searchName || ""} placeholder="Nama..." className="border rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-950" />
+            <label className="block text-xs font-bold text-gray-700 mb-1">Cari Nama</label>
+            <input type="text" name="name" defaultValue={searchName || ""} placeholder="Nama..." className="border rounded-md p-2 text-sm bg-gray-50" />
           </div>
           <div>
-            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Cari NIM</label>
-            <input type="text" name="nim" defaultValue={searchNim || ""} placeholder="NIM..." className="border rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-950" />
+            <label className="block text-xs font-bold text-gray-700 mb-1">Cari NIM</label>
+            <input type="text" name="nim" defaultValue={searchNim || ""} placeholder="NIM..." className="border rounded-md p-2 text-sm bg-gray-50" />
           </div>
           <div className="flex gap-2">
             <button type="submit" className="bg-gray-900 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-gray-800">Filter</button>
-            <Link href="/admin/recruitment" className="bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-md text-sm font-bold hover:bg-gray-300">Reset</Link>
+            <Link href="/admin/recruitment" className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm font-bold hover:bg-gray-300">Reset</Link>
             
             <a 
               href={`/admin/recruitment/print?periodId=${targetPeriodId || ''}&divisionId=${divisionFilter || ''}&status=${statusFilter || ''}`} 
@@ -182,10 +182,10 @@ export default async function AdminRecruitmentPage({
       </div>
 
       {/* Data Table */}
-      <div className="bg-white dark:bg-slate-900 border rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-white border rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-gray-50 dark:bg-slate-950 border-b text-gray-600 dark:text-gray-400">
+            <thead className="bg-gray-50 border-b text-gray-600">
               <tr>
                 <th className="p-4 font-semibold">NIM</th>
                 <th className="p-4 font-semibold">Nama</th>
@@ -195,22 +195,22 @@ export default async function AdminRecruitmentPage({
                 <th className="p-4 font-semibold">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y text-gray-800 dark:text-gray-200">
+            <tbody className="divide-y text-gray-800">
               {list.length > 0 ? list.map((item) => (
-                <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 dark:bg-slate-950">
+                <tr key={item.id} className="hover:bg-gray-50">
                   <td className="p-4 font-medium">{item.nim}</td>
                   <td className="p-4">
                     <div className="font-bold">{item.name}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">{item.studyProgram}</div>
+                    <div className="text-xs text-gray-500">{item.studyProgram}</div>
                   </td>
                   <td className="p-4">{item.interestedDivision?.name || '-'}</td>
                   <td className="p-4">{new Date(item.createdAt).toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta' })}</td>
                   <td className="p-4">
                     <span className={`px-2 py-1 rounded-full text-xs font-bold
                       ${item.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' : ''}
-                      ${item.status === 'REVIEWED' ? 'bg-blue-100 text-blue-700 dark:text-blue-400' : ''}
-                      ${item.status === 'ACCEPTED' ? 'bg-green-100 text-green-700 dark:text-green-400' : ''}
-                      ${item.status === 'REJECTED' ? 'bg-red-100 text-red-700 dark:text-red-400' : ''}
+                      ${item.status === 'REVIEWED' ? 'bg-blue-100 text-blue-700' : ''}
+                      ${item.status === 'ACCEPTED' ? 'bg-green-100 text-green-700' : ''}
+                      ${item.status === 'REJECTED' ? 'bg-red-100 text-red-700' : ''}
                     `}>
                       {item.status}
                     </span>
@@ -223,7 +223,7 @@ export default async function AdminRecruitmentPage({
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-500 dark:text-gray-400 border-dashed">
+                  <td colSpan={6} className="p-8 text-center text-gray-500 border-dashed">
                     Tidak ada data pendaftar yang cocok.
                   </td>
                 </tr>

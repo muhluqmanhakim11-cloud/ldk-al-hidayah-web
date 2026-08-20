@@ -23,7 +23,7 @@ function BMKGClockWidget() {
     return () => clearInterval(interval);
   }, []);
 
-  if (!time) return <div className="h-10 bg-gray-100 dark:bg-slate-800 rounded-lg animate-pulse" />;
+  if (!time) return <div className="h-10 bg-gray-100 rounded-lg animate-pulse" />;
 
   const formatter = new Intl.DateTimeFormat("id-ID", {
     weekday: "short",
@@ -155,7 +155,7 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
       {/* Sidebar */}
       <div className={`fixed flex flex-col inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-900 border-r dark:border-slate-800 transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:inset-auto ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex h-16 items-center justify-between px-4 border-b dark:border-slate-800">
-          <span className="text-lg font-bold text-blue-700 dark:text-blue-400 dark:text-blue-500">Admin LDK</span>
+          <span className="text-lg font-bold text-blue-700 dark:text-blue-500">Admin LDK</span>
           <button onClick={() => setIsOpen(false)} className="lg:hidden text-gray-500 dark:text-gray-400">
             <X size={24} />
           </button>
@@ -172,7 +172,7 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
                 <Link 
                   key={menu.name}
                   href={menu.href}
-                  className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors ${isActive ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:bg-slate-800 dark:hover:bg-slate-800'}`}
+                  className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors ${isActive ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800'}`}
                 >
                   <Icon size={20} className={isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'} />
                   <span>{menu.name}</span>
@@ -189,17 +189,17 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
                 <div className="pt-2 border-t dark:border-slate-800">
                   <button 
                     onClick={() => setIsDivisionsOpen(!isDivisionsOpen)}
-                    className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:bg-slate-800 dark:hover:bg-slate-800 transition-colors"
+                    className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
                   >
                     <div className="flex items-center space-x-3">
-                      <Layers size={20} className="text-gray-500 dark:text-gray-400" />
+                      <Layers size={20} className="text-gray-500" />
                       <span className="font-semibold text-sm">Modul Bidang / Divisi</span>
                     </div>
                     {isDivisionsOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
                   </button>
                   
                   {isDivisionsOpen && (
-                    <div className="mt-1 ml-4 pl-3 border-l-2 border-gray-100 dark:border-slate-800 space-y-1">
+                    <div className="mt-1 ml-4 pl-3 border-l-2 border-gray-100 space-y-1">
                       {divisionMenus.map((menu) => {
                         const isActive = pathname === menu.href || pathname.startsWith(menu.href);
                         const Icon = menu.icon;
@@ -207,9 +207,9 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
                           <Link 
                             key={menu.name}
                             href={menu.href}
-                            className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors text-sm ${isActive ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:bg-slate-800 dark:hover:bg-slate-800'}`}
+                            className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors text-sm ${isActive ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800'}`}
                           >
-                            <Icon size={16} className={isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500 dark:text-gray-400'} />
+                            <Icon size={16} className={isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500'} />
                             <span>{menu.name}</span>
                           </Link>
                         );
@@ -230,7 +230,7 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
                       <Link 
                         key={menu.name}
                         href={menu.href}
-                        className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors ${isActive ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:bg-slate-800 dark:hover:bg-slate-800'}`}
+                        className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors ${isActive ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800'}`}
                       >
                         <Icon size={20} className={isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'} />
                         <span>{menu.name}</span>
@@ -252,7 +252,7 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
                   <Link 
                     key={menu.name}
                     href={menu.href}
-                    className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors ${isActive ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:bg-slate-800 dark:hover:bg-slate-800'}`}
+                    className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors ${isActive ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800'}`}
                   >
                     <Icon size={20} className={isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'} />
                     <span>{menu.name}</span>
@@ -265,13 +265,13 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
         </div>
 
         {/* Footer Area */}
-        <div className="absolute bottom-0 w-full p-4 border-t dark:border-slate-800 bg-gray-50 dark:bg-slate-950 dark:bg-slate-900 flex flex-col space-y-3">
-          <Link href="/" className="flex items-center space-x-3 text-green-700 dark:text-green-400 dark:text-green-500 hover:text-green-800 dark:hover:text-green-400 font-medium text-sm transition-colors">
+        <div className="absolute bottom-0 w-full p-4 border-t dark:border-slate-800 bg-gray-50 dark:bg-slate-900 flex flex-col space-y-3">
+          <Link href="/" className="flex items-center space-x-3 text-green-700 dark:text-green-500 hover:text-green-800 dark:hover:text-green-400 font-medium text-sm transition-colors">
             <Globe size={18} />
             <span>Kembali ke Publik</span>
           </Link>
 
-          <div className="flex flex-col p-3 bg-white dark:bg-slate-900 dark:bg-slate-800 border dark:border-slate-700 rounded-lg shadow-sm">
+          <div className="flex flex-col p-3 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-lg shadow-sm">
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-bold text-gray-700 dark:text-gray-300 leading-none">Status Server</span>
               <div className={`w-2 h-2 rounded-full ${
@@ -280,14 +280,14 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
                 'bg-green-500'
               } ${vercelStatus === 'passing' ? 'animate-pulse' : ''}`}></div>
             </div>
-            <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium capitalize">
+            <span className="text-[10px] text-gray-500 font-medium capitalize">
               {vercelStatus === 'unknown' ? 'Sistem Aktif' : vercelStatus === 'passing' ? 'Online & Ready' : vercelStatus}
             </span>
           </div>
 
           <button 
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="flex items-center space-x-3 text-red-600 dark:text-red-400 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 font-medium text-sm transition-colors pt-2 border-t dark:border-slate-700"
+            className="flex items-center space-x-3 text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 font-medium text-sm transition-colors pt-2 border-t dark:border-slate-700"
           >
             <LogOut size={18} />
             <span>Logout</span>

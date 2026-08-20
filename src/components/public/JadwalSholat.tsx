@@ -92,7 +92,7 @@ export default function JadwalSholat() {
 
   return (
     <div className="relative z-30 -mt-12 flex justify-center w-full px-4 animate-fade-in">
-      <div className="bg-white dark:bg-slate-900/95 backdrop-blur-xl shadow-xl shadow-green-900/10 border border-white/60 rounded-3xl p-5 md:p-6 flex flex-col items-center gap-5 overflow-hidden max-w-5xl mx-auto w-full transition-all">
+      <div className="bg-white/95 backdrop-blur-xl shadow-xl shadow-green-900/10 border border-white/60 rounded-3xl p-5 md:p-6 flex flex-col items-center gap-5 overflow-hidden max-w-5xl mx-auto w-full transition-all">
         
         {/* Bagian Atas: Waktu & Info Lokasi */}
         <div className="flex flex-col md:flex-row w-full justify-between items-center gap-4">
@@ -101,13 +101,13 @@ export default function JadwalSholat() {
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
             <div className="text-center md:text-left">
-              <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 leading-tight">Jadwal Sholat</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{jadwal ? jadwal.tanggal : "Memuat..."} • Karyamulya, Cirebon</p>
+              <h3 className="text-base font-bold text-gray-900 leading-tight">Jadwal Sholat</h3>
+              <p className="text-sm text-gray-500 font-medium">{jadwal ? jadwal.tanggal : "Memuat..."} • Karyamulya, Cirebon</p>
             </div>
           </div>
 
           {mounted && (
-            <div className="flex flex-col items-center md:items-end bg-green-50 dark:bg-green-900/30/80 border border-green-200/50 rounded-2xl px-5 py-2.5 shadow-sm">
+            <div className="flex flex-col items-center md:items-end bg-green-50/80 border border-green-200/50 rounded-2xl px-5 py-2.5 shadow-sm">
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl md:text-3xl font-black text-green-800 tracking-wider font-mono">
                   {formatTime(currentTime)}
@@ -133,11 +133,11 @@ export default function JadwalSholat() {
             {prayers.map((sholat) => {
               const isNext = nextPrayer?.name === sholat.name;
               return (
-                <div key={sholat.name} className={`flex flex-col items-center px-4 py-3 rounded-2xl transition-all duration-300 min-w-[85px] ${isNext ? 'bg-green-600 shadow-lg shadow-green-600/30 text-white transform -translate-y-1' : 'bg-transparent text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-slate-800/50 dark:bg-slate-950'}`}>
+                <div key={sholat.name} className={`flex flex-col items-center px-4 py-3 rounded-2xl transition-all duration-300 min-w-[85px] ${isNext ? 'bg-green-600 shadow-lg shadow-green-600/30 text-white transform -translate-y-1' : 'bg-transparent text-gray-800 hover:bg-gray-50'}`}>
                   <span className={`text-[11px] md:text-xs font-bold uppercase tracking-wider ${isNext ? 'text-green-100' : 'text-gray-400'}`}>
                     {sholat.name}
                   </span>
-                  <span className={`text-lg md:text-xl font-black mt-1 ${isNext ? 'text-white' : 'text-gray-800 dark:text-gray-200'}`}>
+                  <span className={`text-lg md:text-xl font-black mt-1 ${isNext ? 'text-white' : 'text-gray-800'}`}>
                     {loading ? "--:--" : sholat.time || "--:--"}
                   </span>
                 </div>
