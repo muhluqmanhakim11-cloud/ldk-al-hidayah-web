@@ -15,8 +15,8 @@ export default async function JabatanPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Data Jabatan</h1>
-          <p className="text-gray-500">Kelola hierarki jabatan organisasi</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Data Jabatan</h1>
+          <p className="text-gray-500 dark:text-gray-400">Kelola hierarki jabatan organisasi</p>
         </div>
       </div>
       <JabatanClient initialData={positions} userRole={session.user.role || ""} />

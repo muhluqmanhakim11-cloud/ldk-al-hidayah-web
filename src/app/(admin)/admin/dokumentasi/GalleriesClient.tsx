@@ -61,8 +61,8 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
   const columns = [
     { header: "Judul", accessor: (row: any) => (
       <div>
-        <p className="font-medium text-gray-900 cursor-pointer text-blue-600 hover:underline" onClick={() => openDetail(row)}>{row.title}</p>
-        <p className="text-xs text-gray-500">{row.images?.length || 0} Foto</p>
+        <p className="font-medium text-gray-900 dark:text-gray-100 cursor-pointer text-blue-600 dark:text-blue-400 hover:underline" onClick={() => openDetail(row)}>{row.title}</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">{row.images?.length || 0} Foto</p>
       </div>
     )},
     { header: "Event", accessor: (row: any) => row.event?.name || "-" },
@@ -70,8 +70,8 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
       header: "Status", 
       accessor: (row: any) => (
         <span className={`px-2 py-1 rounded text-xs font-medium 
-          ${row.status === 'PUBLISHED' ? 'bg-green-100 text-green-700' : 
-            row.status === 'ARCHIVED' ? 'bg-gray-100 text-gray-700' :
+          ${row.status === 'PUBLISHED' ? 'bg-green-100 text-green-700 dark:text-green-400' : 
+            row.status === 'ARCHIVED' ? 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300' :
             'bg-yellow-100 text-yellow-700'}`}>
           {row.status}
         </span>
@@ -256,7 +256,7 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <div className="bg-white p-4 rounded-lg shadow-sm border flex flex-wrap gap-4 items-center justify-between">
+      <div className="bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border flex flex-wrap gap-4 items-center justify-between">
         <div className="flex flex-wrap gap-4">
           <input 
             type="text" placeholder="Cari galeri..." 
@@ -294,7 +294,7 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
       </div>
 
       {fetchLoading ? (
-        <div className="p-8 text-center text-gray-500 bg-white border rounded-lg shadow-sm">Loading data...</div>
+        <div className="p-8 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-slate-900 border rounded-lg shadow-sm">Loading data...</div>
       ) : (
         <DataTable 
           data={data} 
@@ -305,7 +305,7 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
       )}
 
       {/* Pagination controls */}
-      <div className="flex justify-between items-center bg-white p-4 border rounded-lg shadow-sm">
+      <div className="flex justify-between items-center bg-white dark:bg-slate-900 p-4 border rounded-lg shadow-sm">
         <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-3 py-1 border rounded disabled:opacity-50">Sebelumnnya</button>
         <span className="text-sm">Halaman {page}</span>
         <button onClick={() => setPage(p => p + 1)} disabled={data.length < 50} className="px-3 py-1 border rounded disabled:opacity-50">Selanjutnya</button>
@@ -314,9 +314,9 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
       {/* Detail & Upload Modal */}
       <Modal isOpen={isDetailOpen} onClose={() => { setIsDetailOpen(false); setSelectedGallery(null); }} title={selectedGallery?.title || "Galeri"}>
         <div className="space-y-6 text-black">
-          <div className="bg-gray-50 p-4 rounded-lg border mb-4">
-            <h3 className="font-semibold mb-2 text-sm text-gray-700">Catatan</h3>
-            <p className="text-xs text-gray-500">
+          <div className="bg-gray-50 dark:bg-slate-950 p-4 rounded-lg border mb-4">
+            <h3 className="font-semibold mb-2 text-sm text-gray-700 dark:text-gray-300">Catatan</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               Galeri yang sudah dibuat tidak bisa ditambah fotonya lagi di halaman ini demi kesederhanaan sistem. 
               Jika ingin menambah foto, buat Galeri baru atau edit Galeri lama jika diperlukan.
             </p>
@@ -335,7 +335,7 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
                 )}
               </div>
             ))}
-            {selectedGallery?.images?.length === 0 && <p className="text-gray-500 col-span-full">Belum ada foto.</p>}
+            {selectedGallery?.images?.length === 0 && <p className="text-gray-500 dark:text-gray-400 col-span-full">Belum ada foto.</p>}
           </div>
         </div>
       </Modal>
@@ -343,7 +343,7 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
       {/* CRUD Modal */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={formData.id ? "Edit Galeri" : "Buat Galeri"}>
         <form onSubmit={handleSubmit} className="space-y-4 text-black">
-          {error && <div className="text-red-500 text-sm bg-red-50 p-2 rounded">{error}</div>}
+          {error && <div className="text-red-500 text-sm bg-red-50 dark:bg-red-900/30 p-2 rounded">{error}</div>}
           
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -400,7 +400,7 @@ export default function GalleriesClient({ periods, divisions, events, userRole, 
                     setUploadFiles(e.target.files);
                   }
                 }}
-                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                className="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 dark:bg-blue-900/30 file:text-blue-700 dark:text-blue-400 hover:file:bg-blue-100"
               />
             </div>
           )}

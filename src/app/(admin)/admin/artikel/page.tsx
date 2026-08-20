@@ -17,10 +17,10 @@ export default async function ArticlesPage() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 text-black">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-lg shadow-sm border">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-lg shadow-sm border">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Artikel & Berita</h1>
-          <p className="text-gray-500 mt-1">Kelola berita, press release, dan artikel LDK</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Artikel & Berita</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Kelola berita, press release, dan artikel LDK</p>
         </div>
       </div>
 

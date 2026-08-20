@@ -37,7 +37,7 @@ export default function BidangClient({ initialData, periods, userRole }: { initi
     { 
       header: "Status", 
       accessor: (row: Division) => (
-        <span className={`px-2 py-1 rounded text-xs font-medium ${row.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+        <span className={`px-2 py-1 rounded text-xs font-medium ${row.isActive ? 'bg-green-100 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300'}`}>
           {row.isActive ? 'Aktif' : 'Nonaktif'}
         </span>
       )
@@ -118,32 +118,32 @@ export default function BidangClient({ initialData, periods, userRole }: { initi
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={formData.id ? "Edit Bidang" : "Tambah Bidang"}>
         <form onSubmit={handleSubmit} className="space-y-4 text-black">
-          {error && <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg border border-red-100">{error}</div>}
+          {error && <div className="text-red-500 text-sm bg-red-50 dark:bg-red-900/30 p-3 rounded-lg border border-red-100">{error}</div>}
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-gray-700">Periode</label>
-              <select required value={formData.periodId} onChange={e => setFormData({...formData, periodId: parseInt(e.target.value)})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+              <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Periode</label>
+              <select required value={formData.periodId} onChange={e => setFormData({...formData, periodId: parseInt(e.target.value)})} className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
                 <option value="">Pilih Periode</option>
                 {periods.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-gray-700">Nama Bidang</label>
-              <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+              <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Nama Bidang</label>
+              <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-gray-700">Slug (URL)</label>
-            <input type="text" required value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="contoh: dkm, kaderisasi" />
+            <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Slug (URL)</label>
+            <input type="text" required value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="contoh: dkm, kaderisasi" />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-gray-700">Deskripsi</label>
-            <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none" rows={3}></textarea>
+            <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Deskripsi</label>
+            <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none" rows={3}></textarea>
           </div>
           <div className="flex items-center space-x-2 pt-2">
-            <input type="checkbox" id="isActive" checked={formData.isActive} onChange={e => setFormData({...formData, isActive: e.target.checked})} className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500" />
-            <label htmlFor="isActive" className="text-sm font-medium text-gray-700 cursor-pointer">Aktif</label>
+            <input type="checkbox" id="isActive" checked={formData.isActive} onChange={e => setFormData({...formData, isActive: e.target.checked})} className="w-4 h-4 text-blue-600 dark:text-blue-400 rounded focus:ring-blue-500" />
+            <label htmlFor="isActive" className="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">Aktif</label>
           </div>
           
           <div className="pt-4 border-t mt-4">

@@ -37,7 +37,7 @@ export default function PengurusClient({ initialData, periods, divisions, positi
     { header: "Nama", accessor: "name" as keyof Member },
     { header: "Jabatan", accessor: (row: Member) => row.position?.name || "-" },
     { header: "Bidang", accessor: (row: Member) => row.division?.name || "-" },
-    { header: "NIM / Kontak", accessor: (row: Member) => <div className="text-xs text-gray-500">{row.nim || "-"} <br/> {row.contact || "-"}</div> },
+    { header: "NIM / Kontak", accessor: (row: Member) => <div className="text-xs text-gray-500 dark:text-gray-400">{row.nim || "-"} <br/> {row.contact || "-"}</div> },
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -123,7 +123,7 @@ export default function PengurusClient({ initialData, periods, divisions, positi
                 toast.error("Terjadi kesalahan jaringan");
               }
             }}
-            className="bg-red-50 hover:bg-red-100 text-red-600 px-5 py-2.5 rounded-lg flex items-center gap-2 transition-all shadow-sm font-medium"
+            className="bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 px-5 py-2.5 rounded-lg flex items-center gap-2 transition-all shadow-sm font-medium"
           >
             Hapus Semua
           </button>
@@ -145,7 +145,7 @@ export default function PengurusClient({ initialData, periods, divisions, positi
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={formData.id ? "Edit Pengurus" : "Tambah Pengurus"}>
         <form onSubmit={handleSubmit} className="space-y-4 text-black">
-          {error && <div className="text-red-500 text-sm bg-red-50 p-2 rounded">{error}</div>}
+          {error && <div className="text-red-500 text-sm bg-red-50 dark:bg-red-900/30 p-2 rounded">{error}</div>}
           
           <div className="grid grid-cols-2 gap-4">
             <div>

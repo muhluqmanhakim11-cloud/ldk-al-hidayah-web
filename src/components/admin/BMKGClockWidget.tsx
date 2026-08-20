@@ -27,7 +27,7 @@ export default function BMKGClockWidget() {
     return () => clearInterval(interval);
   }, [offset]);
 
-  if (!time) return <div className="h-10 w-48 bg-gray-100 rounded-lg animate-pulse" />;
+  if (!time) return <div className="h-10 w-48 bg-gray-100 dark:bg-slate-800 rounded-lg animate-pulse" />;
 
   const formatter = new Intl.DateTimeFormat("id-ID", {
     weekday: "short",

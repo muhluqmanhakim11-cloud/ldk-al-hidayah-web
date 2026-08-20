@@ -57,10 +57,10 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
       header: "Status", 
       accessor: (row: any) => (
         <span className={`px-2 py-1 rounded text-xs font-medium 
-          ${row.status === 'PUBLISHED' ? 'bg-green-100 text-green-700' : 
-            row.status === 'COMPLETED' ? 'bg-blue-100 text-blue-700' :
-            row.status === 'CANCELLED' ? 'bg-red-100 text-red-700' :
-            'bg-gray-100 text-gray-700'}`}>
+          ${row.status === 'PUBLISHED' ? 'bg-green-100 text-green-700 dark:text-green-400' : 
+            row.status === 'COMPLETED' ? 'bg-blue-100 text-blue-700 dark:text-blue-400' :
+            row.status === 'CANCELLED' ? 'bg-red-100 text-red-700 dark:text-red-400' :
+            'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300'}`}>
           {row.status}
         </span>
       )
@@ -114,26 +114,26 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <div className="bg-white p-4 md:p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col lg:flex-row gap-4 lg:items-center justify-between">
+      <div className="bg-white dark:bg-slate-900 p-4 md:p-5 rounded-xl shadow-sm border border-gray-100 dark:border-slate-800 flex flex-col lg:flex-row gap-4 lg:items-center justify-between">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-row gap-3 lg:gap-4 w-full lg:w-auto">
           <input 
             type="text" placeholder="Cari program..." 
-            className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full lg:w-48 transition-all"
+            className="border border-gray-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full lg:w-48 transition-all"
             value={search} onChange={e => setSearch(e.target.value)}
           />
-          <select className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full lg:w-auto bg-white transition-all" value={filterPeriod} onChange={e => setFilterPeriod(e.target.value)}>
+          <select className="border border-gray-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full lg:w-auto bg-white dark:bg-slate-900 transition-all" value={filterPeriod} onChange={e => setFilterPeriod(e.target.value)}>
             <option value="">Semua Periode</option>
             {periods.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
           </select>
           <select 
-            className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full lg:w-auto bg-white transition-all disabled:bg-gray-50" 
+            className="border border-gray-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full lg:w-auto bg-white dark:bg-slate-900 transition-all disabled:bg-gray-50 dark:bg-slate-950" 
             value={filterDivision} onChange={e => setFilterDivision(e.target.value)}
             disabled={userRole === "ADMIN_BIDANG"}
           >
             <option value="">Semua Bidang</option>
             {availableDivisions.map((d: any) => <option key={d.id} value={d.id}>{d.name}</option>)}
           </select>
-          <select className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full lg:w-auto bg-white transition-all" value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+          <select className="border border-gray-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full lg:w-auto bg-white dark:bg-slate-900 transition-all" value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
             <option value="">Semua Status</option>
             <option value="DRAFT">DRAFT</option>
             <option value="PUBLISHED">PUBLISHED</option>
@@ -153,7 +153,7 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
       </div>
 
       {fetchLoading ? (
-        <div className="p-8 text-center text-gray-500 bg-white border rounded-lg shadow-sm">Loading data...</div>
+        <div className="p-8 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-slate-900 border rounded-lg shadow-sm">Loading data...</div>
       ) : (
         <DataTable 
           data={data} 
@@ -164,7 +164,7 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
       )}
 
       {/* Pagination controls */}
-      <div className="flex justify-between items-center bg-white p-4 border rounded-lg shadow-sm">
+      <div className="flex justify-between items-center bg-white dark:bg-slate-900 p-4 border rounded-lg shadow-sm">
         <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-3 py-1 border rounded disabled:opacity-50">Sebelumnnya</button>
         <span className="text-sm">Halaman {page}</span>
         <button onClick={() => setPage(p => p + 1)} disabled={data.length < 50} className="px-3 py-1 border rounded disabled:opacity-50">Selanjutnya</button>
@@ -172,18 +172,18 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={formData.id ? "Edit Program Kerja" : "Tambah Program Kerja"}>
         <form onSubmit={handleSubmit} className="space-y-4 text-black">
-          {error && <div className="text-red-500 text-sm bg-red-50 p-2 rounded">{error}</div>}
+          {error && <div className="text-red-500 text-sm bg-red-50 dark:bg-red-900/30 p-2 rounded">{error}</div>}
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-gray-700">Periode</label>
-              <select required value={formData.periodId} onChange={e => setFormData({...formData, periodId: parseInt(e.target.value)})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+              <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Periode</label>
+              <select required value={formData.periodId} onChange={e => setFormData({...formData, periodId: parseInt(e.target.value)})} className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
                 <option value="">Pilih Periode</option>
                 {periods.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-gray-700">Bidang / Divisi</label>
+              <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Bidang / Divisi</label>
               <select 
                 required 
                 value={formData.divisionId} 
@@ -199,29 +199,29 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-gray-700">Nama Program</label>
-              <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+              <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Nama Program</label>
+              <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-gray-700">Slug (Opsional)</label>
-              <input type="text" value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="contoh: program-1" />
+              <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Slug (Opsional)</label>
+              <input type="text" value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="contoh: program-1" />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-gray-700">Tujuan</label>
-            <input type="text" value={formData.objective} onChange={e => setFormData({...formData, objective: e.target.value})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+            <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Tujuan</label>
+            <input type="text" value={formData.objective} onChange={e => setFormData({...formData, objective: e.target.value})} className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-gray-700">Deskripsi Singkat</label>
-            <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none" rows={3}></textarea>
+            <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Deskripsi Singkat</label>
+            <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none" rows={3}></textarea>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-gray-700">Jadwal (Contoh: Setiap Bulan)</label>
-              <input type="text" value={formData.schedule} onChange={e => setFormData({...formData, schedule: e.target.value})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+              <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Jadwal (Contoh: Setiap Bulan)</label>
+              <input type="text" value={formData.schedule} onChange={e => setFormData({...formData, schedule: e.target.value})} className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
             </div>
 
           </div>

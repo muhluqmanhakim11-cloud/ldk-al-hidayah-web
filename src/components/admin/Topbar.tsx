@@ -28,7 +28,7 @@ export default function Topbar({ session, setIsOpen }: TopbarProps) {
       <div className="flex items-center">
         <button 
           onClick={() => setIsOpen(true)} 
-          className="lg:hidden text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 p-1 mr-3"
+          className="lg:hidden text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:text-gray-100 dark:hover:text-gray-100 p-1 mr-3"
         >
           <Menu size={24} />
         </button>
@@ -42,14 +42,14 @@ export default function Topbar({ session, setIsOpen }: TopbarProps) {
         <div className="flex items-center space-x-3">
           <ThemeToggle />
           <div className="text-right hidden sm:block">
-            <p className="text-sm font-medium text-gray-900 leading-tight dark:text-white">{user?.name}</p>
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 leading-tight dark:text-white">{user?.name}</p>
             <p className="text-xs text-gray-500 dark:text-gray-400">
               {user?.role} {user?.role === "ADMIN_BIDANG" && `- ${getDivisionName(user.divisionId)}`}
             </p>
           </div>
           
           {/* Simple Avatar */}
-          <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-700 dark:text-blue-300 font-bold border border-blue-200 dark:border-blue-800 shadow-sm">
+          <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-700 dark:text-blue-400 dark:text-blue-300 font-bold border border-blue-200 dark:border-blue-800 shadow-sm">
             {user?.name?.charAt(0) || "U"}
           </div>
         </div>

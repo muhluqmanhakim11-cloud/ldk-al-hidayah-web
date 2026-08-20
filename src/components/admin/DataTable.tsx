@@ -29,7 +29,7 @@ export default function DataTable<T extends { id: number | string }>({
   return (
     <div className="overflow-x-auto bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-lg shadow-sm">
       <table className="w-full text-sm text-left text-gray-900 dark:text-gray-100">
-        <thead className="text-xs text-gray-700 dark:text-gray-300 uppercase bg-gray-50 dark:bg-slate-800 border-b dark:border-slate-700">
+        <thead className="text-xs text-gray-700 dark:text-gray-300 uppercase bg-gray-50 dark:bg-slate-950 dark:bg-slate-800 border-b dark:border-slate-700">
           <tr>
             {columns.map((col, idx) => (
               <th key={idx} className="px-6 py-3">{col.header}</th>
@@ -39,7 +39,7 @@ export default function DataTable<T extends { id: number | string }>({
         </thead>
         <tbody>
           {data.map((row) => (
-            <tr key={row.id} className="border-b dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/50">
+            <tr key={row.id} className="border-b dark:border-slate-800 hover:bg-gray-50 dark:bg-slate-950 dark:hover:bg-slate-800/50">
               {columns.map((col, idx) => (
                 <td key={idx} className="px-6 py-4">
                   {typeof col.accessor === 'function' ? col.accessor(row) : (row[col.accessor] as React.ReactNode)}
@@ -50,7 +50,7 @@ export default function DataTable<T extends { id: number | string }>({
                   {onEdit && (!canEdit || canEdit(row)) && (
                     <button 
                       onClick={() => onEdit(row)} 
-                      className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium px-2 py-1 bg-blue-50 dark:bg-blue-900/30 rounded"
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-300 font-medium px-2 py-1 bg-blue-50 dark:bg-blue-900/30 rounded"
                     >
                       Edit
                     </button>
@@ -58,7 +58,7 @@ export default function DataTable<T extends { id: number | string }>({
                   {onDelete && (!canDelete || canDelete(row)) && (
                     <button 
                       onClick={() => onDelete(row)} 
-                      className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 font-medium px-2 py-1 bg-red-50 dark:bg-red-900/30 rounded"
+                      className="text-red-600 dark:text-red-400 hover:text-red-800 dark:text-red-300 dark:hover:text-red-300 font-medium px-2 py-1 bg-red-50 dark:bg-red-900/30 rounded"
                     >
                       Hapus
                     </button>

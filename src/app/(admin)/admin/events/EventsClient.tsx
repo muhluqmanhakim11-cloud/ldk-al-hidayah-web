@@ -54,8 +54,8 @@ export default function EventsClient({ periods, divisions, programs, userRole, u
   const columns = [
     { header: "Kegiatan", accessor: (row: any) => (
       <div>
-        <p className="font-medium text-gray-900">{row.name}</p>
-        <p className="text-xs text-gray-500">{row.program?.name}</p>
+        <p className="font-medium text-gray-900 dark:text-gray-100">{row.name}</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">{row.program?.name}</p>
       </div>
     )},
     { header: "Tanggal", accessor: (row: any) => row.date ? new Date(row.date).toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta' }) : "-" },
@@ -63,12 +63,12 @@ export default function EventsClient({ periods, divisions, programs, userRole, u
       header: "Status", 
       accessor: (row: any) => (
         <span className={`px-2 py-1 rounded text-xs font-medium 
-          ${row.status === 'PUBLISHED' ? 'bg-green-100 text-green-700' : 
-            row.status === 'COMPLETED' || row.status === 'DONE' ? 'bg-blue-100 text-blue-700' :
-            row.status === 'CANCELLED' ? 'bg-red-100 text-red-700' :
+          ${row.status === 'PUBLISHED' ? 'bg-green-100 text-green-700 dark:text-green-400' : 
+            row.status === 'COMPLETED' || row.status === 'DONE' ? 'bg-blue-100 text-blue-700 dark:text-blue-400' :
+            row.status === 'CANCELLED' ? 'bg-red-100 text-red-700 dark:text-red-400' :
             row.status === 'UPCOMING' ? 'bg-yellow-100 text-yellow-700' :
             row.status === 'ONGOING' ? 'bg-purple-100 text-purple-700' :
-            'bg-gray-100 text-gray-700'}`}>
+            'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300'}`}>
           {row.status}
         </span>
       )
@@ -123,7 +123,7 @@ export default function EventsClient({ periods, divisions, programs, userRole, u
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <div className="bg-white p-4 rounded-lg shadow-sm border flex flex-wrap gap-4 items-center justify-between">
+      <div className="bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border flex flex-wrap gap-4 items-center justify-between">
         <div className="flex flex-wrap gap-4">
           <input 
             type="text" placeholder="Cari kegiatan..." 
@@ -169,7 +169,7 @@ export default function EventsClient({ periods, divisions, programs, userRole, u
       </div>
 
       {fetchLoading ? (
-        <div className="p-8 text-center text-gray-500 bg-white border rounded-lg shadow-sm">Loading data...</div>
+        <div className="p-8 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-slate-900 border rounded-lg shadow-sm">Loading data...</div>
       ) : (
         <DataTable 
           data={data} 
@@ -180,7 +180,7 @@ export default function EventsClient({ periods, divisions, programs, userRole, u
       )}
 
       {/* Pagination controls */}
-      <div className="flex justify-between items-center bg-white p-4 border rounded-lg shadow-sm">
+      <div className="flex justify-between items-center bg-white dark:bg-slate-900 p-4 border rounded-lg shadow-sm">
         <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-3 py-1 border rounded disabled:opacity-50">Sebelumnnya</button>
         <span className="text-sm">Halaman {page}</span>
         <button onClick={() => setPage(p => p + 1)} disabled={data.length < 50} className="px-3 py-1 border rounded disabled:opacity-50">Selanjutnya</button>
@@ -188,7 +188,7 @@ export default function EventsClient({ periods, divisions, programs, userRole, u
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={formData.id ? "Edit Kegiatan" : "Tambah Kegiatan"}>
         <form onSubmit={handleSubmit} className="space-y-4 text-black">
-          {error && <div className="text-red-500 text-sm bg-red-50 p-2 rounded">{error}</div>}
+          {error && <div className="text-red-500 text-sm bg-red-50 dark:bg-red-900/30 p-2 rounded">{error}</div>}
           
           <div className="grid grid-cols-2 gap-4">
             <div>

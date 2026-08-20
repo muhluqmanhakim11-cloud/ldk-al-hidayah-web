@@ -41,8 +41,8 @@ export default async function AdminDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-500 mt-1">Selamat datang kembali, {session.user.name}!</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Dashboard</h1>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">Selamat datang kembali, {session.user.name}!</p>
       </div>
 
       {/* Stats Grid */}
@@ -62,7 +62,7 @@ export default async function AdminDashboard() {
       {/* Quick Actions */}
       {userRole !== "KETUA" && (
         <div>
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Aksi Cepat</h2>
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Aksi Cepat</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <QuickAction title="Data Program" href="/admin/programs" icon={FileText} />
             <QuickAction title="Data Kegiatan" href="/admin/events" icon={CalendarDays} />

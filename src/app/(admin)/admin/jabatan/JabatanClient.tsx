@@ -100,16 +100,16 @@ export default function JabatanClient({ initialData, userRole }: { initialData: 
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={formData.id ? "Edit Jabatan" : "Tambah Jabatan"}>
         <form onSubmit={handleSubmit} className="space-y-4 text-black">
-          {error && <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg border border-red-100">{error}</div>}
+          {error && <div className="text-red-500 text-sm bg-red-50 dark:bg-red-900/30 p-3 rounded-lg border border-red-100">{error}</div>}
           
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-gray-700">Nama Jabatan</label>
-            <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="Contoh: Ketua, Sekretaris" />
+            <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Nama Jabatan</label>
+            <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="Contoh: Ketua, Sekretaris" />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-gray-700">Level (Order Hierarki)</label>
-            <input type="number" required value={formData.level} onChange={e => setFormData({...formData, level: parseInt(e.target.value)})} className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
-            <p className="text-xs text-gray-500 mt-2 bg-gray-50 p-2 rounded border border-gray-100">💡 Makin kecil angkanya, makin tinggi jabatannya (contoh: 1 = Pembina, 2 = Ketua).</p>
+            <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Level (Order Hierarki)</label>
+            <input type="number" required value={formData.level} onChange={e => setFormData({...formData, level: parseInt(e.target.value)})} className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 bg-gray-50 dark:bg-slate-950 p-2 rounded border border-gray-100 dark:border-slate-800">💡 Makin kecil angkanya, makin tinggi jabatannya (contoh: 1 = Pembina, 2 = Ketua).</p>
           </div>
           
           <div className="pt-4 border-t mt-4">

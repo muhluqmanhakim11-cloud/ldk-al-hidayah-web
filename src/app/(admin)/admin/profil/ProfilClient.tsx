@@ -99,33 +99,33 @@ export default function ProfilClient() {
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-lg shadow overflow-hidden">
         <table className="min-w-full text-left">
-          <thead className="bg-gray-50 border-b">
+          <thead className="bg-gray-50 dark:bg-slate-950 border-b">
             <tr>
-              <th className="p-4 font-semibold text-gray-700 w-16">Urutan</th>
-              <th className="p-4 font-semibold text-gray-700">Judul</th>
-              <th className="p-4 font-semibold text-gray-700">Konten Singkat</th>
-              <th className="p-4 font-semibold text-gray-700 w-32">Status</th>
-              <th className="p-4 font-semibold text-gray-700 w-48 text-right">Aksi</th>
+              <th className="p-4 font-semibold text-gray-700 dark:text-gray-300 w-16">Urutan</th>
+              <th className="p-4 font-semibold text-gray-700 dark:text-gray-300">Judul</th>
+              <th className="p-4 font-semibold text-gray-700 dark:text-gray-300">Konten Singkat</th>
+              <th className="p-4 font-semibold text-gray-700 dark:text-gray-300 w-32">Status</th>
+              <th className="p-4 font-semibold text-gray-700 dark:text-gray-300 w-48 text-right">Aksi</th>
             </tr>
           </thead>
           <tbody>
             {profiles.length === 0 ? (
-              <tr><td colSpan={5} className="p-4 text-center text-gray-500">Belum ada data profil</td></tr>
+              <tr><td colSpan={5} className="p-4 text-center text-gray-500 dark:text-gray-400">Belum ada data profil</td></tr>
             ) : profiles.map((p) => (
-              <tr key={p.id} className="border-b hover:bg-gray-50">
+              <tr key={p.id} className="border-b hover:bg-gray-50 dark:hover:bg-slate-800/50 dark:bg-slate-950">
                 <td className="p-4 text-center">{p.orderIndex}</td>
                 <td className="p-4 font-medium">{p.title}</td>
-                <td className="p-4 text-sm text-gray-600 truncate max-w-xs">{p.content.substring(0, 100)}...</td>
+                <td className="p-4 text-sm text-gray-600 dark:text-gray-400 truncate max-w-xs">{p.content.substring(0, 100)}...</td>
                 <td className="p-4">
-                  <span className={`px-2 py-1 text-xs rounded-full font-bold ${p.status === 'PUBLISHED' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
+                  <span className={`px-2 py-1 text-xs rounded-full font-bold ${p.status === 'PUBLISHED' ? 'bg-green-100 text-green-700 dark:text-green-400' : 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300'}`}>
                     {p.status}
                   </span>
                 </td>
                 <td className="p-4 text-right space-x-2">
-                  <button onClick={() => openEditModal(p)} className="text-blue-600 hover:underline text-sm">Edit</button>
-                  <button onClick={() => handleDelete(p.id)} className="text-red-600 hover:underline text-sm">Hapus</button>
+                  <button onClick={() => openEditModal(p)} className="text-blue-600 dark:text-blue-400 hover:underline text-sm">Edit</button>
+                  <button onClick={() => handleDelete(p.id)} className="text-red-600 dark:text-red-400 hover:underline text-sm">Hapus</button>
                 </td>
               </tr>
             ))}
@@ -135,10 +135,10 @@ export default function ProfilClient() {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6">
+          <div className="bg-white dark:bg-slate-900 rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold">{formData.id ? "Edit" : "Tambah"} Bagian Profil</h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600">&times;</button>
+              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 dark:text-gray-400">&times;</button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -150,7 +150,7 @@ export default function ProfilClient() {
                 <label className="block text-sm font-medium mb-1">Logo / Gambar (Opsional)</label>
                 <div className="flex items-center gap-4 mb-2">
                   {formData.imageUrl ? (
-                    <div className="relative w-16 h-16 rounded overflow-hidden border border-gray-200">
+                    <div className="relative w-16 h-16 rounded overflow-hidden border border-gray-200 dark:border-slate-700">
                       <img src={formData.imageUrl} alt="Preview" className="w-full h-full object-cover" />
                       <button 
                         type="button" 
@@ -161,11 +161,11 @@ export default function ProfilClient() {
                       </button>
                     </div>
                   ) : (
-                    <div className="w-16 h-16 bg-gray-100 rounded flex items-center justify-center text-gray-400 border border-gray-200">
+                    <div className="w-16 h-16 bg-gray-100 dark:bg-slate-800 rounded flex items-center justify-center text-gray-400 border border-gray-200 dark:border-slate-700">
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>
                   )}
-                  <label className="cursor-pointer bg-blue-50 text-blue-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-100 transition-colors">
+                  <label className="cursor-pointer bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
                     Pilih File (Choose File)
                     <input 
                       type="file" 
@@ -207,7 +207,7 @@ export default function ProfilClient() {
               </div>
               
               <div className="pt-4 flex justify-end space-x-3">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 border rounded hover:bg-gray-50">Batal</button>
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 border rounded hover:bg-gray-50 dark:hover:bg-slate-800/50 dark:bg-slate-950">Batal</button>
                 <button type="submit" disabled={submitting} className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50">
                   {submitting ? "Menyimpan..." : "Simpan (Otomatis Publish)"}
                 </button>
