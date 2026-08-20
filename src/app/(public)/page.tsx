@@ -27,6 +27,7 @@ export default async function HomePage() {
     where: eq(articles.status, 'PUBLISHED'),
     orderBy: [desc(articles.publishedAt)],
     limit: 3,
+    with: { author: true },
   });
 
   return (
