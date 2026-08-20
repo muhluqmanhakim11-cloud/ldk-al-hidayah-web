@@ -71,7 +71,7 @@ export default function AnnouncementPopup() {
         
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-5 text-white flex items-center gap-3">
-          <div className="bg-white dark:bg-slate-900/20 p-2 rounded-lg">
+          <div className="bg-white/20 p-2 rounded-lg">
             <Megaphone size={24} className="text-white" />
           </div>
           <div className="flex-1">

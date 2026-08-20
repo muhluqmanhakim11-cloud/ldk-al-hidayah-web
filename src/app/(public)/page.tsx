@@ -43,7 +43,7 @@ export default async function HomePage() {
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-yellow-500/10 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
         <div className="container mx-auto px-4 lg:px-8 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <div className="inline-block px-4 py-1.5 rounded-full bg-white dark:bg-slate-900/10 border border-white/20 backdrop-blur-sm text-green-50 font-semibold text-sm mb-4 animate-fade-in-up">
+            <div className="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm text-green-50 font-semibold text-sm mb-4 animate-fade-in-up">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse inline-block mr-2"></span>
               UKM Kerohanian Islam STMIK IKMI
             </div>
@@ -54,10 +54,10 @@ export default async function HomePage() {
               Wadah pembinaan mahasiswa muslim STMIK IKMI Cirebon untuk mengembangkan potensi spiritual, intelektual, dan sosial.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-              <Link href="/rekrutmen" className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white dark:bg-slate-900 text-green-900 font-bold hover:scale-105 hover:shadow-xl transition-all duration-300 active:scale-95 shadow-lg shadow-white/10">
+              <Link href="/rekrutmen" className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white text-green-900 font-bold hover:scale-105 hover:shadow-xl transition-all duration-300 active:scale-95 shadow-lg shadow-white/10">
                 Bergabung Sekarang
               </Link>
-              <Link href="/profil" className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white dark:bg-slate-900/10 border border-white/30 backdrop-blur-sm text-white font-semibold hover:bg-white dark:bg-slate-900/20 transition-all duration-300 active:scale-95">
+              <Link href="/profil" className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white/10 border border-white/30 backdrop-blur-sm text-white font-semibold hover:bg-white/20 transition-all duration-300 active:scale-95">
                 Kenali Kami
               </Link>
             </div>

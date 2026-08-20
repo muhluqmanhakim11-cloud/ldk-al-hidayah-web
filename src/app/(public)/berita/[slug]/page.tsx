@@ -67,7 +67,7 @@ export default async function BeritaDetailPage({ params }: { params: Promise<{ s
             </h1>
             <div className="flex flex-wrap items-center text-gray-300 text-sm gap-4 md:gap-6 mt-6">
               <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-900/20 flex items-center justify-center text-white font-bold mr-3 backdrop-blur-sm">
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold mr-3 backdrop-blur-sm">
                   {article.author?.name ? article.author.name.charAt(0) : 'A'}
                 </div>
                 <span>Oleh <strong className="text-white">{article.author?.name || 'Admin'}</strong></span>

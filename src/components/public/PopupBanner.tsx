@@ -42,7 +42,7 @@ export default function PopupBanner({ imageUrl, duration }: PopupBannerProps) {
       <div className="relative max-w-4xl w-full flex flex-col items-center animate-in zoom-in-95 duration-300">
         <button
           onClick={() => setIsOpen(false)}
-          className="absolute -top-12 right-0 md:-right-12 bg-white dark:bg-slate-900/10 hover:bg-white dark:bg-slate-900/20 text-white rounded-full p-2 transition-colors flex items-center justify-center backdrop-blur-md border border-white/20"
+          className="absolute -top-12 right-0 md:-right-12 bg-white/10 hover:bg-white/20 text-white rounded-full p-2 transition-colors flex items-center justify-center backdrop-blur-md border border-white/20"
           aria-label="Tutup"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

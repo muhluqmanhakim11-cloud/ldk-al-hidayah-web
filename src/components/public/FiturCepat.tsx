@@ -12,14 +12,14 @@ export default function FiturCepat() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Large Card (Spans 2 columns on desktop) */}
           <Link href="/rekrutmen" className="md:col-span-2 group relative overflow-hidden bg-gradient-to-br from-green-600 to-green-800 rounded-3xl p-8 md:p-10 text-white shadow-xl shadow-green-900/10 transition-all duration-300 hover:shadow-2xl hover:shadow-green-900/20 hover:-translate-y-1">
-            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white dark:bg-slate-900/10 blur-3xl rounded-full transition-transform duration-700 group-hover:scale-150"></div>
+            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white/10 blur-3xl rounded-full transition-transform duration-700 group-hover:scale-150"></div>
             <div className="absolute bottom-0 right-0 p-6 opacity-20 group-hover:opacity-40 transition-opacity duration-300 group-hover:scale-110 transform">
               <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
             </div>
             
             <div className="relative z-10 h-full flex flex-col justify-between">
               <div>
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-white dark:bg-slate-900/20 backdrop-blur-sm rounded-xl mb-6">
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl mb-6">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                 </div>
                 <h3 className="text-3xl md:text-4xl font-extrabold mb-3">Gabung LDK</h3>
@@ -28,7 +28,7 @@ export default function FiturCepat() {
                 </p>
               </div>
               <div className="mt-8">
-                <span className="inline-flex items-center font-bold text-green-900 bg-white dark:bg-slate-900 px-5 py-2.5 rounded-full text-sm group-hover:pl-6 transition-all">
+                <span className="inline-flex items-center font-bold text-green-900 bg-white px-5 py-2.5 rounded-full text-sm group-hover:pl-6 transition-all">
                   Daftar Sekarang
                   <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                 </span>
