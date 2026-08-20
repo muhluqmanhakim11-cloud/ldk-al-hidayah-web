@@ -28,7 +28,10 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const [newData] = await db.insert(dkmInventaris).values(body).returning();
+    const [newData] = await db.insert(dkmInventaris).values({
+      ...body,
+      tglAudit: new Date(body.tglAudit)
+    }).returning();
     
     
     try {

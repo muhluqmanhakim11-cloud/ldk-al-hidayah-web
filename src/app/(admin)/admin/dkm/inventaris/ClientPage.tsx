@@ -119,8 +119,8 @@ export default function ClientPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100 print:hidden">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Inventaris Musala</h1>
-          <p className="text-gray-500 mt-1">Kelola data inventaris musala</p>
+          <h1 className="text-2xl font-bold text-gray-800">Inventaris Masjid</h1>
+          <p className="text-gray-500 mt-1">Kelola data inventaris masjid</p>
         </div>
         <div className="flex flex-wrap gap-3 w-full md:w-auto">
           <button onClick={() => window.print()} className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-sm"><Printer size={20} /> Cetak PDF</button>
@@ -140,7 +140,7 @@ export default function ClientPage() {
         </div>
       </div>
       
-      <PrintHeader title="Laporan Inventaris Musala" />
+      <PrintHeader title="Laporan Inventaris Masjid" />
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 print:shadow-none print:border-none print:p-0">
         {isLoading ? (
