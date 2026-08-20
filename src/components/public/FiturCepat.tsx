@@ -39,7 +39,7 @@ export default function FiturCepat() {
           {/* Vertical Stack of 2 Smaller Cards */}
           <div className="grid grid-cols-1 gap-6">
             <a href="https://quran.kemenag.go.id/" target="_blank" rel="noopener noreferrer" className="group bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
-              <div className="absolute -right-6 -bottom-6 text-gray-50 opacity-50 group-hover:scale-110 transition-transform">
+              <div className="absolute -right-6 -bottom-6 text-gray-100 dark:text-slate-800 opacity-50 group-hover:scale-110 transition-transform">
                 <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg>
               </div>
               <div className="flex items-center gap-4 mb-4 relative z-10">
@@ -54,7 +54,7 @@ export default function FiturCepat() {
             </a>
 
             <Link href="/kegiatan" className="group bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
-              <div className="absolute -right-6 -bottom-6 text-gray-50 opacity-50 group-hover:scale-110 transition-transform">
+              <div className="absolute -right-6 -bottom-6 text-gray-100 dark:text-slate-800 opacity-50 group-hover:scale-110 transition-transform">
                 <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
               </div>
               <div className="flex items-center gap-4 mb-4 relative z-10">
