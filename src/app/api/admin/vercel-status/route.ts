@@ -18,7 +18,7 @@ export async function GET() {
     const svg = await res.text();
     let status = 'unknown';
     
-    if (svg.includes('passing') || svg.includes('ready')) {
+    if (svg.includes('passing') || svg.includes('ready') || svg.includes('deployed')) {
       status = 'passing';
     } else if (svg.includes('building')) {
       status = 'building';
