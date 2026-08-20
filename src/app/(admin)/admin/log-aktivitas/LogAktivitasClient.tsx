@@ -68,11 +68,49 @@ export default function LogAktivitasClient({ divisions }: { divisions: any[] }) 
     },
     { 
       header: "Modul / Entitas", 
-      accessor: (row: any) => (
-        <div>
-          <p className="font-semibold text-gray-800">{row.entityType.replace(/_/g, " ")}</p>
-        </div>
-      ) 
+      accessor: (row: any) => {
+        let entity = row.entityType.replace(/_/g, " ");
+        // Mapping common backend entities to readable Indonesian text
+        const map: Record<string, string> = {
+          "ANNOUNCEMENTS [ID] ACKNOWLEDGE": "Konfirmasi Pengumuman",
+          "ANNOUNCEMENTS": "Pengumuman",
+          "KOMINFO CATATAN": "Catatan Kominfo",
+          "GALLERIES": "Galeri / Dokumentasi",
+          "DKM INVENTARIS": "Inventaris Masjid",
+          "DKM PIKET": "Piket Kebersihan DKM",
+          "DKM PETUGAS": "Jadwal Petugas DKM",
+          "DKM CATATAN": "Catatan DKM",
+          "PENSOS KUNJUNGAN": "Kunjungan Tokoh/Ulama",
+          "PENSOS BANSOS": "Log Baksos Pensos",
+          "PENSOS FSLDK": "Relasi FSLDK Pensos",
+          "PENSOS KAJIAN": "Silabus Kajian Pensos",
+          "PENSOS CATATAN": "Catatan Pensos",
+          "SENI OLAHRAGA AGENDA": "Agenda Latihan",
+          "SENI OLAHRAGA CATATAN": "Catatan Seni & Olahraga",
+          "KADERISASI DATABASE": "Database Kader",
+          "KADERISASI ABSENSI": "Absensi Mentoring",
+          "KADERISASI CATATAN": "Catatan Kaderisasi",
+          "KOMINFO PLANNER": "Content Planner",
+          "KETUA CATATAN": "Catatan Ketua",
+          "USERS": "Pengguna Sistem",
+          "SETTINGS": "Pengaturan Situs",
+          "ARTICLES": "Artikel & Berita",
+          "EVENTS": "Agenda & Kegiatan",
+          "PROGRAMS": "Program Kerja",
+          "PROFILES": "Profil LDK",
+          "PERIODS": "Periode Kepengurusan",
+          "POSITIONS": "Struktur Organisasi",
+          "DIVISIONS": "Bidang / Divisi",
+          "RECRUITMENTS": "Pendaftaran Anggota (Recruitment)",
+          "RUNNING TEXTS": "Running Text"
+        };
+        
+        return (
+          <div>
+            <p className="font-semibold text-gray-800">{map[entity] || entity}</p>
+          </div>
+        );
+      } 
     },
   ];
 
