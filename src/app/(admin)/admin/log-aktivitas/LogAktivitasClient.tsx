@@ -48,7 +48,7 @@ export default function LogAktivitasClient({ divisions }: { divisions: any[] }) 
     { 
       header: "Waktu", 
       accessor: (row: any) => (
-        <span className="text-sm font-medium text-gray-700">
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
           {formatter.format(new Date(row.createdAt)).replace(/\./g, ":")}
         </span>
       ) 
@@ -107,7 +107,7 @@ export default function LogAktivitasClient({ divisions }: { divisions: any[] }) 
         
         return (
           <div>
-            <p className="font-semibold text-gray-800">{map[entity] || entity}</p>
+            <p className="font-semibold text-gray-800 dark:text-gray-200">{map[entity] || entity}</p>
           </div>
         );
       } 
@@ -117,10 +117,10 @@ export default function LogAktivitasClient({ divisions }: { divisions: any[] }) 
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4 items-center justify-between">
+      <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-slate-800 flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
           <select 
-            className="border-gray-300 rounded-lg px-4 py-2 text-sm w-full md:w-64 bg-gray-50 focus:ring-blue-500 focus:border-blue-500" 
+            className="border-gray-300 dark:border-slate-700 rounded-lg px-4 py-2 text-sm w-full md:w-64 bg-gray-50 dark:bg-slate-800 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500" 
             value={filterDivision} 
             onChange={e => setFilterDivision(e.target.value)}
           >
@@ -131,7 +131,7 @@ export default function LogAktivitasClient({ divisions }: { divisions: any[] }) 
           </select>
           <button 
             onClick={() => fetchData(false)}
-            className="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors"
+            className="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
           >
             Refresh
           </button>
@@ -139,9 +139,9 @@ export default function LogAktivitasClient({ divisions }: { divisions: any[] }) 
       </div>
 
       {loading ? (
-        <div className="p-12 text-center bg-white border rounded-xl shadow-sm">
+        <div className="p-12 text-center bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-xl shadow-sm">
           <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-500">Memuat log aktivitas...</p>
+          <p className="text-gray-500 dark:text-gray-400">Memuat log aktivitas...</p>
         </div>
       ) : (
         <DataTable data={data} columns={columns} />

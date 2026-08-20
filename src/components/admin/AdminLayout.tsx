@@ -16,7 +16,7 @@ export default function AdminLayout({ children, session, vercelBadgeUrl }: Admin
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-gray-50 text-gray-900 overflow-hidden relative">
+    <div className="flex h-screen bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-gray-100 overflow-hidden relative">
       <Sidebar session={session} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} vercelBadgeUrl={vercelBadgeUrl} />
       
       <div className="flex-1 flex flex-col min-w-0">

@@ -24,11 +24,11 @@ export default function Topbar({ session, setIsOpen }: TopbarProps) {
   };
 
   return (
-    <header className="h-16 bg-white border-b flex items-center justify-between px-4 sticky top-0 z-30">
+    <header className="h-16 bg-white dark:bg-slate-900 border-b dark:border-slate-800 flex items-center justify-between px-4 sticky top-0 z-30">
       <div className="flex items-center">
         <button 
           onClick={() => setIsOpen(true)} 
-          className="lg:hidden text-gray-600 hover:text-gray-900 p-1 mr-3"
+          className="lg:hidden text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 p-1 mr-3"
         >
           <Menu size={24} />
         </button>
@@ -43,13 +43,13 @@ export default function Topbar({ session, setIsOpen }: TopbarProps) {
           <ThemeToggle />
           <div className="text-right hidden sm:block">
             <p className="text-sm font-medium text-gray-900 leading-tight dark:text-white">{user?.name}</p>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               {user?.role} {user?.role === "ADMIN_BIDANG" && `- ${getDivisionName(user.divisionId)}`}
             </p>
           </div>
           
           {/* Simple Avatar */}
-          <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold border border-blue-200 shadow-sm">
+          <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-700 dark:text-blue-300 font-bold border border-blue-200 dark:border-blue-800 shadow-sm">
             {user?.name?.charAt(0) || "U"}
           </div>
         </div>
