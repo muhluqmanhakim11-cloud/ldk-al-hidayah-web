@@ -18,8 +18,7 @@ export default function SuksesPage() {
         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Pendaftaran Berhasil!</h1>
         
         <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-          Terima kasih telah mendaftar. Data kamu telah berhasil kami terima. 
-          Silakan tunggu informasi lebih lanjut yang akan dikirimkan melalui WhatsApp atau Email kamu.
+          Alhamdulillah, pendaftaran berhasil! Ahlan wa sahlan, calon pengurus LDK Al-Hidayah. Jazakumullah bil khair atas niat baiknya untuk bergabung dan berproses bersama kami. Data antum sudah kami terima dengan baik. Insya Allah, panitia akan segera menghubungi melalui WhatsApp atau Email untuk tahapan selanjutnya. Tetap semangat, ya!
         </p>
 
         <div className="space-y-4">
