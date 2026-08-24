@@ -28,7 +28,10 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const [newData] = await db.insert(pensosKegiatanSosial).values(body).returning();
+    const [newData] = await db.insert(pensosKegiatanSosial).values({
+      ...body,
+      tanggal: new Date(body.tanggal)
+    }).returning();
     
     
     try {
