@@ -12,7 +12,7 @@ export default function ClientPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [formData, setFormData] = useState({ tanggal: new Date().toISOString().slice(0,10), waktu: '', jenisTugas: 'Imam', namaPetugas: '', kontak: '', statusKonfirmasi: 'Menunggu Konfirmasi' });
+  const [formData, setFormData] = useState({ hari: 'Senin', waktu: '', jenisTugas: 'Imam', namaPetugas: '', kontak: '', statusKonfirmasi: 'Menunggu Konfirmasi' });
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -67,10 +67,6 @@ export default function ClientPage() {
     setIsSubmitting(true);
     try {
       const payload = { ...formData };
-      // Convert dates to ISO string if exists
-      if ('tanggal' in payload) payload.tanggal = new Date(payload.tanggal as string).toISOString();
-      if ('tanggalPosting' in payload) payload.tanggalPosting = new Date(payload.tanggalPosting as string).toISOString();
-      if ('jadwal' in payload) payload.jadwal = new Date(payload.jadwal as string).toISOString();
 
       const res = await fetch("/api/admin/dkm/petugas", {
         method: "POST",
@@ -81,7 +77,7 @@ export default function ClientPage() {
         toast.success("Data berhasil disimpan");
         setIsFormOpen(false);
         fetchData();
-        setFormData({ tanggal: new Date().toISOString().slice(0,10), waktu: '', jenisTugas: 'Imam', namaPetugas: '', kontak: '', statusKonfirmasi: 'Menunggu Konfirmasi' });
+        setFormData({ hari: 'Senin', waktu: '', jenisTugas: 'Imam', namaPetugas: '', kontak: '', statusKonfirmasi: 'Menunggu Konfirmasi' });
       } else {
         toast.error("Gagal menyimpan data");
       }
@@ -94,7 +90,7 @@ export default function ClientPage() {
 
   const columns = [
 
-    { header: "Tanggal", accessor: (row: any) => new Date(row.tanggal as string).toLocaleDateString("id-ID") },
+    { header: "Hari", accessor: "hari" },
     { header: "Waktu", accessor: "waktu" },
     { header: "Jenis Tugas", accessor: "jenisTugas" },
     { header: "Nama Petugas", accessor: "namaPetugas" },
@@ -154,7 +150,18 @@ export default function ClientPage() {
       <Modal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} title="Tambah Data Baru">
         <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
 
-          <div><label className="block text-sm font-medium mb-1">Tanggal</label><input type="date" required value={formData.tanggal} onChange={e => setFormData({...formData, tanggal: e.target.value})} className="w-full border rounded-lg p-2" /></div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Hari</label>
+            <select value={formData.hari} onChange={e => setFormData({...formData, hari: e.target.value})} className="w-full border rounded-lg p-2">
+              <option value="Senin">Senin</option>
+              <option value="Selasa">Selasa</option>
+              <option value="Rabu">Rabu</option>
+              <option value="Kamis">Kamis</option>
+              <option value="Jumat">Jumat</option>
+              <option value="Sabtu">Sabtu</option>
+              <option value="Minggu">Minggu</option>
+            </select>
+          </div>
           <div><label className="block text-sm font-medium mb-1">Waktu</label><input type="text" required placeholder="Misal: Maghrib" value={formData.waktu} onChange={e => setFormData({...formData, waktu: e.target.value})} className="w-full border rounded-lg p-2" /></div>
           <div>
             <label className="block text-sm font-medium mb-1">Jenis Tugas</label>

@@ -383,7 +383,7 @@ export const mediaAssetsRelations = relations(mediaAssets, () => ({}));
 // 1. DKM Module
 export const dkmJadwalPetugas = pgTable('dkm_jadwal_petugas', {
   id: serial('id').primaryKey(),
-  tanggal: timestamp('tanggal').notNull(),
+  hari: varchar('hari', { length: 50 }).notNull(),
   waktu: varchar('waktu', { length: 50 }).notNull(),
   jenisTugas: varchar('jenis_tugas', { length: 50 }).notNull(),
   namaPetugas: varchar('nama_petugas', { length: 150 }).notNull(),
