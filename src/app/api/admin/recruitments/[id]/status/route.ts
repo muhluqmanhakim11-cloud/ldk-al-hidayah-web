@@ -4,6 +4,7 @@ import { recruitments, recruitmentLogs, kaderDatabase, members, periods, positio
 import { eq, and } from "drizzle-orm";
 import { z } from "zod";
 import { auth } from "@/auth";
+import { sendAcceptedEmail } from "@/lib/email";
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -157,6 +158,28 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       } catch (e) {
         console.warn("Auto-insert members failed:", e);
         // Non-fatal: status sudah berhasil diubah, insert member hanya warning
+      }
+
+      // ── KIRIM EMAIL SELAMAT DATANG ────────────────────────────────────────
+      if (existingRecruitment.email) {
+        try {
+          let divisiName: string | undefined;
+          if (existingRecruitment.interestedDivisionId) {
+            const divRow = await db.query.divisions.findFirst({
+              where: eq(divisions.id, existingRecruitment.interestedDivisionId)
+            });
+            divisiName = divRow?.name ?? undefined;
+          }
+
+          await sendAcceptedEmail({
+            to: existingRecruitment.email,
+            name: existingRecruitment.name,
+            division: divisiName,
+          });
+        } catch (e) {
+          console.warn("Gagal mengirim email notifikasi:", e);
+          // Non-fatal: status & insert tetap berhasil, email hanya warning
+        }
       }
     }
 
