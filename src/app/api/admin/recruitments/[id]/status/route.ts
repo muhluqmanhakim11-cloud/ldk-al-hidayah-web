@@ -45,9 +45,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     }
 
     // Fetch existing recruitment to check division ownership
-    const existingRecruitment = await db.query.recruitments.findFirst({
-      where: eq(recruitments.id, recruitmentId)
-    });
+    const existingRecruitments = await db.select().from(recruitments).where(eq(recruitments.id, recruitmentId)).limit(1);
+    const existingRecruitment = existingRecruitments[0];
 
     if (!existingRecruitment) {
       return NextResponse.json({ success: false, message: "Data tidak ditemukan", errors: [] }, { status: 404 });
@@ -69,21 +68,17 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       return NextResponse.json({ success: true, message: "Status tidak berubah", data: existingRecruitment });
     }
 
-    // Perform update and log in a transaction
-    const [updatedData] = await db.transaction(async (tx) => {
-      const [updated] = await tx.update(recruitments)
-        .set({ status: newStatus as "PENDING" | "REVIEWED" | "ACCEPTED" | "REJECTED" })
-        .where(eq(recruitments.id, recruitmentId))
-        .returning();
+    // Perform update and log sequentially (neon-http doesn't support transactions)
+    const [updatedData] = await db.update(recruitments)
+      .set({ status: newStatus as "PENDING" | "REVIEWED" | "ACCEPTED" | "REJECTED" })
+      .where(eq(recruitments.id, recruitmentId))
+      .returning();
 
-      await tx.insert(recruitmentLogs).values({
-        recruitmentId,
-        oldStatus,
-        newStatus: newStatus as "PENDING" | "REVIEWED" | "ACCEPTED" | "REJECTED",
-        changedBy: parseInt(session.user.id as string, 10),
-      });
-
-      return [updated];
+    await db.insert(recruitmentLogs).values({
+      recruitmentId,
+      oldStatus,
+      newStatus: newStatus as "PENDING" | "REVIEWED" | "ACCEPTED" | "REJECTED",
+      changedBy: parseInt(session.user.id as string, 10),
     });
 
     return NextResponse.json({
