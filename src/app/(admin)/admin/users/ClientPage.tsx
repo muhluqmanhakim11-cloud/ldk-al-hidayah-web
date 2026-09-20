@@ -143,7 +143,7 @@ export default function ClientPage() {
             <label className="block text-sm font-medium mb-1">Role / Hak Akses</label>
             <select value={formData.role} onChange={e => setFormData({...formData, role: e.target.value})} className="w-full border rounded-lg p-2">
               <option value="super_admin">Super Admin (Akses Penuh)</option>
-              <option value="admin_dkm">Admin Divisi DKM</option>
+              <option value="admin_dkm">Admin Divisi Dewan Kemakmuran Masjid (DKM)</option>
               <option value="admin_kaderisasi">Admin Divisi Kaderisasi</option>
               <option value="admin_kominfo">Admin Divisi Kominfo</option>
               <option value="admin_pensos">Admin Divisi Pensos</option>

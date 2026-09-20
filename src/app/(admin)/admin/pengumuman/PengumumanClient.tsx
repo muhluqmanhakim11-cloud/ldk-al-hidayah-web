@@ -187,7 +187,7 @@ export default function PengumumanClient() {
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Target Divisi</label>
             <select className="w-full border border-gray-300 dark:border-slate-600 p-2 rounded-lg text-gray-900 dark:text-gray-100 bg-white dark:bg-slate-900" value={targetRole} onChange={e => setTargetRole(e.target.value)}>
               <option value="ALL">Semua Divisi (ALL)</option>
-              <option value="admin_dkm">DKM</option>
+              <option value="admin_dkm">Dewan Kemakmuran Masjid (DKM)</option>
               <option value="admin_kaderisasi">Kaderisasi</option>
               <option value="admin_kominfo">Kominfo</option>
               <option value="admin_pensos">Pendidikan & Sosial</option>

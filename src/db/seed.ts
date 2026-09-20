@@ -18,7 +18,7 @@ async function seed() {
 
   // 2. Create Divisions
   await db.insert(divisions).values([
-    { name: "DKM", slug: "dkm", periodId: period.id, isActive: true, description: "Dewan Kemakmuran Masjid" },
+    { name: "Dewan Kemakmuran Masjid (DKM)", slug: "dkm", periodId: period.id, isActive: true, description: "Dewan Kemakmuran Masjid" },
     { name: "Kaderisasi", slug: "kaderisasi", periodId: period.id, isActive: true, description: "Kaderisasi dan Pembinaan" },
     { name: "Kominfo", slug: "kominfo", periodId: period.id, isActive: true, description: "Komunikasi dan Informasi" },
     { name: "Pendidikan dan Sosial", slug: "pensos", periodId: period.id, isActive: true, description: "Pendidikan dan Sosial (Pensos)" },

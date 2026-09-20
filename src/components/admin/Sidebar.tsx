@@ -110,11 +110,11 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
 
   // Division Specific Menus
   const divisionMenus = [
-    // DKM
-    { name: "Jadwal Petugas", href: "/admin/dkm/petugas", icon: CalendarDays, show: isSuperAdmin || isDkm, group: "DKM" },
-    { name: "Inventaris Masjid", href: "/admin/dkm/inventaris", icon: FileText, show: isSuperAdmin || isDkm, group: "DKM" },
-    { name: "Piket Kebersihan", href: "/admin/dkm/piket", icon: FileText, show: isSuperAdmin || isDkm, group: "DKM" },
-    { name: "Catatan DKM", href: "/admin/dkm/catatan", icon: FileText, show: isSuperAdmin || isDkm, group: "DKM" },
+    // Dewan Kemakmuran Masjid (DKM)
+    { name: "Jadwal Petugas", href: "/admin/dkm/petugas", icon: CalendarDays, show: isSuperAdmin || isDkm, group: "Dewan Kemakmuran Masjid (DKM)" },
+    { name: "Inventaris Masjid", href: "/admin/dkm/inventaris", icon: FileText, show: isSuperAdmin || isDkm, group: "Dewan Kemakmuran Masjid (DKM)" },
+    { name: "Piket Kebersihan", href: "/admin/dkm/piket", icon: FileText, show: isSuperAdmin || isDkm, group: "Dewan Kemakmuran Masjid (DKM)" },
+    { name: "Catatan DKM", href: "/admin/dkm/catatan", icon: FileText, show: isSuperAdmin || isDkm, group: "Dewan Kemakmuran Masjid (DKM)" },
     
     // Kaderisasi
     { name: "Database Kader", href: "/admin/kaderisasi/database", icon: Users, show: isSuperAdmin || isKader, group: "Kaderisasi" },

@@ -17,7 +17,7 @@ export default function Topbar({ session, setIsOpen }: TopbarProps) {
 
   // Render division name based on ID for simplicity, in a real app this might be fetched or mapped
   const getDivisionName = (id?: number | null) => {
-    if (id === 1) return "DKM";
+    if (id === 1) return "Dewan Kemakmuran Masjid (DKM)";
     if (id === 2) return "Kominfo";
     if (id) return `Bidang ${id}`;
     return "";
