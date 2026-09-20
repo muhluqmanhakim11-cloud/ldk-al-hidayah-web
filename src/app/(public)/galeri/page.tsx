@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { galleries } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import Image from "next/image";
+import GalleryGridClient from "./GalleryGridClient";
 
 export const metadata: Metadata = {
   title: "Galeri & Dokumentasi",
@@ -42,25 +43,10 @@ export default async function GaleriPage() {
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{gallery.title}</h2>
                     {gallery.description && <p className="text-gray-500 dark:text-gray-400 mt-2">{gallery.description}</p>}
                   </div>
-                  <div className="mt-4 md:mt-0 text-sm text-gray-400 font-medium">
-                    {new Date(gallery.createdAt).toLocaleDateString('id-ID', { month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' })}
-                  </div>
                 </div>
 
                 {gallery.images && gallery.images.length > 0 ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {gallery.images.map(image => (
-                      <div key={image.id} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-slate-800 group cursor-pointer">
-                        <Image 
-                          src={image.imageUrl} 
-                          alt={gallery.title} 
-                          fill 
-                          sizes="(max-width: 768px) 50vw, 25vw"
-                          className="object-cover group-hover:scale-110 transition-transform duration-500" 
-                        />
-                      </div>
-                    ))}
-                  </div>
+                  <GalleryGridClient images={gallery.images} title={gallery.title} />
                 ) : (
                   <div className="text-center py-8 bg-gray-50 dark:bg-slate-950 rounded-lg border border-dashed">
                     <p className="text-gray-500 dark:text-gray-400">Belum ada foto dalam galeri ini.</p>
