@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "@/components/ThemeToggle";
+import LanguageSelector from "@/components/LanguageSelector";
 
 export default function Navbar({ logoUrl }: { logoUrl?: string | null }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -74,6 +75,7 @@ export default function Navbar({ logoUrl }: { logoUrl?: string | null }) {
 
             {/* Theme Toggle & Mobile Menu Button */}
             <div className="flex items-center space-x-2 lg:ml-2">
+              <LanguageSelector />
               <ThemeToggle />
               
               <button 
