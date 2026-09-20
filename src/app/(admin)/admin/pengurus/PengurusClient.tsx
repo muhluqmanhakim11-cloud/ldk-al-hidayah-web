@@ -77,8 +77,8 @@ function HoverPhoto({ name, photoUrl }: { name: string; photoUrl: string | null 
             animation: "fadeSlideIn 0.2s ease-out forwards",
           }}
         >
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-600 overflow-hidden w-[180px]">
-            <div className="relative w-[180px] h-[225px]">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-600 overflow-hidden w-[240px]">
+            <div className="relative w-[240px] h-[300px]">
               <Image
                 src={photoUrl}
                 alt={name}
