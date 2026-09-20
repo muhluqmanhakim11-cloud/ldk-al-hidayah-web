@@ -56,8 +56,8 @@ export default function MemberCard({ member, className = "", nameClassName = "",
               animation: "fadeSlideIn 0.2s ease-out forwards",
             }}
           >
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-gray-200 dark:border-slate-600 overflow-hidden w-[140px]">
-              <div className="relative w-[140px] h-[175px]">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-gray-200 dark:border-slate-600 overflow-hidden w-[180px]">
+              <div className="relative w-[180px] h-[225px]">
                 <Image
                   src={member.photoUrl}
                   alt={member.name}
@@ -82,8 +82,8 @@ export default function MemberCard({ member, className = "", nameClassName = "",
           onClick={() => setIsMobileOpen(false)}
         >
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
-          <div className="relative bg-white dark:bg-slate-800 rounded-3xl shadow-2xl overflow-hidden w-48 z-10">
-            <div className="relative w-48 h-60">
+          <div className="relative bg-white dark:bg-slate-800 rounded-3xl shadow-2xl overflow-hidden w-64 z-10">
+            <div className="relative w-64 h-80">
               <Image
                 src={member.photoUrl}
                 alt={member.name}
