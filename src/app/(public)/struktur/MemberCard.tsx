@@ -19,8 +19,28 @@ export default function MemberCard({ member, className = "", nameClassName = "",
   const [show, setShow] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const [isRightSide, setIsRightSide] = useState(false);
+  const [isBottom, setIsBottom] = useState(false);
+
   // Desktop hover
-  const handleMouseEnter = () => setShow(true);
+  const updatePos = (e: React.MouseEvent) => {
+    setPos({ x: e.clientX, y: e.clientY });
+    setIsRightSide(e.clientX > window.innerWidth / 2);
+    setIsBottom(e.clientY > window.innerHeight - 350); // 350px buffer for the popup height
+  };
+
+  const handleMouseEnter = (e: React.MouseEvent) => {
+    if (member.photoUrl) {
+      setShow(true);
+      updatePos(e);
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (member.photoUrl) updatePos(e);
+  };
+
   const handleMouseLeave = () => setShow(false);
 
   // Mobile tap
@@ -35,6 +55,7 @@ export default function MemberCard({ member, className = "", nameClassName = "",
       <div
         className={`relative ${className} ${member.photoUrl ? "cursor-pointer" : ""}`}
         onMouseEnter={handleMouseEnter}
+        onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onTouchEnd={handleTap}
       >
@@ -46,13 +67,14 @@ export default function MemberCard({ member, className = "", nameClassName = "",
         </h3>
         <p className={positionClassName}>{member.position?.name}</p>
 
-        {/* Desktop hover popup (muncul di sisi kanan) */}
+        {/* Desktop hover popup (muncul menyesuaikan kursor) */}
         {show && member.photoUrl && (
           <div
-            className="absolute z-[100] hidden md:block"
+            className="fixed z-[9999] pointer-events-none hidden md:block"
             style={{
-              left: "105%",
-              top: "-50%",
+              left: isRightSide ? undefined : pos.x + 20,
+              right: isRightSide ? window.innerWidth - pos.x + 20 : undefined,
+              top: isBottom ? pos.y - 320 : pos.y - 50,
               animation: "fadeSlideIn 0.2s ease-out forwards",
             }}
           >

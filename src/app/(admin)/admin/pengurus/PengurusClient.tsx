@@ -28,18 +28,26 @@ function HoverPhoto({ name, photoUrl }: { name: string; photoUrl: string | null 
   const [show, setShow] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isRightSide, setIsRightSide] = useState(false);
+  const [isBottom, setIsBottom] = useState(false);
   const containerRef = useRef<HTMLSpanElement>(null);
+
+  const updatePos = (e: React.MouseEvent) => {
+    setPos({ x: e.clientX, y: e.clientY });
+    setIsRightSide(e.clientX > window.innerWidth / 2);
+    setIsBottom(e.clientY > window.innerHeight - 350);
+  };
 
   // Desktop: hover
   const handleMouseEnter = (e: React.MouseEvent) => {
     if (!photoUrl) return;
-    setPos({ x: e.clientX, y: e.clientY });
+    updatePos(e);
     setShow(true);
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!photoUrl) return;
-    setPos({ x: e.clientX, y: e.clientY });
+    updatePos(e);
   };
 
   const handleMouseLeave = () => setShow(false);
@@ -72,8 +80,9 @@ function HoverPhoto({ name, photoUrl }: { name: string; photoUrl: string | null 
         <div
           className="fixed z-[9999] pointer-events-none hidden md:block"
           style={{
-            left: pos.x + 20,
-            top: pos.y - 60,
+            left: isRightSide ? undefined : pos.x + 20,
+            right: isRightSide ? window.innerWidth - pos.x + 20 : undefined,
+            top: isBottom ? pos.y - 320 : pos.y - 50,
             animation: "fadeSlideIn 0.2s ease-out forwards",
           }}
         >
