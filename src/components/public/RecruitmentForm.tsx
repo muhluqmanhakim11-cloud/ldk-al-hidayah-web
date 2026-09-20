@@ -100,7 +100,7 @@ export default function RecruitmentForm({ divisions }: { divisions: { id: number
         </div>
 
         <div>
-          <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1" htmlFor="photo">Pas Foto Terbaru (Max 2MB, JPG/PNG) <span className="text-red-500">*</span></label>
+          <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1" htmlFor="photo">Pas Foto (Max 2MB, JPG/PNG) <span className="text-red-500">*</span></label>
           <input type="file" id="photo" name="photo" required accept="image/jpeg,image/png,image/webp" className="w-full border-gray-300 dark:border-slate-600 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 p-2 border text-sm" />
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Pastikan wajah terlihat jelas. Format gambar akan dioptimasi otomatis.</p>
         </div>

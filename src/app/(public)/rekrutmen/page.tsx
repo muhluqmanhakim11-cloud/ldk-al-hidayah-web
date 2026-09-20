@@ -175,7 +175,7 @@ export default async function RecruitmentLandingPage() {
                   <span className="text-green-500 mr-3">✔</span> Bersedia mengikuti rangkaian kaderisasi (Tarbiyah).
                 </li>
                 <li className="flex items-start">
-                  <span className="text-green-500 mr-3">✔</span> Pas foto terbaru (Formal / Bebas Rapi).
+                  <span className="text-green-500 mr-3">✔</span> Pas foto (Formal / Bebas Rapi).
                 </li>
               </ul>
 
