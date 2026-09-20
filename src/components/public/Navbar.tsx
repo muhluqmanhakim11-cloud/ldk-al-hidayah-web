@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Navbar({ logoUrl }: { logoUrl?: string | null }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -72,10 +71,8 @@ export default function Navbar({ logoUrl }: { logoUrl?: string | null }) {
               })}
             </div>
 
-            {/* Theme Toggle & Mobile Menu Button */}
+            {/* Mobile Menu Button */}
             <div className="flex items-center space-x-2 lg:ml-2">
-              <ThemeToggle />
-              
               <button 
                 className={`lg:hidden p-2.5 rounded-full transition-colors ${isOpen ? 'bg-gray-200 dark:bg-slate-700 text-gray-900 dark:bg-gray-700 dark:text-gray-100' : 'bg-gray-100 dark:bg-slate-800 text-gray-700 hover:bg-gray-200 dark:bg-slate-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'}`}
                 onClick={() => setIsOpen(!isOpen)}
