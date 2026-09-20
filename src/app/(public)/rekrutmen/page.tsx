@@ -45,7 +45,7 @@ export default async function RecruitmentLandingPage() {
           
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             {isRecruitmentOpen ? (
-              <Link href="/rekrutmen/daftar" className="bg-white dark:bg-slate-900 text-green-900 px-8 py-4 rounded-full font-bold hover:bg-green-50 dark:bg-green-900/30 hover:scale-105 transition-all shadow-xl text-center">
+              <Link href="/rekrutmen/daftar" className="bg-white dark:bg-slate-900 text-green-900 dark:text-white px-8 py-4 rounded-full font-bold hover:bg-green-50 dark:hover:bg-slate-800 hover:scale-105 transition-all shadow-xl text-center">
                 Daftar Sekarang &rarr;
               </Link>
             ) : (

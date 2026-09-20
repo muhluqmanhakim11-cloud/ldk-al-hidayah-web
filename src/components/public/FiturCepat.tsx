@@ -28,7 +28,7 @@ export default function FiturCepat() {
                 </p>
               </div>
               <div className="mt-8">
-                <span className="inline-flex items-center font-bold text-green-900 bg-white px-5 py-2.5 rounded-full text-sm group-hover:pl-6 transition-all">
+                <span className="inline-flex items-center font-bold text-green-900 dark:text-white bg-white dark:bg-slate-900 px-5 py-2.5 rounded-full text-sm group-hover:pl-6 transition-all">
                   Daftar Sekarang
                   <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                 </span>
