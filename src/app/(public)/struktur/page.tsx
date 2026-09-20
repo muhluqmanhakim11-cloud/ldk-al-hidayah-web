@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { db } from "@/db";
 import { periods, divisions, positions, members } from "@/db/schema";
 import { eq, asc } from "drizzle-orm";
+import MemberCard from "./MemberCard";
 
 export const metadata: Metadata = {
   title: "Struktur Pengurus",
@@ -75,10 +76,13 @@ export default async function StrukturPage() {
               
               <div className="flex flex-col items-center gap-4">
                 {bphMembers.map((member) => (
-                  <div key={member.id} className="bg-blue-50 dark:bg-blue-900/30 border border-blue-100 rounded-lg p-4 w-64 md:w-80 text-center">
-                    <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm md:text-base">{member.name}</h3>
-                    <p className="text-blue-700 dark:text-blue-400 text-xs font-semibold mt-1">{member.position?.name}</p>
-                  </div>
+                  <MemberCard
+                    key={member.id}
+                    member={member}
+                    className="bg-blue-50 dark:bg-blue-900/30 border border-blue-100 rounded-lg p-4 w-64 md:w-80 text-center"
+                    nameClassName="font-bold text-gray-900 dark:text-gray-100 text-sm md:text-base"
+                    positionClassName="text-blue-700 dark:text-blue-400 text-xs font-semibold mt-1"
+                  />
                 ))}
               </div>
             </div>
@@ -97,10 +101,13 @@ export default async function StrukturPage() {
                   {div.members.length > 0 ? (
                     <div className="flex flex-col items-center gap-3">
                       {div.members.map(member => (
-                        <div key={member.id} className="bg-green-50 dark:bg-green-900/30 border border-green-100 rounded-lg p-3 w-full text-center">
-                          <h4 className="font-bold text-gray-900 dark:text-gray-100 text-sm leading-snug">{member.name}</h4>
-                          <p className="text-green-600 text-xs font-semibold mt-1">{member.position?.name}</p>
-                        </div>
+                        <MemberCard
+                          key={member.id}
+                          member={member}
+                          className="bg-green-50 dark:bg-green-900/30 border border-green-100 rounded-lg p-3 w-full text-center"
+                          nameClassName="font-bold text-gray-900 dark:text-gray-100 text-sm leading-snug"
+                          positionClassName="text-green-600 text-xs font-semibold mt-1"
+                        />
                       ))}
                     </div>
                   ) : (
