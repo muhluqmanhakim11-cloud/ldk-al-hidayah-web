@@ -70,9 +70,6 @@ function HoverPhoto({ name, photoUrl }: { name: string; photoUrl: string | null 
         className={`font-medium ${photoUrl ? "cursor-pointer underline decoration-dotted decoration-green-500 underline-offset-2 select-none" : ""}`}
       >
         {name}
-        {photoUrl && (
-          <span className="ml-1 text-green-500 text-xs">📷</span>
-        )}
       </span>
 
       {/* Desktop hover popup */}

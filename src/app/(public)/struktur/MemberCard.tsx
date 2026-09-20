@@ -61,9 +61,6 @@ export default function MemberCard({ member, className = "", nameClassName = "",
       >
         <h3 className={`${nameClassName} ${member.photoUrl ? "underline decoration-dotted decoration-green-500 underline-offset-2 select-none" : ""}`}>
           {member.name}
-          {member.photoUrl && (
-            <span className="ml-1 text-green-500 text-xs">📷</span>
-          )}
         </h3>
         <p className={positionClassName}>{member.position?.name}</p>
 
