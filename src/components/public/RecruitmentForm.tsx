@@ -70,7 +70,14 @@ export default function RecruitmentForm({ divisions }: { divisions: { id: number
 
         <div>
           <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1" htmlFor="studyProgram">Program Studi <span className="text-red-500">*</span></label>
-          <input type="text" id="studyProgram" name="studyProgram" required className="w-full border-gray-300 dark:border-slate-600 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 p-2 border" placeholder="S1 Informatika" />
+          <select id="studyProgram" name="studyProgram" required className="w-full border-gray-300 dark:border-slate-600 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 p-2 border bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100">
+            <option value="">-- Pilih Program Studi --</option>
+            <option value="S1 Teknik Informatika">S1 Teknik Informatika</option>
+            <option value="S1 Sistem Informasi">S1 Sistem Informasi</option>
+            <option value="S1 Rekayasa Perangkat Lunak">S1 Rekayasa Perangkat Lunak</option>
+            <option value="D3 Manajemen Informatika">D3 Manajemen Informatika</option>
+            <option value="D3 Komputerisasi Akuntansi">D3 Komputerisasi Akuntansi</option>
+          </select>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
