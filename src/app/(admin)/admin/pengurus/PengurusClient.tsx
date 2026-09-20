@@ -27,8 +27,10 @@ type Member = {
 function HoverPhoto({ name, photoUrl }: { name: string; photoUrl: string | null }) {
   const [show, setShow] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0 });
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const containerRef = useRef<HTMLSpanElement>(null);
 
+  // Desktop: hover
   const handleMouseEnter = (e: React.MouseEvent) => {
     if (!photoUrl) return;
     setPos({ x: e.clientX, y: e.clientY });
@@ -42,6 +44,13 @@ function HoverPhoto({ name, photoUrl }: { name: string; photoUrl: string | null 
 
   const handleMouseLeave = () => setShow(false);
 
+  // Mobile: tap to toggle
+  const handleTap = (e: React.TouchEvent) => {
+    if (!photoUrl) return;
+    e.preventDefault(); // prevent ghost click
+    setIsMobileOpen(prev => !prev);
+  };
+
   return (
     <>
       <span
@@ -49,7 +58,8 @@ function HoverPhoto({ name, photoUrl }: { name: string; photoUrl: string | null 
         onMouseEnter={handleMouseEnter}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className={`font-medium ${photoUrl ? "cursor-pointer underline decoration-dotted decoration-green-500 underline-offset-2" : ""}`}
+        onTouchEnd={handleTap}
+        className={`font-medium ${photoUrl ? "cursor-pointer underline decoration-dotted decoration-green-500 underline-offset-2 select-none" : ""}`}
       >
         {name}
         {photoUrl && (
@@ -57,9 +67,10 @@ function HoverPhoto({ name, photoUrl }: { name: string; photoUrl: string | null 
         )}
       </span>
 
+      {/* Desktop hover popup */}
       {show && photoUrl && (
         <div
-          className="fixed z-[9999] pointer-events-none"
+          className="fixed z-[9999] pointer-events-none hidden md:block"
           style={{
             left: pos.x + 20,
             top: pos.y - 60,
@@ -78,6 +89,34 @@ function HoverPhoto({ name, photoUrl }: { name: string; photoUrl: string | null 
             </div>
             <div className="px-2 py-1.5 text-center">
               <p className="text-xs font-semibold text-gray-700 dark:text-gray-200 truncate">{name}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile tap modal */}
+      {isMobileOpen && photoUrl && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center md:hidden"
+          style={{ animation: "fadeSlideIn 0.2s ease-out forwards" }}
+          onClick={() => setIsMobileOpen(false)}
+        >
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+          {/* Card */}
+          <div className="relative bg-white dark:bg-slate-800 rounded-3xl shadow-2xl overflow-hidden w-48 z-10">
+            <div className="relative w-48 h-60">
+              <Image
+                src={photoUrl}
+                alt={name}
+                fill
+                className="object-cover"
+                unoptimized
+              />
+            </div>
+            <div className="px-3 py-2 text-center">
+              <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">{name}</p>
+              <p className="text-xs text-gray-400 mt-0.5">Ketuk untuk menutup</p>
             </div>
           </div>
         </div>
