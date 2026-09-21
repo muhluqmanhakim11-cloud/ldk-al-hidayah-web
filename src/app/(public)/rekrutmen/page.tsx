@@ -194,7 +194,7 @@ export default async function RecruitmentLandingPage() {
           <h2 className="text-3xl md:text-5xl font-bold mb-6">Tunggu Apa Lagi?</h2>
           <p className="text-green-100 text-lg mb-10 max-w-2xl mx-auto">Kesempatan ini tidak datang dua kali. Mulai langkah peradabanmu dari sekarang.</p>
           {isRecruitmentOpen ? (
-            <Link href="/rekrutmen/daftar" className="inline-block bg-white dark:bg-slate-900 text-green-900 px-10 py-4 rounded-full font-bold hover:scale-105 transition-transform shadow-2xl text-lg">
+            <Link href="/rekrutmen/daftar" className="inline-block bg-white dark:bg-slate-900 text-green-900 dark:text-white px-10 py-4 rounded-full font-bold hover:scale-105 dark:hover:bg-slate-800 transition-transform shadow-2xl text-lg">
               Isi Formulir Pendaftaran
             </Link>
           ) : (
