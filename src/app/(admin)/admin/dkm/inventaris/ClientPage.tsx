@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { Plus, RefreshCw, Trash2 } from "lucide-react";
+import { Plus, RefreshCw, Trash2, Edit } from "lucide-react";
 import DataTable from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
 import PrintHeader from "@/components/admin/PrintHeader";
@@ -13,6 +13,8 @@ export default function ClientPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [editId, setEditId] = useState<number | null>(null);
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -81,19 +83,40 @@ export default function ClientPage() {
     {
       header: "Aksi",
       accessor: (row: any) => (
-        <button onClick={() => handleDelete(row.id)} className="text-red-500 hover:text-red-700 dark:text-red-400 p-1 print:hidden">
-          <Trash2 size={18} />
-        </button>
+        <div className="flex gap-2 print:hidden">
+          <button onClick={() => handleEdit(row)} className="text-blue-500 hover:text-blue-700 dark:text-blue-400 p-1">
+            <Edit size={18} />
+          </button>
+          <button onClick={() => handleDelete(row.id)} className="text-red-500 hover:text-red-700 dark:text-red-400 p-1">
+            <Trash2 size={18} />
+          </button>
+        </div>
       )
     }
   ];
+
+  const handleEdit = (row: any) => {
+    setIsEdit(true);
+    setEditId(row.id);
+    setFormData({
+      kodeBarang: row.kodeBarang,
+      namaBarang: row.namaBarang,
+      kondisi: row.kondisi,
+      jumlah: row.jumlah,
+      lokasi: row.lokasi,
+      tglAudit: row.tglAudit ? new Date(row.tglAudit).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+    });
+    setIsFormOpen(true);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await fetch("/api/admin/dkm/inventaris", {
-        method: "POST",
+      const url = isEdit && editId ? `/api/admin/dkm/inventaris/${editId}` : "/api/admin/dkm/inventaris";
+      const method = isEdit ? "PUT" : "POST";
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
@@ -101,12 +124,12 @@ export default function ClientPage() {
         })
       });
       if (res.ok) {
-        toast.success("Data berhasil disimpan");
+        toast.success(isEdit ? "Data berhasil diubah" : "Data berhasil disimpan");
         setIsFormOpen(false);
         fetchData();
         setFormData({ kodeBarang: "", namaBarang: "", kondisi: "Baik", jumlah: 1, lokasi: "", tglAudit: new Date().toISOString().slice(0,10) });
       } else {
-        toast.error("Gagal menyimpan data");
+        toast.error(isEdit ? "Gagal mengubah data" : "Gagal menyimpan data");
       }
     } catch (error) {
       toast.error("Terjadi kesalahan jaringan");
@@ -132,7 +155,12 @@ export default function ClientPage() {
             <Trash2 size={20} /> Hapus Semua
           </button>
 <button
-            onClick={() => setIsFormOpen(true)}
+            onClick={() => {
+              setIsEdit(false);
+              setEditId(null);
+              setFormData({ kodeBarang: "", namaBarang: "", kondisi: "Baik", jumlah: 1, lokasi: "", tglAudit: new Date().toISOString().slice(0,10) });
+              setIsFormOpen(true);
+            }}
             className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm flex-1 sm:flex-none"
           >
             <Plus size={20} /> Tambah Data
@@ -165,7 +193,7 @@ export default function ClientPage() {
         )}
       </div>
 
-      <Modal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} title="Tambah Data Baru">
+      <Modal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} title={isEdit ? "Edit Data Inventaris" : "Tambah Data Baru"}>
         <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kode Barang</label>
