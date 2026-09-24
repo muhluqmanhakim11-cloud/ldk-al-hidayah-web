@@ -237,6 +237,17 @@ export const runningTexts = pgTable("running_texts", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const heroImages = pgTable("hero_images", {
+  id: serial("id").primaryKey(),
+  imageUrl: varchar("image_url", { length: 500 }).notNull(),
+  title: varchar("title", { length: 255 }),
+  subtitle: varchar("subtitle", { length: 255 }),
+  isActive: boolean("is_active").default(true).notNull(),
+  orderIndex: integer("order_index").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Relations
 
 export const usersRelations = relations(users, ({ one, many }) => ({

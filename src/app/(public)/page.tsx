@@ -1,15 +1,21 @@
 export const dynamic = 'force-dynamic';
 import Link from "next/link";
 import { db } from "@/db";
-import { events, articles, runningTexts } from "@/db/schema";
+import { heroImages, events, articles, runningTexts } from "@/db/schema";
 import { eq, desc, asc } from "drizzle-orm";
 import Image from "next/image";
 import JadwalSholat from "@/components/public/JadwalSholat";
 import FiturCepat from "@/components/public/FiturCepat";
 import PopupBanner from "@/components/public/PopupBanner";
+import HeroCarousel from "@/components/public/HeroCarousel";
 
 export default async function HomePage() {
   const settings = await db.query.siteSettings.findFirst();
+
+  const activeHeroImages = await db.query.heroImages.findMany({
+    where: eq(heroImages.isActive, true),
+    orderBy: [asc(heroImages.orderIndex)],
+  });
 
   const latestEvents = await db.query.events.findMany({
     where: eq(events.status, 'PUBLISHED'), // Or UPCOMING if you prefer
@@ -38,7 +44,7 @@ export default async function HomePage() {
       
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-gradient-to-br from-green-900 to-green-800 text-white">
-        <div className="absolute inset-0 z-0 opacity-[0.15] bg-[url('https://res.cloudinary.com/gtlcl9a0/image/upload/v1/ldk-alhidayah/galleries/hero-placeholder')] bg-cover bg-center mix-blend-overlay" />
+        <HeroCarousel images={activeHeroImages} />
         <div className="absolute top-0 right-0 w-96 h-96 bg-green-500/20 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-yellow-500/10 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
         <div className="container mx-auto px-4 lg:px-8 relative z-10">
