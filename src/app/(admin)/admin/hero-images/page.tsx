@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
-import { UploadButton } from "@/components/UploadButton"; // Assume standard upload button exists, or just use text input
 import { Loader2, Plus, Trash2, Edit } from "lucide-react";
 
 export default function HeroImagesAdmin() {

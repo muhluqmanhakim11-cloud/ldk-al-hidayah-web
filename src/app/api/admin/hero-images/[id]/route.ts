@@ -3,8 +3,9 @@ import { db } from '@/db';
 import { heroImages } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, props: { params: Promise<{ id: string }> }) {
   try {
+    const params = await props.params;
     const id = parseInt(params.id);
     const body = await req.json();
     const { imageUrl, title, subtitle, isActive, orderIndex } = body;
@@ -20,8 +21,9 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, props: { params: Promise<{ id: string }> }) {
   try {
+    const params = await props.params;
     const id = parseInt(params.id);
     await db.delete(heroImages).where(eq(heroImages.id, id));
     return NextResponse.json({ success: true });
