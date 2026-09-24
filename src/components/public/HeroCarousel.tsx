@@ -23,12 +23,15 @@ export default function HeroCarousel({ images }: { images: HeroImage[] }) {
 
   if (!images || images.length === 0) {
     return (
-      <div className="absolute inset-0 z-0 opacity-[0.15] bg-[url('https://res.cloudinary.com/gtlcl9a0/image/upload/v1/ldk-alhidayah/galleries/hero-placeholder')] bg-cover bg-center mix-blend-overlay" />
+      <div className="absolute inset-0 z-0 bg-slate-900">
+        <div className="absolute inset-0 opacity-40 bg-[url('https://res.cloudinary.com/gtlcl9a0/image/upload/v1/ldk-alhidayah/galleries/hero-placeholder')] bg-cover bg-center" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent" />
+      </div>
     );
   }
 
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden mix-blend-overlay opacity-[0.15]">
+    <div className="absolute inset-0 z-0 overflow-hidden bg-slate-950">
       {images.map((img, index) => (
         <div
           key={img.id}
@@ -45,6 +48,8 @@ export default function HeroCarousel({ images }: { images: HeroImage[] }) {
           />
         </div>
       ))}
+      {/* Dark overlay to ensure white text is always readable over bright images */}
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-slate-900/20" />
     </div>
   );
 }
