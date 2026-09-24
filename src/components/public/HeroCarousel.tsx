@@ -48,8 +48,8 @@ export default function HeroCarousel({ images }: { images: HeroImage[] }) {
           />
         </div>
       ))}
-      {/* Dark overlay to ensure white text is always readable over bright images */}
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-slate-900/20" />
+      {/* Dark overlay at bottom to ensure white text is readable over bright images, keeping faces at the top clear */}
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent" />
     </div>
   );
 }
