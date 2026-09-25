@@ -19,26 +19,8 @@ export default function MemberCard({ member, className = "", nameClassName = "",
   const [show, setShow] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-  const [isRightSide, setIsRightSide] = useState(false);
-  const [isBottom, setIsBottom] = useState(false);
-
-  // Desktop hover
-  const updatePos = (e: React.MouseEvent) => {
-    setPos({ x: e.clientX, y: e.clientY });
-    setIsRightSide(e.clientX > window.innerWidth / 2);
-    setIsBottom(e.clientY > window.innerHeight - 350); // 350px buffer for the popup height
-  };
-
-  const handleMouseEnter = (e: React.MouseEvent) => {
-    if (member.photoUrl) {
-      setShow(true);
-      updatePos(e);
-    }
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (member.photoUrl) updatePos(e);
+  const handleMouseEnter = () => {
+    if (member.photoUrl) setShow(true);
   };
 
   const handleMouseLeave = () => setShow(false);
@@ -55,7 +37,6 @@ export default function MemberCard({ member, className = "", nameClassName = "",
       <div
         className={`relative ${className} ${member.photoUrl ? "cursor-pointer" : ""}`}
         onMouseEnter={handleMouseEnter}
-        onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onTouchEnd={handleTap}
       >
@@ -64,19 +45,14 @@ export default function MemberCard({ member, className = "", nameClassName = "",
         </h3>
         <p className={positionClassName}>{member.position?.name}</p>
 
-        {/* Desktop hover popup (muncul menyesuaikan kursor) */}
+        {/* Desktop hover popup (muncul di satu tempat statis di atas) */}
         {show && member.photoUrl && (
           <div
-            className="fixed z-[9999] pointer-events-none hidden md:block"
-            style={{
-              left: isRightSide ? undefined : pos.x + 20,
-              right: isRightSide ? window.innerWidth - pos.x + 20 : undefined,
-              top: isBottom ? pos.y - 320 : pos.y - 50,
-              animation: "fadeSlideIn 0.2s ease-out forwards",
-            }}
+            className="absolute z-[99] pointer-events-none hidden md:block bottom-full mb-2 left-1/2 -translate-x-1/2"
+            style={{ animation: "fadeSlideUp 0.2s ease-out forwards" }}
           >
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-gray-200 dark:border-slate-600 overflow-hidden w-[240px]">
-              <div className="relative w-[240px] h-[300px]">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-gray-200 dark:border-slate-600 overflow-hidden w-[200px]">
+              <div className="relative w-[200px] h-[250px]">
                 <Image
                   src={member.photoUrl}
                   alt={member.name}
@@ -85,10 +61,9 @@ export default function MemberCard({ member, className = "", nameClassName = "",
                   unoptimized
                 />
               </div>
-              <div className="px-2 py-1.5 text-center">
-                <p className="text-xs font-semibold text-gray-700 dark:text-gray-200 truncate">{member.name}</p>
-              </div>
             </div>
+            {/* Segitiga panah ke bawah */}
+            <div className="w-3 h-3 bg-white dark:bg-slate-800 border-b border-r border-gray-200 dark:border-slate-600 rotate-45 absolute -bottom-1.5 left-1/2 -translate-x-1/2"></div>
           </div>
         )}
       </div>
@@ -123,6 +98,10 @@ export default function MemberCard({ member, className = "", nameClassName = "",
         @keyframes fadeSlideIn {
           from { opacity: 0; transform: translateX(-6px) scale(0.95); }
           to   { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        @keyframes fadeSlideUp {
+          from { opacity: 0; transform: translate(-50%, 8px) scale(0.95); }
+          to   { opacity: 1; transform: translate(-50%, 0) scale(1); }
         }
       `}</style>
     </>
