@@ -14,6 +14,7 @@ const programSchema = z.object({
   description: z.string().optional().nullable(),
   objective: z.string().optional().nullable(),
   schedule: z.string().optional().nullable(),
+  customStatus: z.string().optional().nullable(),
   status: z.enum(["DRAFT", "PUBLISHED", "COMPLETED", "CANCELLED"]).default("PUBLISHED"),
 });
 

@@ -82,7 +82,6 @@ export const members = pgTable('members', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-// 6. programs
 export const programs = pgTable('programs', {
   id: serial('id').primaryKey(),
   periodId: integer('period_id').notNull().references(() => periods.id),
@@ -92,6 +91,7 @@ export const programs = pgTable('programs', {
   description: text('description'),
   objective: text('objective'),
   schedule: varchar('schedule', { length: 255 }), // e.g., "Setiap Bulan", "September 2026"
+  customStatus: varchar('custom_status', { length: 255 }), // e.g., "Sedang Berjalan", "Selesai"
   status: programStatusEnum('status').default('DRAFT').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),

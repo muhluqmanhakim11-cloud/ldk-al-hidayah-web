@@ -18,7 +18,7 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
   const [filterDivision, setFilterDivision] = useState(userRole === "ADMIN_BIDANG" ? String(userDivisionId) : "");
   const [filterStatus, setFilterStatus] = useState("");
 
-  const [formData, setFormData] = useState({ id: 0, name: "", slug: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", description: "", objective: "", schedule: "", status: "PUBLISHED" });
+  const [formData, setFormData] = useState({ id: 0, name: "", slug: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", description: "", objective: "", schedule: "", customStatus: "", status: "PUBLISHED" });
   
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
@@ -52,9 +52,10 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
   const columns = [
     { header: "Nama Program", accessor: "name" },
     { header: "Bidang", accessor: (row: any) => row.division?.name || "-" },
+    { header: "Status / Keterangan", accessor: (row: any) => row.customStatus || "-" },
     { header: "Periode", accessor: (row: any) => row.period?.name || "-" },
     { 
-      header: "Status", 
+      header: "Status Publikasi", 
       accessor: (row: any) => (
         <span className={`px-2 py-1 rounded text-xs font-medium 
           ${row.status === 'PUBLISHED' ? 'bg-green-100 text-green-700 dark:text-green-400' : 
@@ -144,7 +145,7 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
         
         {!isReadOnly && (
           <button 
-            onClick={() => { setFormData({ id: 0, name: "", slug: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", description: "", objective: "", schedule: "", status: "PUBLISHED" }); setIsModalOpen(true); }}
+            onClick={() => { setFormData({ id: 0, name: "", slug: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", description: "", objective: "", schedule: "", customStatus: "", status: "PUBLISHED" }); setIsModalOpen(true); }}
             className="bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 active:bg-blue-800 transition-colors whitespace-nowrap shadow-sm w-full lg:w-auto"
           >
             + Tambah Program
@@ -158,7 +159,7 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
         <DataTable 
           data={data} 
           columns={columns} 
-          onEdit={!isReadOnly ? (row) => { setFormData({ id: row.id, name: row.name, slug: row.slug || "", periodId: row.periodId, divisionId: row.divisionId, description: row.description || "", objective: row.objective || "", schedule: row.schedule || "", status: row.status }); setIsModalOpen(true); } : undefined}
+          onEdit={!isReadOnly ? (row) => { setFormData({ id: row.id, name: row.name, slug: row.slug || "", periodId: row.periodId, divisionId: row.divisionId, description: row.description || "", objective: row.objective || "", schedule: row.schedule || "", customStatus: row.customStatus || "", status: row.status }); setIsModalOpen(true); } : undefined}
           onDelete={!isReadOnly ? handleDelete : undefined}
         />
       )}
@@ -220,10 +221,13 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Jadwal (Contoh: Setiap Bulan)</label>
-              <input type="text" value={formData.schedule} onChange={e => setFormData({...formData, schedule: e.target.value})} className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+              <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Jadwal / Waktu Pelaksanaan</label>
+              <input type="text" value={formData.schedule} onChange={e => setFormData({...formData, schedule: e.target.value})} className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="Contoh: September 2026" />
             </div>
-
+            <div>
+              <label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-300">Status / Keterangan (Opsional)</label>
+              <input type="text" value={formData.customStatus} onChange={e => setFormData({...formData, customStatus: e.target.value})} className="w-full border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="Contoh: Sedang Berjalan" />
+            </div>
           </div>
           
           <div className="pt-4 border-t mt-4">
