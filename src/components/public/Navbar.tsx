@@ -32,8 +32,8 @@ export default function Navbar({ logoUrl }: { logoUrl?: string | null }) {
       <nav 
         className={`fixed inset-x-0 mx-auto z-50 transition-all duration-500 ease-in-out ${
           scrolled 
-            ? "top-4 w-[calc(100%-2rem)] md:w-[calc(100%-4rem)] max-w-7xl bg-white dark:bg-slate-900/95 backdrop-blur-xl border border-white/40 shadow-md rounded-full py-2.5" 
-            : "top-8 w-[calc(100%-2rem)] md:w-[calc(100%-6rem)] max-w-7xl bg-white dark:bg-slate-900/95 backdrop-blur-md border border-white/50 shadow-xl rounded-full py-3.5"
+            ? "top-4 w-[calc(100%-2rem)] md:w-[calc(100%-4rem)] max-w-7xl bg-white/90 dark:bg-slate-900/95 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 shadow-lg rounded-full py-2.5" 
+            : "top-6 w-[calc(100%-2rem)] md:w-[calc(100%-4rem)] max-w-7xl bg-transparent border border-transparent shadow-none rounded-full py-4"
         }`}
       >
         <div className="px-6 md:px-8">
@@ -41,30 +41,39 @@ export default function Navbar({ logoUrl }: { logoUrl?: string | null }) {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 group">
               {logoUrl ? (
-                <img src={logoUrl} alt="Logo" className="w-10 h-10 object-contain rounded-full bg-white dark:bg-slate-900 shadow-sm" />
+                <img src={logoUrl} alt="Logo" className="w-10 h-10 object-contain rounded-full bg-white shadow-sm" />
               ) : (
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${scrolled ? 'bg-green-700 text-white' : 'bg-green-600 text-white'}`}>
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${scrolled ? 'bg-green-600 text-white' : 'bg-white/20 backdrop-blur-sm text-white'}`}>
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
                 </div>
               )}
-              <span className={`font-bold text-lg md:text-xl tracking-tight transition-colors ${scrolled ? 'text-gray-900 dark:text-gray-100' : 'text-gray-900 dark:text-gray-100'}`}>
+              <span className={`font-bold text-lg md:text-xl tracking-tight transition-colors ${scrolled ? 'text-gray-900 dark:text-gray-100' : 'text-white drop-shadow-md'}`}>
                 LDK Al-Hidayah
               </span>
             </Link>
 
             {/* Desktop Menu */}
-            <div className="hidden lg:flex items-center space-x-2">
+            <div className="hidden lg:flex items-center space-x-1">
               {navLinks.map((link) => {
                 const isActive = pathname === link.path || (link.path !== '/' && pathname.startsWith(link.path));
+                
+                // Determine text color based on scroll and active state
+                let linkClass = "px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ";
+                if (scrolled) {
+                  linkClass += isActive 
+                    ? "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300" 
+                    : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white";
+                } else {
+                  linkClass += isActive
+                    ? "bg-white/20 text-white backdrop-blur-sm shadow-[0_4px_12px_rgba(0,0,0,0.1)]"
+                    : "text-white/90 hover:bg-white/10 hover:text-white drop-shadow-sm";
+                }
+
                 return (
                   <Link 
                     key={link.path} 
                     href={link.path}
-                    className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
-                      isActive 
-                        ? "bg-green-100 text-green-800" 
-                        : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 dark:bg-slate-800 hover:text-gray-900 dark:hover:text-gray-100 dark:text-gray-100"
-                    } active:scale-95`}
+                    className={`${linkClass} active:scale-95`}
                   >
                     {link.name}
                   </Link>
@@ -74,9 +83,17 @@ export default function Navbar({ logoUrl }: { logoUrl?: string | null }) {
 
             {/* Theme Toggle & Mobile Menu Button */}
             <div className="flex items-center space-x-2 lg:ml-2">
-              <ThemeToggle />
+              <div className={`${!scrolled ? 'text-white *:hover:bg-white/20' : ''}`}>
+                <ThemeToggle />
+              </div>
               <button 
-                className={`lg:hidden p-2.5 rounded-full transition-colors ${isOpen ? 'bg-gray-200 dark:bg-slate-700 text-gray-900 dark:bg-gray-700 dark:text-gray-100' : 'bg-gray-100 dark:bg-slate-800 text-gray-700 hover:bg-gray-200 dark:bg-slate-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'}`}
+                className={`lg:hidden p-2.5 rounded-full transition-colors ${
+                  scrolled
+                    ? isOpen 
+                      ? 'bg-gray-200 dark:bg-slate-700 text-gray-900 dark:text-gray-100' 
+                      : 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700'
+                    : 'bg-white/20 text-white backdrop-blur-sm hover:bg-white/30'
+                }`}
                 onClick={() => setIsOpen(!isOpen)}
                 aria-label="Toggle menu"
               >
