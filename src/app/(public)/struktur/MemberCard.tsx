@@ -48,11 +48,11 @@ export default function MemberCard({ member, className = "", nameClassName = "",
         {/* Desktop hover popup (muncul di satu tempat statis di atas) */}
         {show && member.photoUrl && (
           <div
-            className="absolute z-[99] pointer-events-none hidden md:block bottom-full mb-2 left-1/2 -translate-x-1/2"
+            className="absolute z-[99] pointer-events-none hidden md:block bottom-full mb-3 left-1/2 -translate-x-1/2"
             style={{ animation: "fadeSlideUp 0.2s ease-out forwards" }}
           >
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-gray-200 dark:border-slate-600 overflow-hidden w-[200px]">
-              <div className="relative w-[200px] h-[250px]">
+            <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-gray-200 dark:border-slate-600 overflow-hidden w-[300px]">
+              <div className="relative w-[300px] h-[380px]">
                 <Image
                   src={member.photoUrl}
                   alt={member.name}
@@ -63,7 +63,7 @@ export default function MemberCard({ member, className = "", nameClassName = "",
               </div>
             </div>
             {/* Segitiga panah ke bawah */}
-            <div className="w-3 h-3 bg-white dark:bg-slate-800 border-b border-r border-gray-200 dark:border-slate-600 rotate-45 absolute -bottom-1.5 left-1/2 -translate-x-1/2"></div>
+            <div className="w-4 h-4 bg-white dark:bg-slate-800 border-b border-r border-gray-200 dark:border-slate-600 rotate-45 absolute -bottom-2 left-1/2 -translate-x-1/2"></div>
           </div>
         )}
       </div>
@@ -76,8 +76,8 @@ export default function MemberCard({ member, className = "", nameClassName = "",
           onClick={() => setIsMobileOpen(false)}
         >
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
-          <div className="relative bg-white dark:bg-slate-800 rounded-3xl shadow-2xl overflow-hidden w-64 z-10">
-            <div className="relative w-64 h-80">
+          <div className="relative bg-white dark:bg-slate-800 rounded-3xl shadow-2xl overflow-hidden w-72 z-10">
+            <div className="relative w-72 h-96">
               <Image
                 src={member.photoUrl}
                 alt={member.name}
@@ -86,9 +86,9 @@ export default function MemberCard({ member, className = "", nameClassName = "",
                 unoptimized
               />
             </div>
-            <div className="px-3 py-2 text-center">
-              <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">{member.name}</p>
-              <p className="text-xs text-gray-400 mt-0.5">Ketuk untuk menutup</p>
+            <div className="px-4 py-3 text-center">
+              <p className="text-base font-semibold text-gray-700 dark:text-gray-200 truncate">{member.name}</p>
+              <p className="text-xs text-gray-400 mt-1">Ketuk untuk menutup</p>
             </div>
           </div>
         </div>
