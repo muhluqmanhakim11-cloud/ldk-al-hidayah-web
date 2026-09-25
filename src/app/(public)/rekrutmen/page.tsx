@@ -2,8 +2,9 @@ export const dynamic = 'force-dynamic';
 import { Metadata } from "next";
 import Link from "next/link";
 import { db } from "@/db";
-import { periods, divisions } from "@/db/schema";
+import { periods, divisions, heroImages } from "@/db/schema";
 import { eq, asc } from "drizzle-orm";
+import HeroCarousel from "@/components/public/HeroCarousel";
 
 export const metadata: Metadata = {
   title: "Pendaftaran Anggota Baru",
@@ -13,6 +14,11 @@ export default async function RecruitmentLandingPage() {
   const activePeriod = await db.query.periods.findFirst({
     where: eq(periods.isActive, true),
     orderBy: (p, { desc }) => [desc(p.id)],
+  });
+
+  const activeHeroImages = await db.query.heroImages.findMany({
+    where: eq(heroImages.isActive, true),
+    orderBy: [asc(heroImages.orderIndex)],
   });
 
   const isRecruitmentOpen = activePeriod?.isRecruitmentOpen ?? false;
@@ -27,33 +33,35 @@ export default async function RecruitmentLandingPage() {
   return (
     <div className="bg-gray-50 dark:bg-slate-950 pb-20">
       {/* Hero Section */}
-      <section className="relative bg-green-900 text-white overflow-hidden">
-        <div className="absolute inset-0 z-0 opacity-30 bg-[url('https://res.cloudinary.com/gtlcl9a0/image/upload/v1/ldk-alhidayah/galleries/hero-placeholder')] bg-cover bg-center" />
-        <div className="absolute inset-0 bg-gradient-to-t from-green-900 to-transparent z-10" />
+      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-slate-950 text-white">
+        <HeroCarousel images={activeHeroImages} />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-green-500/20 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-yellow-500/10 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
         
-        <div className="container relative z-20 mx-auto px-4 lg:px-8 pt-32 pb-24 md:pt-40 md:pb-32 flex flex-col items-center text-center">
-          <div className="inline-block bg-green-600/30 border border-green-500 rounded-full px-4 py-1 text-sm font-semibold mb-6 backdrop-blur-sm">
-            {isRecruitmentOpen ? "🟢 PENDAFTARAN DIBUKA" : "🔴 PENDAFTARAN DITUTUP"}
+        <div className="container mx-auto px-4 lg:px-8 relative z-10 flex flex-col items-center text-center">
+          <div className="inline-block bg-black/30 border border-white/20 backdrop-blur-md rounded-full px-4 py-1.5 text-sm font-semibold mb-6 shadow-lg text-green-50 animate-fade-in-up">
+            <span className={`w-2 h-2 rounded-full inline-block mr-2 animate-pulse ${isRecruitmentOpen ? 'bg-green-400' : 'bg-red-500'}`}></span>
+            {isRecruitmentOpen ? "PENDAFTARAN DIBUKA" : "PENDAFTARAN DITUTUP"}
           </div>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 tracking-tight leading-tight">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-[1.1] animate-fade-in-up drop-shadow-2xl mb-6" style={{ animationDelay: '0.1s' }}>
             Saatnya Ambil Peran.<br />
-            <span className="text-green-400">Gabung LDK Al-Hidayah!</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-yellow-200">Gabung LDK Al-Hidayah!</span>
           </h1>
-          <p className="text-lg md:text-xl text-green-50 max-w-2xl mb-10 leading-relaxed opacity-90">
+          <p className="text-lg md:text-xl text-green-50/90 max-w-2xl mx-auto leading-relaxed animate-fade-in-up drop-shadow-lg mb-10" style={{ animationDelay: '0.2s' }}>
             Jadilah bagian dari pergerakan dakwah kampus. Kembangkan diri, raih prestasi, dan temukan keluarga baru yang akan membersamaimu dalam kebaikan.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-fade-in-up w-full sm:w-auto" style={{ animationDelay: '0.3s' }}>
             {isRecruitmentOpen ? (
-              <Link href="/rekrutmen/daftar" className="bg-white dark:bg-slate-900 text-green-900 dark:text-white px-8 py-4 rounded-full font-bold hover:bg-green-50 dark:hover:bg-slate-800 hover:scale-105 transition-all shadow-xl text-center">
+              <Link href="/rekrutmen/daftar" className="btn-ripple w-full sm:w-auto px-8 py-3.5 rounded-full bg-green-600 text-white font-bold hover:bg-green-500 hover:scale-105 hover:shadow-xl hover:shadow-green-500/30 transition-all duration-300 active:scale-95 shadow-lg">
                 Daftar Sekarang &rarr;
               </Link>
             ) : (
-              <button disabled className="bg-gray-600 text-gray-300 px-8 py-4 rounded-full font-bold cursor-not-allowed shadow-xl text-center">
+              <button disabled className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gray-600 text-gray-300 font-bold cursor-not-allowed shadow-xl">
                 Pendaftaran Sedang Ditutup
               </button>
             )}
-            <a href="#why-us" className="bg-green-800/80 border border-green-600 text-white px-8 py-4 rounded-full font-bold hover:bg-green-700 backdrop-blur-sm transition-all shadow-lg text-center">
+            <a href="#why-us" className="btn-ripple w-full sm:w-auto px-8 py-3.5 rounded-full bg-black/40 border border-white/30 backdrop-blur-md text-white font-semibold hover:bg-black/60 transition-all duration-300 active:scale-95">
               Pelajari Lebih Lanjut
             </a>
           </div>
