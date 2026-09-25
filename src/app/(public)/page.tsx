@@ -60,10 +60,10 @@ export default async function HomePage() {
               Wadah pembinaan mahasiswa muslim STMIK IKMI Cirebon untuk mengembangkan potensi spiritual, intelektual, dan sosial.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-              <Link href="/rekrutmen" className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-green-600 text-white font-bold hover:bg-green-500 hover:scale-105 hover:shadow-xl hover:shadow-green-500/30 transition-all duration-300 active:scale-95 shadow-lg">
+              <Link href="/rekrutmen" className="btn-ripple w-full sm:w-auto px-8 py-3.5 rounded-full bg-green-600 text-white font-bold hover:bg-green-500 hover:scale-105 hover:shadow-xl hover:shadow-green-500/30 transition-all duration-300 active:scale-95 shadow-lg">
                 Bergabung Sekarang
               </Link>
-              <Link href="/profil" className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-black/40 border border-white/30 backdrop-blur-md text-white font-semibold hover:bg-black/60 transition-all duration-300 active:scale-95">
+              <Link href="/profil" className="btn-ripple w-full sm:w-auto px-8 py-3.5 rounded-full bg-black/40 border border-white/30 backdrop-blur-md text-white font-semibold hover:bg-black/60 transition-all duration-300 active:scale-95">
                 Kenali Kami
               </Link>
             </div>

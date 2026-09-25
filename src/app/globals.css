@@ -40,3 +40,67 @@ body {
 .animate-marquee:hover {
   animation-play-state: paused;
 }
+
+/* ==========================================
+   PAGE TRANSITION
+   ========================================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+main {
+  animation: fadeIn 0.35s ease forwards;
+}
+
+/* ==========================================
+   BUTTON RIPPLE EFFECT
+   ========================================== */
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ripple::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.35) 0%, transparent 70%);
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  border-radius: inherit;
+}
+
+.btn-ripple:active::after {
+  transform: scale(2.5);
+  opacity: 1;
+  transition: 0s;
+}
+
+/* ==========================================
+   SMOOTH LINK / BUTTON PRESS
+   ========================================== */
+a, button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Smooth focus ring */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid #22c55e;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ==========================================
+   ANIMATE FADE-IN-UP
+   ========================================== */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease forwards;
+  opacity: 0;
+}

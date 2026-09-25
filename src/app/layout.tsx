@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ToasterProvider from "@/components/ToasterProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import NavigationProgress from "@/components/public/NavigationProgress";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -72,6 +73,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-300">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <NavigationProgress />
           <ToasterProvider />
           {children}
         </ThemeProvider>
