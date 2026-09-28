@@ -103,7 +103,8 @@ function HoverPhoto({ name, photoUrl }: { name: string; photoUrl: string | null 
               <p className="text-xs font-semibold text-gray-700 dark:text-gray-200 truncate">{name}</p>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Mobile tap modal */}
@@ -131,7 +132,8 @@ function HoverPhoto({ name, photoUrl }: { name: string; photoUrl: string | null 
               <p className="text-xs text-gray-400 mt-0.5">Ketuk untuk menutup</p>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       <style>{`
