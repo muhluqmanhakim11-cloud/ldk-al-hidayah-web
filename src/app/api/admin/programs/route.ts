@@ -54,7 +54,7 @@ export async function GET(req: Request) {
       limit,
       offset,
       with: { period: true, division: true },
-      orderBy: [desc(programs.id)],
+      orderBy: (programs, { asc, desc }) => [asc(programs.orderIndex), desc(programs.id)],
     });
 
     // We can also count total if needed for pagination, but simplified for now

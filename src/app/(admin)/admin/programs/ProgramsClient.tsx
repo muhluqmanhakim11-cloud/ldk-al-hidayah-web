@@ -6,10 +6,17 @@ import toast from "react-hot-toast";
 import { useState, useEffect } from "react";
 import DataTable from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from "@dnd-kit/core";
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { SortableProgramItem } from "@/components/admin/SortableProgramItem";
+import { Save, ArrowUpDown, X } from "lucide-react";
 
 export default function ProgramsClient({ periods, divisions, userRole, userDivisionId }: any) {
   const [data, setData] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  const [isReordering, setIsReordering] = useState(false);
+  const [reorderSaving, setReorderSaving] = useState(false);
   
   // Filters
   const [page, setPage] = useState(1);
@@ -67,6 +74,44 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
       )
     },
   ];
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setData((items) => {
+        const oldIndex = items.findIndex((i) => i.id === active.id);
+        const newIndex = items.findIndex((i) => i.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+
+  const saveReorder = async () => {
+    setReorderSaving(true);
+    try {
+      const payload = data.map((item, index) => ({ id: item.id, orderIndex: index }));
+      const res = await fetch("/api/admin/programs/reorder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: payload }),
+      });
+      if (!res.ok) throw new Error("Gagal menyimpan urutan");
+      toast.success("Urutan berhasil disimpan");
+      setIsReordering(false);
+      fetchPrograms();
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setReorderSaving(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,18 +188,69 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
           </select>
         </div>
         
-        {!isReadOnly && (
-          <button 
-            onClick={() => { setFormData({ id: 0, name: "", slug: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", description: "", objective: "", schedule: "", customStatus: "", status: "PUBLISHED" }); setIsModalOpen(true); }}
-            className="bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 active:bg-blue-800 transition-colors whitespace-nowrap shadow-sm w-full lg:w-auto"
-          >
-            + Tambah Program
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+            {!isReadOnly && !isReordering && (
+              <button 
+                onClick={() => setIsReordering(true)}
+                className="bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors shadow-sm flex items-center justify-center gap-2"
+              >
+                <ArrowUpDown size={16} /> Atur Urutan
+              </button>
+            )}
+            
+            {isReordering && (
+              <>
+                <button 
+                  onClick={() => { setIsReordering(false); fetchPrograms(); }}
+                  className="bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors shadow-sm flex items-center justify-center gap-2"
+                >
+                  <X size={16} /> Batal
+                </button>
+                <button 
+                  onClick={saveReorder}
+                  disabled={reorderSaving}
+                  className="bg-green-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-green-700 active:bg-green-800 transition-colors shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  <Save size={16} /> {reorderSaving ? "Menyimpan..." : "Simpan Urutan"}
+                </button>
+              </>
+            )}
+
+            {!isReadOnly && !isReordering && (
+              <button 
+                onClick={() => { setFormData({ id: 0, name: "", slug: "", periodId: periods[0]?.id || 0, divisionId: userRole === "ADMIN_BIDANG" ? userDivisionId : "", description: "", objective: "", schedule: "", customStatus: "", status: "PUBLISHED" }); setIsModalOpen(true); }}
+                className="bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 active:bg-blue-800 transition-colors whitespace-nowrap shadow-sm"
+              >
+                + Tambah Program
+              </button>
+            )}
+          </div>
         )}
       </div>
 
       {fetchLoading ? (
         <div className="p-8 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-slate-900 border rounded-lg shadow-sm">Loading data...</div>
+      ) : isReordering ? (
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-gray-200 dark:border-slate-800 shadow-sm max-w-3xl mx-auto">
+          <div className="mb-6">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Atur Urutan Program Kerja</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Tekan dan geser baris di bawah ini untuk mengurutkan program kerja.</p>
+          </div>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={data.map(d => d.id)} strategy={verticalListSortingStrategy}>
+              <div className="space-y-3">
+                {data.map((program) => (
+                  <SortableProgramItem key={program.id} id={program.id} program={program} />
+                ))}
+                {data.length === 0 && (
+                  <div className="text-center p-8 text-gray-500 bg-gray-50 dark:bg-slate-800 rounded-lg border border-dashed">
+                    Tidak ada program untuk diurutkan
+                  </div>
+                )}
+              </div>
+            </SortableContext>
+          </DndContext>
+        </div>
       ) : (
         <DataTable 
           data={data} 

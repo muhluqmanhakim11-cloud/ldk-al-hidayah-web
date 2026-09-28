@@ -28,7 +28,7 @@ export default async function ProgramKerjaPage() {
   const activePrograms = await db.query.programs.findMany({
     where: eq(programs.periodId, activePeriod.id),
     with: { division: true },
-    orderBy: [desc(programs.id)],
+    orderBy: (programs, { asc, desc }) => [asc(programs.orderIndex), desc(programs.id)],
   });
 
   const publishedPrograms = activePrograms.filter(p => p.status === 'PUBLISHED');

@@ -93,6 +93,7 @@ export const programs = pgTable('programs', {
   schedule: varchar('schedule', { length: 255 }), // e.g., "Setiap Bulan", "September 2026"
   customStatus: varchar('custom_status', { length: 255 }), // e.g., "Sedang Berjalan", "Selesai"
   status: programStatusEnum('status').default('DRAFT').notNull(),
+  orderIndex: integer('order_index').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
