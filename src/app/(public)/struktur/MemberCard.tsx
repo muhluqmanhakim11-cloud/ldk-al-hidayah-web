@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 
 type MemberProps = {
@@ -18,6 +19,11 @@ type MemberProps = {
 export default function MemberCard({ member, className = "", nameClassName = "", positionClassName = "" }: MemberProps) {
   const [show, setShow] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleMouseEnter = () => {
     if (member.photoUrl) setShow(true);
@@ -69,7 +75,7 @@ export default function MemberCard({ member, className = "", nameClassName = "",
       </div>
 
       {/* Mobile tap modal */}
-      {isMobileOpen && member.photoUrl && (
+      {mounted && isMobileOpen && member.photoUrl && createPortal(
         <div
           className="fixed inset-0 z-[9999] flex items-center justify-center md:hidden"
           style={{ animation: "fadeSlideIn 0.2s ease-out forwards" }}
@@ -91,7 +97,8 @@ export default function MemberCard({ member, className = "", nameClassName = "",
               <p className="text-xs text-gray-400 mt-1">Ketuk untuk menutup</p>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       <style>{`

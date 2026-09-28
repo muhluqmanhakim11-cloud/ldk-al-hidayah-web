@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 
 type GalleryImage = {
@@ -10,6 +11,11 @@ type GalleryImage = {
 
 export default function GalleryGridClient({ images, title }: { images: GalleryImage[], title: string }) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleDownload = async (url: string) => {
     try {
@@ -59,7 +65,7 @@ export default function GalleryGridClient({ images, title }: { images: GalleryIm
       </div>
 
       {/* Lightbox Modal */}
-      {selectedImage && (
+      {mounted && selectedImage && createPortal(
         <div 
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/90 p-4"
           onClick={() => setSelectedImage(null)}
@@ -96,7 +102,8 @@ export default function GalleryGridClient({ images, title }: { images: GalleryIm
               unoptimized
             />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

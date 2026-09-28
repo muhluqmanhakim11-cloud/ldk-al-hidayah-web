@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Megaphone, X, Check, Send } from "lucide-react";
 import { toast } from "react-hot-toast";
 
@@ -63,9 +64,9 @@ export default function AnnouncementPopup() {
     }
   };
 
-  if (!isOpen || !announcement) return null;
+  if (!isOpen || !announcement || typeof document === 'undefined') return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
         
@@ -142,6 +143,7 @@ export default function AnnouncementPopup() {
         </div>
         
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

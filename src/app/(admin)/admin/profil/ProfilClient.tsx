@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import toast from "react-hot-toast";
 
 type Profile = {
@@ -133,7 +134,7 @@ export default function ProfilClient() {
         </table>
       </div>
 
-      {isModalOpen && (
+      {isModalOpen && typeof document !== 'undefined' && createPortal(
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-slate-900 rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6">
             <div className="flex justify-between items-center mb-6">
@@ -214,7 +215,8 @@ export default function ProfilClient() {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

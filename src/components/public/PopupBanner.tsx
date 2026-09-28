@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 interface PopupBannerProps {
   imageUrl: string;
@@ -35,9 +36,9 @@ export default function PopupBanner({ imageUrl, duration }: PopupBannerProps) {
     return () => clearInterval(timer);
   }, [isOpen, timeLeft]);
 
-  if (!isOpen) return null;
+  if (!isOpen || typeof document === 'undefined') return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
       <div className="relative max-w-4xl w-full flex flex-col items-center animate-in zoom-in-95 duration-300">
         <button
@@ -60,6 +61,7 @@ export default function PopupBanner({ imageUrl, duration }: PopupBannerProps) {
           Tertutup otomatis dalam {timeLeft} detik
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

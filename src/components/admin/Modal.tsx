@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
 interface ModalProps {
@@ -9,9 +10,12 @@ interface ModalProps {
 }
 
 export default function Modal({ isOpen, onClose, title, children }: ModalProps) {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
-  return (
+  if (!isOpen || !mounted) return null;
+
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
       <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg w-full max-w-lg max-h-[90vh] flex flex-col">
         <div className="flex items-center justify-between p-4 border-b">
@@ -24,6 +28,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
           {children}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

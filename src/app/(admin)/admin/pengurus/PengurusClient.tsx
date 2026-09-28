@@ -3,7 +3,8 @@
 import { confirmDialog } from "@/components/ConfirmDialog";
 import toast from "react-hot-toast";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import DataTable from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
@@ -30,7 +31,12 @@ function HoverPhoto({ name, photoUrl }: { name: string; photoUrl: string | null 
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isRightSide, setIsRightSide] = useState(false);
   const [isBottom, setIsBottom] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const updatePos = (e: React.MouseEvent) => {
     setPos({ x: e.clientX, y: e.clientY });
@@ -73,7 +79,7 @@ function HoverPhoto({ name, photoUrl }: { name: string; photoUrl: string | null 
       </span>
 
       {/* Desktop hover popup */}
-      {show && photoUrl && (
+      {mounted && show && photoUrl && createPortal(
         <div
           className="fixed z-[9999] pointer-events-none hidden md:block"
           style={{
@@ -101,7 +107,7 @@ function HoverPhoto({ name, photoUrl }: { name: string; photoUrl: string | null 
       )}
 
       {/* Mobile tap modal */}
-      {isMobileOpen && photoUrl && (
+      {mounted && isMobileOpen && photoUrl && createPortal(
         <div
           className="fixed inset-0 z-[9999] flex items-center justify-center md:hidden"
           style={{ animation: "fadeSlideIn 0.2s ease-out forwards" }}
