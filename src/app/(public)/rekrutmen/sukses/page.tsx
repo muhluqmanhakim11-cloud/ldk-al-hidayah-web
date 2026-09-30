@@ -18,7 +18,16 @@ export default function SuksesPage() {
         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">Pendaftaran Berhasil!</h1>
         
         <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-          Alhamdulillah, pendaftaran berhasil! Ahlan wa sahlan, calon pengurus LDK Al-Hidayah. Jazakumullah bil khair atas niat baiknya untuk bergabung dan berproses bersama kami. Data antum sudah kami terima dengan baik. Insya Allah, panitia akan segera menghubungi melalui WhatsApp atau Email untuk tahapan selanjutnya. Tetap semangat, ya!
+          Alhamdulillah, pendaftaran berhasil! Ahlan wa sahlan, calon pengurus LDK Al-Hidayah. Jazakumullah bil khair atas niat baiknya untuk bergabung dan berproses bersama kami. Data antum sudah kami terima dengan baik. Insya Allah, silahkan langsung join ke link grup ini ya...{" "}
+          <a
+            href="https://chat.whatsapp.com/J963readxbwGOCB9ul5Swq"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-green-600 dark:text-green-400 underline font-medium break-all"
+          >
+            https://chat.whatsapp.com/J963readxbwGOCB9ul5Swq
+          </a>{" "}
+          agar memudahkan dalam berkoordinasi dan untuk mendapatkan informasi selanjutnya. Tetap semangat, ya!
         </p>
 
         <div className="space-y-4">
