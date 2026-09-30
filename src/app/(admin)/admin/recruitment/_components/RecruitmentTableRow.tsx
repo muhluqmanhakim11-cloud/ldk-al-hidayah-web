@@ -9,7 +9,7 @@ type Props = {
     id: number;
     nim: string;
     name: string;
-    studyProgram: string;
+    studyProgram: string | null;
     createdAt: Date | string;
     status: string;
     interestedDivision?: { name: string } | null;
