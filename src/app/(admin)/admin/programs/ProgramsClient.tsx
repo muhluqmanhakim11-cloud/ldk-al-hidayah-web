@@ -225,8 +225,8 @@ export default function ProgramsClient({ periods, divisions, userRole, userDivis
               </button>
             )}
           </div>
-        )}
       </div>
+
 
       {fetchLoading ? (
         <div className="p-8 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-slate-900 border rounded-lg shadow-sm">Loading data...</div>
