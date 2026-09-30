@@ -4,6 +4,7 @@ import { recruitments, periods, divisions } from "@/db/schema";
 import { eq, desc, asc, and, ilike, sql } from "drizzle-orm";
 import Link from "next/link";
 import { auth } from "@/auth";
+import DeleteRecruitmentButton from "./_components/DeleteRecruitmentButton";
 
 export const metadata: Metadata = {
   title: "Admin - Rekrutmen",
@@ -197,7 +198,11 @@ export default async function AdminRecruitmentPage({
             </thead>
             <tbody className="divide-y text-gray-800 dark:text-gray-200">
               {list.length > 0 ? list.map((item) => (
-                <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 dark:bg-slate-950">
+                <tr
+                  key={item.id}
+                  className="hover:bg-gray-50 dark:hover:bg-slate-800/50 dark:bg-slate-950 cursor-pointer"
+                  onClick={() => { window.location.href = `/admin/recruitment/${item.id}`; }}
+                >
                   <td className="p-4 font-medium">{item.nim}</td>
                   <td className="p-4">
                     <div className="font-bold">{item.name}</div>
@@ -215,10 +220,15 @@ export default async function AdminRecruitmentPage({
                       {item.status}
                     </span>
                   </td>
-                  <td className="p-4">
-                    <Link href={`/admin/recruitment/${item.id}`} className="text-green-600 font-semibold hover:underline">
-                      Detail
-                    </Link>
+                  <td className="p-4" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center gap-3">
+                      <Link href={`/admin/recruitment/${item.id}`} className="text-green-600 font-semibold hover:underline">
+                        Detail
+                      </Link>
+                      {(session.user.role === 'SUPER_ADMIN' || session.user.role === 'KETUA') && (
+                        <DeleteRecruitmentButton id={item.id} name={item.name} />
+                      )}
+                    </div>
                   </td>
                 </tr>
               )) : (
