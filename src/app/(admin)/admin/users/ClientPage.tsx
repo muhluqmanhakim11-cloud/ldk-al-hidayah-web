@@ -148,6 +148,7 @@ export default function ClientPage() {
               <option value="admin_kominfo">Admin Divisi Kominfo</option>
               <option value="admin_pensos">Admin Divisi Pensos</option>
               <option value="admin_seni_olahraga">Admin Divisi Seni & Olahraga</option>
+              <option value="admin_bendahara">Bendahara (Keuangan)</option>
             </select>
           </div>
           <div className="flex justify-end gap-3 pt-4 border-t">

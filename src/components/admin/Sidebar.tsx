@@ -88,6 +88,7 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
   const isKominfo = role === "admin_kominfo";
   const isPensos = role === "admin_pensos";
   const isSeni = role === "admin_seni_olahraga";
+  const isBendahara = role === "admin_bendahara";
 
   // General Menus
   const mainMenus = [
@@ -136,6 +137,9 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
     // Seni & Olahraga
     { name: "Agenda Latihan", href: "/admin/seni-olahraga/agenda", icon: CalendarDays, show: isSuperAdmin || isSeni, group: "Seni & Olahraga" },
     { name: "Catatan Seni & Olahraga", href: "/admin/seni-olahraga/catatan", icon: FileText, show: isSuperAdmin || isSeni, group: "Seni & Olahraga" },
+
+    // Bendahara
+    { name: "Buku Kas & Transaksi", href: "/admin/bendahara/transactions", icon: Landmark, show: isSuperAdmin || isBendahara, group: "Bendahara" },
   ].filter(m => m.show);
 
   const systemMenus = [

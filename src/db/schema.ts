@@ -19,6 +19,7 @@ export const roleEnum = pgEnum('role', [
   'admin_kominfo',
   'admin_pensos',
   'admin_seni_olahraga',
+  'admin_bendahara',
 ]);
 export const programStatusEnum = pgEnum('program_status', ['DRAFT', 'PUBLISHED', 'COMPLETED', 'CANCELLED']);
 export const eventStatusEnum = pgEnum('event_status', ['UPCOMING', 'ONGOING', 'DONE', 'DRAFT', 'PUBLISHED', 'COMPLETED', 'CANCELLED']);
@@ -571,5 +572,33 @@ export const activityLogsRelations = relations(activityLogs, ({ one }) => ({
   division: one(divisions, {
     fields: [activityLogs.divisionId],
     references: [divisions.id],
+  }),
+}));
+
+// --- BENDAHARA / KEUANGAN MODULE ---
+export const transactionTypeEnum = pgEnum('transaction_type', ['IN', 'OUT']);
+
+export const transactions = pgTable('transactions', {
+  id: serial('id').primaryKey(),
+  periodId: integer('period_id').references(() => periods.id),
+  type: transactionTypeEnum('type').notNull(),
+  category: varchar('category', { length: 100 }).notNull(),
+  amount: integer('amount').notNull(), // dalam rupiah
+  date: timestamp('date').notNull(),
+  description: text('description').notNull(),
+  proofUrl: varchar('proof_url', { length: 500 }),
+  recordedBy: integer('recorded_by').notNull().references(() => users.id),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+export const transactionsRelations = relations(transactions, ({ one }) => ({
+  period: one(periods, {
+    fields: [transactions.periodId],
+    references: [periods.id],
+  }),
+  recordedByUser: one(users, {
+    fields: [transactions.recordedBy],
+    references: [users.id],
   }),
 }));
