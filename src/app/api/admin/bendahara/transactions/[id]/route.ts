@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { logActivity } from "@/lib/logger";
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await auth();
     if (!session || (session.user.realRole !== "super_admin" && session.user.realRole !== "admin_bendahara")) {
