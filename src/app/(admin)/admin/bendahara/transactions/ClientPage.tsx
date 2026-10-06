@@ -137,7 +137,7 @@ export default function ClientPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 print:hidden">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 print:hidden">
         <div>
           <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Buku Kas & Transaksi</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">Kelola data pemasukan dan pengeluaran</p>
