@@ -141,9 +141,6 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
     // Bendahara
     { name: "Laporan Keuangan", href: "/admin/bendahara/laporan", icon: BarChart3, show: isSuperAdmin || isBendahara, group: "Bendahara" },
     { name: "Buku Kas & Transaksi", href: "/admin/bendahara/transactions", icon: Landmark, show: isSuperAdmin || isBendahara, group: "Bendahara" },
-    { name: "Kategori Transaksi", href: "/admin/bendahara/categories", icon: Tags, show: isSuperAdmin || isBendahara, group: "Bendahara" },
-    { name: "Alokasi Anggaran", href: "/admin/bendahara/budget", icon: Wallet, show: isSuperAdmin || isBendahara, group: "Bendahara" },
-    { name: "Pengajuan Dana", href: "/admin/bendahara/pengajuan", icon: FileDown, show: isSuperAdmin || isBendahara, group: "Bendahara" },
     { name: "Database Donatur", href: "/admin/bendahara/donatur", icon: HeartHandshake, show: isSuperAdmin || isBendahara, group: "Bendahara" },
   ].filter(m => m.show);
 
