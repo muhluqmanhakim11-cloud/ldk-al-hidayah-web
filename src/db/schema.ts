@@ -602,3 +602,67 @@ export const transactionsRelations = relations(transactions, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+// --- BENDAHARA: Kategori Transaksi ---
+export const transactionCategories = pgTable('transaction_categories', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 100 }).notNull(),
+  type: transactionTypeEnum('type').notNull(), // IN or OUT
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// --- BENDAHARA: Anggaran per Kategori ---
+export const budgetAllocations = pgTable('budget_allocations', {
+  id: serial('id').primaryKey(),
+  periodId: integer('period_id').references(() => periods.id),
+  category: varchar('category', { length: 100 }).notNull(),
+  amount: integer('amount').notNull(), // alokasi anggaran
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// --- BENDAHARA: Pengajuan Dana ---
+export const fundRequestStatusEnum = pgEnum('fund_request_status', ['PENDING', 'APPROVED', 'REJECTED']);
+
+export const fundRequests = pgTable('fund_requests', {
+  id: serial('id').primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description').notNull(),
+  amount: integer('amount').notNull(),
+  requestedBy: integer('requested_by').notNull().references(() => users.id),
+  divisionId: integer('division_id').references(() => divisions.id),
+  status: fundRequestStatusEnum('status').default('PENDING').notNull(),
+  note: text('note'), // catatan dari bendahara
+  reviewedBy: integer('reviewed_by').references(() => users.id),
+  reviewedAt: timestamp('reviewed_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+export const fundRequestsRelations = relations(fundRequests, ({ one }) => ({
+  requester: one(users, {
+    fields: [fundRequests.requestedBy],
+    references: [users.id],
+  }),
+  division: one(divisions, {
+    fields: [fundRequests.divisionId],
+    references: [divisions.id],
+  }),
+  reviewer: one(users, {
+    fields: [fundRequests.reviewedBy],
+    references: [users.id],
+    relationName: 'reviewer',
+  }),
+}));
+
+// --- BENDAHARA: Database Donatur ---
+export const donors = pgTable('donors', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  contact: varchar('contact', { length: 100 }),
+  email: varchar('email', { length: 255 }),
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
