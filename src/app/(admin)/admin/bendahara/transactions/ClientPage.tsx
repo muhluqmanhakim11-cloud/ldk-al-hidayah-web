@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { Plus, RefreshCw, Trash2, Printer, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
+import { Plus, RefreshCw, Trash2, Printer, ArrowDownCircle, ArrowUpCircle, ChevronUp, ChevronDown } from "lucide-react";
 import DataTable from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
 import PrintHeader from "@/components/admin/PrintHeader";
 
 export default function ClientPage() {
   const [data, setData] = useState<any[]>([]);
+  const [rowOrder, setRowOrder] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,6 +29,7 @@ export default function ClientPage() {
       const res = await fetch("/api/admin/bendahara/transactions");
       const json = await res.json();
       setData(json);
+      setRowOrder(json.map((_: any, i: number) => i));
     } catch (error) {
       toast.error("Gagal memuat data");
     } finally {
@@ -92,6 +94,15 @@ export default function ClientPage() {
     return new Intl.NumberFormat("id-ID").format(number * 1000);
   };
 
+  const orderedData = rowOrder.map(i => data[i]).filter(Boolean);
+
+  const moveRow = (index: number, direction: -1 | 1) => {
+    const newOrder = [...rowOrder];
+    const target = index + direction;
+    if (target < 0 || target >= newOrder.length) return;
+    [newOrder[index], newOrder[target]] = [newOrder[target], newOrder[index]];
+    setRowOrder(newOrder);
+  };
 
 
   const columns = [
@@ -122,9 +133,25 @@ export default function ClientPage() {
     },
     {
       header: "Aksi",
-      accessor: (row: any) => (
-        <div className="flex gap-2 print:hidden">
-          <button onClick={() => handleDelete(row.id)} className="text-red-500 hover:text-red-700 dark:text-red-400 p-1">
+      accessor: (row: any, index: number) => (
+        <div className="flex gap-1 items-center print:hidden">
+          <button
+            onClick={() => moveRow(index, -1)}
+            disabled={index === 0}
+            title="Naikan"
+            className="text-gray-400 hover:text-blue-500 disabled:opacity-20 p-1 rounded transition-colors"
+          >
+            <ChevronUp size={16} />
+          </button>
+          <button
+            onClick={() => moveRow(index, 1)}
+            disabled={index === orderedData.length - 1}
+            title="Turunkan"
+            className="text-gray-400 hover:text-blue-500 disabled:opacity-20 p-1 rounded transition-colors"
+          >
+            <ChevronDown size={16} />
+          </button>
+          <button onClick={() => handleDelete(row.id)} className="text-red-500 hover:text-red-700 dark:text-red-400 p-1 ml-1">
             <Trash2 size={18} />
           </button>
         </div>
@@ -216,14 +243,14 @@ export default function ClientPage() {
         ) : (
           <>
             <DataTable
-              data={data}
+              data={orderedData}
               columns={columns}
               searchPlaceholder="Cari transaksi..."
             />
 
             {/* Bagian Tanda Tangan Resmi (Print Only) */}
             <div className="hidden print:block mt-8 pt-4 break-inside-avoid page-break-inside-avoid">
-              <div className="flex justify-between items-start text-xs text-gray-900 px-6">
+              <div className="flex justify-center items-start gap-x-24 text-xs text-gray-900">
                 <div className="text-center w-56">
                   <p className="font-medium text-gray-700">Mengetahui,</p>
                   <p className="font-bold text-gray-900 mt-1 uppercase tracking-wide">Ketua Umum LDK Al-Hidayah</p>

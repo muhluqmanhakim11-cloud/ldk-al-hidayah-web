@@ -2,7 +2,7 @@ import React from "react";
 
 interface Column<T> {
   header: string;
-  accessor: keyof T | ((row: T) => React.ReactNode);
+  accessor: keyof T | ((row: T, index: number) => React.ReactNode);
   printHidden?: boolean;
 }
 
@@ -39,11 +39,11 @@ export default function DataTable<T extends { id: number | string }>({
           </tr>
         </thead>
         <tbody>
-          {data.map((row) => (
+          {data.map((row, rowIdx) => (
             <tr key={row.id} className="border-b dark:border-slate-800 hover:bg-gray-50 dark:bg-slate-950 dark:hover:bg-slate-800/50">
               {columns.map((col, idx) => (
                 <td key={idx} className={`px-6 py-4${col.printHidden ? ' print:hidden' : ''}`}>
-                  {typeof col.accessor === 'function' ? col.accessor(row) : (row[col.accessor] as React.ReactNode)}
+                  {typeof col.accessor === 'function' ? col.accessor(row, rowIdx) : (row[col.accessor] as React.ReactNode)}
                 </td>
               ))}
               {(onEdit || onDelete) && (
