@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "react-hot-toast";
 import { Plus, RefreshCw, Trash2, Printer, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
 import DataTable from "@/components/admin/DataTable";
@@ -89,8 +89,36 @@ export default function ClientPage() {
   };
 
   const formatRupiah = (number: number) => {
-    return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(number);
+    return new Intl.NumberFormat("id-ID").format(number);
   };
+
+  // Drag state untuk posisi laporan print
+  const [printPos, setPrintPos] = useState({ x: 0, y: 0 });
+  const dragRef = useRef<{ dragging: boolean; startX: number; startY: number; originX: number; originY: number }>({
+    dragging: false, startX: 0, startY: 0, originX: 0, originY: 0
+  });
+
+  const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    dragRef.current = { dragging: true, startX: e.clientX, startY: e.clientY, originX: printPos.x, originY: printPos.y };
+    e.preventDefault();
+  };
+
+  useEffect(() => {
+    const onMouseMove = (e: MouseEvent) => {
+      if (!dragRef.current.dragging) return;
+      setPrintPos({
+        x: dragRef.current.originX + (e.clientX - dragRef.current.startX),
+        y: dragRef.current.originY + (e.clientY - dragRef.current.startY),
+      });
+    };
+    const onMouseUp = () => { dragRef.current.dragging = false; };
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, []);
 
   const columns = [
     { 
@@ -114,7 +142,7 @@ export default function ClientPage() {
       header: "Nominal", 
       accessor: (row: any) => (
         <span className={`font-semibold ${row.type === "IN" ? "text-green-600" : "text-red-600"}`}>
-          {row.type === "IN" ? "+" : "-"}{formatRupiah(row.amount)}
+          {row.type === "IN" ? "+" : "-"}Rp {formatRupiah(row.amount)}
         </span>
       )
     },
@@ -126,7 +154,8 @@ export default function ClientPage() {
             <Trash2 size={18} />
           </button>
         </div>
-      )
+      ),
+      printHidden: true
     }
   ];
 
@@ -165,47 +194,89 @@ export default function ClientPage() {
           <div className="p-4 bg-green-100 dark:bg-green-900/30 text-green-600 rounded-xl"><ArrowDownCircle size={32} /></div>
           <div>
             <p className="text-sm text-gray-500 dark:text-gray-400">Total Pemasukan</p>
-            <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200">{formatRupiah(totalIn)}</h3>
+            <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200">Rp {formatRupiah(totalIn)}</h3>
           </div>
         </div>
         <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm flex items-center gap-4">
           <div className="p-4 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-xl"><ArrowUpCircle size={32} /></div>
           <div>
             <p className="text-sm text-gray-500 dark:text-gray-400">Total Pengeluaran</p>
-            <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200">{formatRupiah(totalOut)}</h3>
+            <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200">Rp {formatRupiah(totalOut)}</h3>
           </div>
         </div>
         <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-6 rounded-2xl shadow-sm text-white flex items-center gap-4">
           <div>
             <p className="text-blue-100">Saldo Akhir</p>
-            <h3 className="text-3xl font-bold">{formatRupiah(balance)}</h3>
+            <h3 className="text-3xl font-bold">Rp {formatRupiah(balance)}</h3>
           </div>
         </div>
       </div>
 
-      <PrintHeader title="Laporan Arus Kas LDK Al-Hidayah" />
+      {/* Draggable wrapper untuk preview posisi laporan — hanya tampil di layar, bukan saat print */}
+      <div
+        className="print:hidden fixed z-50 cursor-grab active:cursor-grabbing select-none"
+        style={{ left: `calc(50% + ${printPos.x}px)`, top: `calc(50% + ${printPos.y}px)`, transform: 'translate(-50%, -50%)', pointerEvents: 'none', display: 'none' }}
+      />
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 p-6 print:shadow-none print:border-none print:p-0">
-        {isLoading ? (
-          <div className="flex justify-center p-12 print:hidden"><RefreshCw className="animate-spin text-blue-500" /></div>
-        ) : (
-          <>
-            <DataTable
-              data={data}
-              columns={columns}
-              searchPlaceholder="Cari transaksi..."
-            />
-            {/* Signature Block for Print */}
-            <div className="hidden print:flex justify-end mt-16 text-center">
-              <div>
-                <p>Cirebon, {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-                <p className="mt-2 font-bold">Bendahara LDK Al-Hidayah</p>
-                <div className="h-24"></div>
-                <p className="underline font-bold">( ...................................... )</p>
+      {/* Area laporan yang bisa di-drag posisinya (hanya efek visual di screen sebelum print) */}
+      <div
+        className="print:hidden relative"
+        style={{ transform: `translate(${printPos.x}px, ${printPos.y}px)`, transition: dragRef.current.dragging ? 'none' : 'transform 0.15s ease', cursor: 'grab' }}
+        onMouseDown={onMouseDown}
+        title="Geser untuk mengatur posisi laporan"
+      >
+        <div className="absolute -top-6 left-0 text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 print:hidden">
+          <span>⠿</span> Geser untuk atur posisi laporan
+        </div>
+      </div>
+
+      {/* Konten laporan utama (print & screen) */}
+      <div
+        style={{ position: 'relative', transform: `translate(${printPos.x}px, ${printPos.y}px)`, transition: dragRef.current.dragging ? 'none' : 'transform 0.15s ease' }}
+        className="print:!transform-none print:!translate-x-0 print:!translate-y-0"
+      >
+        <div
+          className="print:hidden absolute inset-0 z-10 cursor-grab active:cursor-grabbing rounded-2xl"
+          style={{ background: 'transparent' }}
+          onMouseDown={onMouseDown}
+          title="⠿ Geser untuk mengatur posisi laporan"
+        />
+        <div className="flex items-center gap-2 mb-2 print:hidden">
+          <span className="text-xs text-gray-400 dark:text-gray-500 select-none">⠿ Drag laporan untuk atur posisi</span>
+          {(printPos.x !== 0 || printPos.y !== 0) && (
+            <button
+              onClick={() => setPrintPos({ x: 0, y: 0 })}
+              className="text-xs text-blue-500 hover:text-blue-700 underline"
+            >
+              Reset posisi
+            </button>
+          )}
+        </div>
+
+        <PrintHeader title="Laporan Arus Kas LDK Al-Hidayah" />
+
+        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 p-6 print:shadow-none print:border-none print:p-0">
+          {isLoading ? (
+            <div className="flex justify-center p-12 print:hidden"><RefreshCw className="animate-spin text-blue-500" /></div>
+          ) : (
+            <>
+              <DataTable
+                data={data}
+                columns={columns}
+                searchPlaceholder="Cari transaksi..."
+              />
+              {/* Signature Block for Print */}
+              <div className="hidden print:flex justify-end mt-16 text-center">
+                <div>
+                  <p>Cirebon, {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                  <p className="mt-2 font-bold">Bendahara LDK Al-Hidayah</p>
+                  <div className="h-24"></div>
+                  <p className="underline font-bold">( ...................................... )</p>
+                </div>
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
       </div>
 
       <Modal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} title="Catat Transaksi">

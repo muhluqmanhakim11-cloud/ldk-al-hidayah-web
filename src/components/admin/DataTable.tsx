@@ -3,6 +3,7 @@ import React from "react";
 interface Column<T> {
   header: string;
   accessor: keyof T | ((row: T) => React.ReactNode);
+  printHidden?: boolean;
 }
 
 interface DataTableProps<T> {
@@ -32,21 +33,21 @@ export default function DataTable<T extends { id: number | string }>({
         <thead className="text-xs text-gray-700 dark:text-gray-300 uppercase bg-gray-50 dark:bg-slate-950 dark:bg-slate-800 border-b dark:border-slate-700">
           <tr>
             {columns.map((col, idx) => (
-              <th key={idx} className="px-6 py-3">{col.header}</th>
+              <th key={idx} className={`px-6 py-3${col.printHidden ? ' print:hidden' : ''}`}>{col.header}</th>
             ))}
-            {(onEdit || onDelete) && <th className="px-6 py-3 text-right">Aksi</th>}
+            {(onEdit || onDelete) && <th className="px-6 py-3 text-right print:hidden">Aksi</th>}
           </tr>
         </thead>
         <tbody>
           {data.map((row) => (
             <tr key={row.id} className="border-b dark:border-slate-800 hover:bg-gray-50 dark:bg-slate-950 dark:hover:bg-slate-800/50">
               {columns.map((col, idx) => (
-                <td key={idx} className="px-6 py-4">
+                <td key={idx} className={`px-6 py-4${col.printHidden ? ' print:hidden' : ''}`}>
                   {typeof col.accessor === 'function' ? col.accessor(row) : (row[col.accessor] as React.ReactNode)}
                 </td>
               ))}
               {(onEdit || onDelete) && (
-                <td className="px-6 py-4 text-right space-x-2">
+                <td className="px-6 py-4 text-right space-x-2 print:hidden">
                   {onEdit && (!canEdit || canEdit(row)) && (
                     <button 
                       onClick={() => onEdit(row)} 
