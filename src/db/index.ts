@@ -5,9 +5,11 @@ import * as dotenv from 'dotenv';
 
 dotenv.config({ path: '.env.local' });
 
-if (!process.env.DATABASE_URL) {
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl && process.env.NODE_ENV !== 'production') {
   throw new Error('DATABASE_URL must be a Neon postgres connection string');
 }
 
-const sql = neon(process.env.DATABASE_URL);
+const sql = neon(databaseUrl || '');
 export const db = drizzle(sql, { schema });
