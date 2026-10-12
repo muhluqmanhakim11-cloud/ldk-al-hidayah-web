@@ -104,3 +104,35 @@ a:focus-visible, button:focus-visible {
   animation: fade-in-up 0.6s ease forwards;
   opacity: 0;
 }
+
+/* ==========================================
+   PRINT MEDIA STYLES
+   ========================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 15mm 15mm 15mm;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Sembunyikan elemen scrollbar & tombol */
+  ::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  /* Hindari pemotongan tabel dan bagian ttd di tengah halaman */
+  table, tr, td, th {
+    page-break-inside: auto;
+  }
+
+  .break-inside-avoid, .page-break-inside-avoid {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+}

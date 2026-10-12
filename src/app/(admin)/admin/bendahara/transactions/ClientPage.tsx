@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { Plus, RefreshCw, Trash2, Printer, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
 import DataTable from "@/components/admin/DataTable";
@@ -92,33 +92,7 @@ export default function ClientPage() {
     return new Intl.NumberFormat("id-ID").format(number * 1000);
   };
 
-  // Drag state untuk posisi laporan print
-  const [printPos, setPrintPos] = useState({ x: 0, y: 0 });
-  const dragRef = useRef<{ dragging: boolean; startX: number; startY: number; originX: number; originY: number }>({
-    dragging: false, startX: 0, startY: 0, originX: 0, originY: 0
-  });
 
-  const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    dragRef.current = { dragging: true, startX: e.clientX, startY: e.clientY, originX: printPos.x, originY: printPos.y };
-    e.preventDefault();
-  };
-
-  useEffect(() => {
-    const onMouseMove = (e: MouseEvent) => {
-      if (!dragRef.current.dragging) return;
-      setPrintPos({
-        x: dragRef.current.originX + (e.clientX - dragRef.current.startX),
-        y: dragRef.current.originY + (e.clientY - dragRef.current.startY),
-      });
-    };
-    const onMouseUp = () => { dragRef.current.dragging = false; };
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-    return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-    };
-  }, []);
 
   const columns = [
     { 
@@ -188,8 +162,8 @@ export default function ClientPage() {
         </div>
       </div>
       
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 print:grid-cols-3 print:gap-4">
+      {/* Stats Cards - Tampilan Layar */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 print:hidden">
         <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm flex items-center gap-4">
           <div className="p-4 bg-green-100 dark:bg-green-900/30 text-green-600 rounded-xl"><ArrowDownCircle size={32} /></div>
           <div>
@@ -212,71 +186,65 @@ export default function ClientPage() {
         </div>
       </div>
 
-      {/* Draggable wrapper untuk preview posisi laporan — hanya tampil di layar, bukan saat print */}
-      <div
-        className="print:hidden fixed z-50 cursor-grab active:cursor-grabbing select-none"
-        style={{ left: `calc(50% + ${printPos.x}px)`, top: `calc(50% + ${printPos.y}px)`, transform: 'translate(-50%, -50%)', pointerEvents: 'none', display: 'none' }}
-      />
+      {/* Dokumen Kop & Ringkasan - Khusus Cetak */}
+      <div className="hidden print:block">
+        <PrintHeader title="Laporan Arus Kas LDK Al-Hidayah" />
 
-      {/* Area laporan yang bisa di-drag posisinya (hanya efek visual di screen sebelum print) */}
-      <div
-        className="print:hidden relative"
-        style={{ transform: `translate(${printPos.x}px, ${printPos.y}px)`, transition: dragRef.current.dragging ? 'none' : 'transform 0.15s ease', cursor: 'grab' }}
-        onMouseDown={onMouseDown}
-        title="Geser untuk mengatur posisi laporan"
-      >
-        <div className="absolute -top-6 left-0 text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 print:hidden">
-          <span>⠿</span> Geser untuk atur posisi laporan
+        {/* Ringkasan Kas Rapi Khusus Dokumen Cetak */}
+        <div className="mb-5 border border-gray-400 rounded-lg p-3 bg-gray-50 text-xs">
+          <div className="grid grid-cols-3 divide-x divide-gray-300 text-center">
+            <div className="px-2">
+              <span className="text-gray-600 block text-[11px] font-medium">Total Pemasukan</span>
+              <span className="text-sm font-bold text-green-700 mt-0.5 block">Rp {formatRupiah(totalIn)}</span>
+            </div>
+            <div className="px-2">
+              <span className="text-gray-600 block text-[11px] font-medium">Total Pengeluaran</span>
+              <span className="text-sm font-bold text-red-700 mt-0.5 block">Rp {formatRupiah(totalOut)}</span>
+            </div>
+            <div className="px-2">
+              <span className="text-gray-600 block text-[11px] font-medium">Saldo Kas Akhir</span>
+              <span className="text-sm font-bold text-blue-900 mt-0.5 block">Rp {formatRupiah(balance)}</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Konten laporan utama (print & screen) */}
-      <div
-        style={{ position: 'relative', transform: `translate(${printPos.x}px, ${printPos.y}px)`, transition: dragRef.current.dragging ? 'none' : 'transform 0.15s ease' }}
-        className="print:!transform-none print:!translate-x-0 print:!translate-y-0"
-      >
-        <div
-          className="print:hidden absolute inset-0 z-10 cursor-grab active:cursor-grabbing rounded-2xl"
-          style={{ background: 'transparent' }}
-          onMouseDown={onMouseDown}
-          title="⠿ Geser untuk mengatur posisi laporan"
-        />
-        <div className="flex items-center gap-2 mb-2 print:hidden">
-          <span className="text-xs text-gray-400 dark:text-gray-500 select-none">⠿ Drag laporan untuk atur posisi</span>
-          {(printPos.x !== 0 || printPos.y !== 0) && (
-            <button
-              onClick={() => setPrintPos({ x: 0, y: 0 })}
-              className="text-xs text-blue-500 hover:text-blue-700 underline"
-            >
-              Reset posisi
-            </button>
-          )}
-        </div>
+      {/* Konten Tabel Transaksi */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 p-6 print:shadow-none print:border-none print:p-0">
+        {isLoading ? (
+          <div className="flex justify-center p-12 print:hidden"><RefreshCw className="animate-spin text-blue-500" /></div>
+        ) : (
+          <>
+            <DataTable
+              data={data}
+              columns={columns}
+              searchPlaceholder="Cari transaksi..."
+            />
 
-        <PrintHeader title="Laporan Arus Kas LDK Al-Hidayah" />
+            {/* Bagian Tanda Tangan Resmi (Print Only) */}
+            <div className="hidden print:block mt-8 pt-4 break-inside-avoid page-break-inside-avoid">
+              <div className="flex justify-between items-start text-xs text-gray-900 px-6">
+                <div className="text-center w-56">
+                  <p className="font-medium text-gray-700">Mengetahui,</p>
+                  <p className="font-bold text-gray-900 mt-1 uppercase tracking-wide">Ketua Umum LDK Al-Hidayah</p>
+                  <div className="h-20"></div>
+                  <p className="font-bold underline text-gray-900">( ........................................ )</p>
+                  <p className="text-[11px] text-gray-600 mt-0.5">NIM. ....................</p>
+                </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 p-6 print:shadow-none print:border-none print:p-0">
-          {isLoading ? (
-            <div className="flex justify-center p-12 print:hidden"><RefreshCw className="animate-spin text-blue-500" /></div>
-          ) : (
-            <>
-              <DataTable
-                data={data}
-                columns={columns}
-                searchPlaceholder="Cari transaksi..."
-              />
-              {/* Signature Block for Print */}
-              <div className="hidden print:flex justify-end mt-16 text-center">
-                <div>
-                  <p>Cirebon, {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-                  <p className="mt-2 font-bold">Bendahara LDK Al-Hidayah</p>
-                  <div className="h-24"></div>
-                  <p className="underline font-bold">( ...................................... )</p>
+                <div className="text-center w-56">
+                  <p className="font-medium text-gray-700">
+                    Cirebon, {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                  </p>
+                  <p className="font-bold text-gray-900 mt-1 uppercase tracking-wide">Bendahara Umum LDK Al-Hidayah</p>
+                  <div className="h-20"></div>
+                  <p className="font-bold underline text-gray-900">( Latifah )</p>
+                  <p className="text-[11px] text-gray-600 mt-0.5">NIM. ....................</p>
                 </div>
               </div>
-            </>
-          )}
-        </div>
+            </div>
+          </>
+        )}
       </div>
 
       <Modal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} title="Catat Transaksi">
