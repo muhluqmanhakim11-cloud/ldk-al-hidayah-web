@@ -89,7 +89,7 @@ export default function ClientPage() {
   };
 
   const formatRupiah = (number: number) => {
-    return new Intl.NumberFormat("id-ID").format(number);
+    return new Intl.NumberFormat("id-ID").format(number * 1000);
   };
 
   // Drag state untuk posisi laporan print

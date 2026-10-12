@@ -64,7 +64,7 @@ export default function LaporanClientPage() {
   useEffect(() => { fetchData(); }, []);
 
   const formatRupiah = (n: number) =>
-    new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(n);
+    new Intl.NumberFormat("id-ID").format(n * 1000);
 
   const filtered = useMemo(() => {
     return data.filter(tx => {

@@ -31,7 +31,7 @@ export default async function AdminDashboard() {
     const txCount = txCountResult[0].value;
 
     const formatRupiah = (n: number) =>
-      new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(n);
+      new Intl.NumberFormat("id-ID").format(n * 1000);
 
     const recentTx = await db.select().from(transactions).orderBy(transactions.date).limit(5);
 
