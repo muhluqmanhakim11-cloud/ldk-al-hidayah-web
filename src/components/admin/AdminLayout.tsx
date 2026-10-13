@@ -21,7 +21,7 @@ export default function AdminLayout({ children, session, vercelBadgeUrl }: Admin
         <Sidebar session={session} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} vercelBadgeUrl={vercelBadgeUrl} />
       </div>
       
-      <div className="flex-1 flex flex-col min-w-0 print:block print:w-full">
+      <div className="flex-1 flex flex-col min-w-0 min-h-0 print:block print:w-full">
         <div className="print:hidden">
           <Topbar session={session} setIsOpen={setIsSidebarOpen} />
         </div>
