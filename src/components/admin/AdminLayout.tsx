@@ -17,7 +17,7 @@ export default function AdminLayout({ children, session, vercelBadgeUrl }: Admin
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-gray-100 overflow-hidden relative print:h-auto print:overflow-visible print:block print:bg-white print:text-black">
-      <div className="print:hidden">
+      <div className="h-full print:hidden">
         <Sidebar session={session} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} vercelBadgeUrl={vercelBadgeUrl} />
       </div>
       
