@@ -168,7 +168,7 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
           </button>
         </div>
 
-        <div className="overflow-y-auto flex-1 p-4 pb-48 space-y-4">
+        <div className="overflow-y-auto flex-1 p-4 pb-4 space-y-4">
           
           {/* Main Menus */}
           <div className="space-y-1">
@@ -272,7 +272,7 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
         </div>
 
         {/* Footer Area */}
-        <div className="absolute bottom-0 w-full p-4 border-t dark:border-slate-800 bg-gray-50 dark:bg-slate-950 dark:bg-slate-900 flex flex-col space-y-3">
+        <div className="shrink-0 w-full p-4 border-t dark:border-slate-800 bg-gray-50 dark:bg-slate-950 dark:bg-slate-900 flex flex-col space-y-3">
           <Link href="/" className="flex items-center space-x-3 text-green-700 dark:text-green-400 dark:text-green-500 hover:text-green-800 dark:hover:text-green-400 font-medium text-sm transition-colors">
             <Globe size={18} />
             <span>Kembali ke Publik</span>
