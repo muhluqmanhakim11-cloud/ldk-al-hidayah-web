@@ -62,6 +62,11 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
   // State for Accordion
   const [isDivisionsOpen, setIsDivisionsOpen] = useState(false);
 
+  // Auto-close sidebar on mobile when navigating
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
   useEffect(() => {
     if (!vercelBadgeUrl) return;
     
@@ -160,7 +165,7 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
       )}
 
       {/* Sidebar */}
-      <div className={`fixed flex flex-col inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-900 border-r dark:border-slate-800 transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:inset-auto lg:h-screen ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
+      <div className={`fixed flex flex-col inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-900 border-r dark:border-slate-800 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto lg:h-screen ${isOpen ? "translate-x-0 shadow-2xl lg:shadow-none" : "-translate-x-full lg:translate-x-0"}`}>
         <div className="flex h-16 items-center justify-between px-4 border-b dark:border-slate-800">
           <span className="text-lg font-bold text-blue-700 dark:text-blue-400 dark:text-blue-500">Admin LDK</span>
           <button onClick={() => setIsOpen(false)} className="lg:hidden text-gray-500 dark:text-gray-400">
@@ -168,7 +173,7 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
           </button>
         </div>
 
-        <div className="overflow-y-auto flex-1 p-4 pb-4 space-y-4">
+        <div className="overflow-y-auto flex-1 p-4 pb-4 space-y-4 scroll-smooth overscroll-contain [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-200 dark:[&::-webkit-scrollbar-thumb]:bg-slate-700 [&::-webkit-scrollbar-thumb]:rounded-full">
           
           {/* Main Menus */}
           <div className="space-y-1">
