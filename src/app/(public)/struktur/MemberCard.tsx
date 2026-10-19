@@ -10,6 +10,7 @@ type MemberProps = {
     name: string;
     photoUrl?: string | null;
     position?: { name: string } | null;
+    fromRecruitment?: boolean;
   };
   className?: string;
   nameClassName?: string;
@@ -59,6 +60,30 @@ export default function MemberCard({
         }}
       >
         {/* Avatar circle */}
+        {/* "Anggota Baru" badge from recruitment */}
+        {member.fromRecruitment && (
+          <div
+            style={{
+              position: "absolute",
+              top: "6px",
+              right: "6px",
+              background: "linear-gradient(135deg, #f59e0b, #f97316)",
+              color: "white",
+              fontSize: "0.55rem",
+              fontWeight: 800,
+              padding: "2px 7px",
+              borderRadius: "9999px",
+              textTransform: "uppercase",
+              letterSpacing: "0.04em",
+              boxShadow: "0 2px 6px rgba(245,158,11,0.35)",
+              lineHeight: 1.5,
+              zIndex: 2,
+              whiteSpace: "nowrap",
+            }}
+          >
+            ✦ Baru
+          </div>
+        )}
         <div
           style={{
             width: "52px",

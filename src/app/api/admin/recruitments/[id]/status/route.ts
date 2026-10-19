@@ -151,6 +151,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
                 positionId: anggotaPos.id,
                 divisionId: existingRecruitment.interestedDivisionId ?? null,
                 photoUrl: existingRecruitment.photoUrl ?? null,
+                fromRecruitment: true,
               });
             }
           }

@@ -3,10 +3,11 @@ export const revalidate = 0;
 
 import { Metadata } from "next";
 import { db } from "@/db";
-import { profiles } from "@/db/schema";
+import { profiles, siteSettings } from "@/db/schema";
 import { eq, asc } from "drizzle-orm";
 import PageHero from "@/components/public/PageHero";
 import ProfilAccordion from "./ProfilAccordion";
+import CompanyVideoSection from "./CompanyVideoSection";
 
 export const metadata: Metadata = {
   title: "Profil Organisasi",
@@ -15,10 +16,13 @@ export const metadata: Metadata = {
 };
 
 export default async function ProfilPage() {
-  const profileSections = await db.query.profiles.findMany({
-    where: eq(profiles.status, "PUBLISHED"),
-    orderBy: [asc(profiles.orderIndex)],
-  });
+  const [profileSections, settings] = await Promise.all([
+    db.query.profiles.findMany({
+      where: eq(profiles.status, "PUBLISHED"),
+      orderBy: [asc(profiles.orderIndex)],
+    }),
+    db.query.siteSettings.findFirst(),
+  ]);
 
   return (
     <div className="bg-gray-50 dark:bg-slate-950 pb-28">
@@ -29,6 +33,9 @@ export default async function ProfilPage() {
       />
 
       <div className="container mx-auto px-4 lg:px-8 mt-16 max-w-3xl">
+        {/* Company Profile Video — di atas Visi/Misi */}
+        <CompanyVideoSection videoUrl={settings?.companyVideoUrl} />
+
         {profileSections.length === 0 ? (
           <div
             style={{
@@ -38,11 +45,11 @@ export default async function ProfilPage() {
             }}
           >
             <div
+              className="bg-green-50 dark:bg-green-900/20"
               style={{
                 width: "72px",
                 height: "72px",
                 borderRadius: "20px",
-                background: "linear-gradient(135deg, #f0fdf4, #dcfce7)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",

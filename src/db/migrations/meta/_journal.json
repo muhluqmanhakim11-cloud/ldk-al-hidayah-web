@@ -8,6 +8,13 @@
       "when": 1789714332750,
       "tag": "0000_tan_spirit",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792409581212,
+      "tag": "0001_cooing_maelstrom",
+      "breakpoints": true
     }
   ]
 }

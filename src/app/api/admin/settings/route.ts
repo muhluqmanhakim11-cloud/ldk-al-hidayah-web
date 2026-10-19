@@ -45,7 +45,8 @@ export async function PUT(req: NextRequest) {
       vercelBadgeUrl,
       popupEnabled,
       popupImage,
-      popupDuration
+      popupDuration,
+      companyVideoUrl
     } = body;
 
     // Build update object based on provided fields
@@ -64,6 +65,7 @@ export async function PUT(req: NextRequest) {
     if (popupEnabled !== undefined) updateData.popupEnabled = popupEnabled;
     if (popupImage !== undefined) updateData.popupImage = popupImage;
     if (popupDuration !== undefined) updateData.popupDuration = popupDuration;
+    if (companyVideoUrl !== undefined) updateData.companyVideoUrl = companyVideoUrl;
 
     let settings = await db.query.siteSettings.findFirst();
     

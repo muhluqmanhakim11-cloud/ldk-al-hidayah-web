@@ -10,6 +10,7 @@ type Member = {
   position?: { name: string; level?: number | null } | null;
   division?: { id: number; name: string } | null;
   divisionId?: number | null;
+  fromRecruitment?: boolean;
 };
 
 type Division = {
@@ -251,8 +252,8 @@ export default function StrukturClient({ bphMembers, groupedByDivision, periodNa
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(190px, 1fr))",
-              gap: "1rem",
+              gridTemplateColumns: "repeat(auto-fill, minmax(min(160px, 100%), 1fr))",
+              gap: "0.875rem",
             }}
           >
             {filtered.map((member, idx) => (

@@ -80,6 +80,7 @@ export const members = pgTable('members', {
   positionId: integer('position_id').notNull().references(() => positions.id),
   divisionId: integer('division_id').references(() => divisions.id),
   photoUrl: varchar('photo_url', { length: 500 }),
+  fromRecruitment: boolean('from_recruitment').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
@@ -215,6 +216,7 @@ export const siteSettings = pgTable('site_settings', {
   popupEnabled: boolean('popup_enabled').default(false).notNull(),
   popupImage: varchar('popup_image', { length: 500 }),
   popupDuration: integer('popup_duration').default(10).notNull(),
+  companyVideoUrl: varchar('company_video_url', { length: 1000 }),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
