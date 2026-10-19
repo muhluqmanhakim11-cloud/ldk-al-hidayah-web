@@ -6,12 +6,10 @@ import { db } from "@/db";
 import { profiles } from "@/db/schema";
 import { eq, asc } from "drizzle-orm";
 import PageHero from "@/components/public/PageHero";
-import ScrollReveal from "@/components/public/ScrollReveal";
 
 export const metadata: Metadata = {
   title: "Profil Organisasi",
-  description:
-    "Mengenal lebih dekat Lembaga Dakwah Kampus Al-Hidayah — visi, misi, dan sejarah organisasi.",
+  description: "Mengenal lebih dekat Lembaga Dakwah Kampus Al-Hidayah.",
 };
 
 export default async function ProfilPage() {
@@ -22,10 +20,9 @@ export default async function ProfilPage() {
 
   return (
     <div className="bg-gray-50 dark:bg-slate-950 pb-24">
-      <ScrollReveal />
       <PageHero
         title="Profil Organisasi"
-        subtitle="Mengenal lebih dekat Lembaga Dakwah Kampus Al-Hidayah"
+        subtitle="Mengenal lebih dekat Lembaga Dakwah Kampus Al-Hidayah — visi, misi, dan sejarah organisasi."
         badge="Tentang Kami"
       />
 
@@ -40,32 +37,56 @@ export default async function ProfilPage() {
             <p className="text-lg font-medium">Belum ada informasi profil yang dipublikasikan.</p>
           </div>
         ) : (
-          <div className="space-y-14">
+          <div className="space-y-12">
             {profileSections.map((section, i) => (
               <section
                 key={section.id}
-                className={`reveal ${i % 2 === 0 ? "" : "delay-100"}`}
+                style={{
+                  animation: `cardReveal 0.6s ${i * 0.12}s cubic-bezier(0.16,1,0.3,1) both`,
+                }}
               >
-                {/* Section heading with accent bar */}
+                {/* Section heading */}
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="flex-shrink-0 w-1 h-10 rounded-full bg-gradient-to-b from-green-500 to-emerald-400" />
+                  <div
+                    style={{
+                      width: "4px",
+                      minHeight: "40px",
+                      borderRadius: "9999px",
+                      background: "linear-gradient(to bottom, #16a34a, #34d399)",
+                      flexShrink: 0,
+                    }}
+                  />
                   <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
                     {section.title}
                   </h2>
                 </div>
 
                 {/* Card */}
-                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden">
+                <div
+                  className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden"
+                  style={{ transition: "box-shadow 0.3s ease, transform 0.3s ease" }}
+                  onMouseEnter={undefined}
+                >
                   {section.imageUrl && (
-                    <div className="relative w-full overflow-hidden" style={{ maxHeight: 280 }}>
+                    <div className="relative w-full overflow-hidden" style={{ maxHeight: 300 }}>
                       <img
                         src={section.imageUrl}
                         alt={section.title}
-                        className="w-full object-cover transition-transform duration-700 hover:scale-105"
-                        style={{ maxHeight: 280 }}
+                        className="w-full object-cover"
+                        style={{ maxHeight: 300, transition: "transform 0.6s ease" }}
                       />
-                      {/* Gradient overlay at bottom */}
-                      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white dark:from-slate-900 to-transparent" />
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          height: "80px",
+                          background: "linear-gradient(to top, rgba(255,255,255,1) 0%, transparent 100%)",
+                          pointerEvents: "none",
+                        }}
+                        className="dark:bg-gradient-to-t dark:from-slate-900"
+                      />
                     </div>
                   )}
                   <div className="p-7 md:p-10">
@@ -80,6 +101,13 @@ export default async function ProfilPage() {
           </div>
         )}
       </div>
+
+      <style>{`
+        @keyframes cardReveal {
+          from { opacity: 0; transform: translateY(36px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }

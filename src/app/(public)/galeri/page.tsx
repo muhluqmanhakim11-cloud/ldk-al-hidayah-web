@@ -6,7 +6,6 @@ import { galleries } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import GalleryGridClient from "./GalleryGridClient";
 import PageHero from "@/components/public/PageHero";
-import ScrollReveal from "@/components/public/ScrollReveal";
 
 export const metadata: Metadata = {
   title: "Galeri & Dokumentasi",
@@ -16,17 +15,12 @@ export const metadata: Metadata = {
 export default async function GaleriPage() {
   const publishedGalleries = await db.query.galleries.findMany({
     where: eq(galleries.status, "PUBLISHED"),
-    with: {
-      images: true,
-      event: true,
-      division: true,
-    },
+    with: { images: true, event: true, division: true },
     orderBy: [desc(galleries.createdAt)],
   });
 
   return (
     <div className="bg-gray-50 dark:bg-slate-950 min-h-screen pb-24">
-      <ScrollReveal />
       <PageHero
         title="Galeri Dokumentasi"
         subtitle="Momen-momen berharga dalam perjalanan LDK Al-Hidayah"
@@ -35,64 +29,132 @@ export default async function GaleriPage() {
 
       <div className="container mx-auto px-4 lg:px-8 mt-14">
         {publishedGalleries.length > 0 ? (
-          <div className="space-y-14">
+          <div style={{ display: "flex", flexDirection: "column", gap: "3rem" }}>
             {publishedGalleries.map((gallery, idx) => (
               <section
                 key={gallery.id}
-                className={`reveal delay-${Math.min(idx * 100, 400)}`}
+                style={{
+                  animation: `cardReveal 0.6s ${Math.min(idx * 0.1, 0.4)}s cubic-bezier(0.16,1,0.3,1) both`,
+                }}
               >
-                {/* Album header card */}
-                <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
-                  {/* Colored top strip */}
-                  <div className="h-1.5 w-full bg-gradient-to-r from-green-500 via-emerald-400 to-teal-400" />
+                <div
+                  className="bg-white dark:bg-slate-900 dark:border-slate-800"
+                  style={{
+                    borderRadius: "1.5rem",
+                    border: "1px solid #f1f5f9",
+                    overflow: "hidden",
+                    boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
+                  }}
+                >
+                  {/* Gradient strip */}
+                  <div
+                    style={{
+                      height: "5px",
+                      background: `linear-gradient(90deg, #16a34a, #34d399, #22c55e, #86efac)`,
+                    }}
+                  />
 
-                  {/* Header content */}
-                  <div className="px-6 md:px-8 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 dark:border-slate-800">
+                  {/* Album header */}
+                  <div
+                    className="border-gray-100 dark:border-slate-800"
+                    style={{
+                      padding: "1.5rem 1.75rem",
+                      borderBottom: "1px solid",
+                      display: "flex",
+                      flexWrap: "wrap",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "1rem",
+                    }}
+                  >
                     <div>
-                      {/* Breadcrumb-style meta */}
-                      <div className="flex items-center gap-2 text-xs font-bold text-green-600 dark:text-green-400 uppercase tracking-wider mb-2">
-                        <span className="bg-green-50 dark:bg-green-900/30 px-2.5 py-1 rounded-full">
+                      {/* Meta breadcrumb */}
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem", flexWrap: "wrap" }}>
+                        <span
+                          style={{
+                            fontSize: "0.65rem",
+                            fontWeight: 700,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.1em",
+                            color: "#16a34a",
+                            background: "rgba(22,163,74,0.1)",
+                            borderRadius: "9999px",
+                            padding: "3px 10px",
+                          }}
+                        >
                           {gallery.division?.name || "Umum"}
                         </span>
                         {gallery.event && (
                           <>
-                            <span className="text-gray-300 dark:text-slate-600">•</span>
-                            <span className="bg-gray-50 dark:bg-slate-800 text-gray-500 dark:text-gray-400 font-medium normal-case tracking-normal px-2.5 py-1 rounded-full">
+                            <span className="text-gray-300 dark:text-slate-600" style={{ fontSize: "0.75rem" }}>•</span>
+                            <span
+                              className="text-gray-500 dark:text-gray-400"
+                              style={{
+                                fontSize: "0.72rem",
+                                fontWeight: 500,
+                                background: "#f8fafc",
+                                borderRadius: "9999px",
+                                padding: "3px 10px",
+                              }}
+                            >
                               {gallery.event.name}
                             </span>
                           </>
                         )}
                       </div>
-                      <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100">
+                      <h2
+                        className="text-gray-900 dark:text-gray-100"
+                        style={{ fontSize: "1.35rem", fontWeight: 800, lineHeight: 1.25 }}
+                      >
                         {gallery.title}
                       </h2>
                       {gallery.description && (
-                        <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm leading-relaxed">
+                        <p className="text-gray-500 dark:text-gray-400" style={{ fontSize: "0.875rem", marginTop: "0.35rem", lineHeight: 1.5 }}>
                           {gallery.description}
                         </p>
                       )}
                     </div>
-                    {/* Photo count badge */}
-                    <div className="flex-shrink-0 flex items-center gap-2 bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl px-4 py-2">
-                      <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+
+                    {/* Photo count */}
+                    <div
+                      className="bg-gray-50 dark:bg-slate-800 border-gray-100 dark:border-slate-700 text-gray-700 dark:text-gray-300"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        border: "1px solid",
+                        borderRadius: "0.75rem",
+                        padding: "0.5rem 1rem",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <svg width="16" height="16" fill="none" stroke="#16a34a" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
-                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      <span style={{ fontSize: "0.85rem", fontWeight: 700 }}>
                         {gallery.images?.length ?? 0} foto
                       </span>
                     </div>
                   </div>
 
                   {/* Photo grid */}
-                  <div className="p-6 md:p-8">
+                  <div style={{ padding: "1.5rem 1.75rem" }}>
                     {gallery.images && gallery.images.length > 0 ? (
                       <GalleryGridClient images={gallery.images} title={gallery.title} />
                     ) : (
-                      <div className="text-center py-10 bg-gray-50 dark:bg-slate-800/50 rounded-xl border border-dashed border-gray-200 dark:border-slate-700">
-                        <svg className="mx-auto w-10 h-10 text-gray-300 dark:text-slate-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      <div
+                        className="bg-gray-50 dark:bg-slate-800/50 border-gray-200 dark:border-slate-700"
+                        style={{
+                          textAlign: "center",
+                          padding: "3rem 1rem",
+                          borderRadius: "1rem",
+                          border: "1.5px dashed",
+                        }}
+                      >
+                        <svg width="36" height="36" fill="none" stroke="#94a3b8" strokeWidth="1.5" viewBox="0 0 24 24" style={{ margin: "0 auto 0.75rem" }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        <p className="text-gray-400 dark:text-gray-500 text-sm">Belum ada foto dalam galeri ini.</p>
+                        <p className="text-gray-400" style={{ fontSize: "0.875rem" }}>Belum ada foto dalam galeri ini.</p>
                       </div>
                     )}
                   </div>
@@ -101,17 +163,24 @@ export default async function GaleriPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-24">
-            <div className="w-20 h-20 rounded-2xl bg-gray-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-6">
-              <svg className="w-10 h-10 text-gray-300 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          <div style={{ textAlign: "center", padding: "6rem 1rem" }}>
+            <div style={{ width: "80px", height: "80px", borderRadius: "20px", background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.5rem" }}>
+              <svg width="36" height="36" fill="none" stroke="#94a3b8" strokeWidth="1.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold text-gray-700 dark:text-gray-300 mb-2">Belum ada galeri</h3>
-            <p className="text-gray-400 dark:text-gray-500">Album dokumentasi belum tersedia saat ini.</p>
+            <h3 className="text-gray-700 dark:text-gray-300" style={{ fontSize: "1.25rem", fontWeight: 700, marginBottom: "0.5rem" }}>Belum ada galeri</h3>
+            <p className="text-gray-400">Album dokumentasi belum tersedia saat ini.</p>
           </div>
         )}
       </div>
+
+      <style>{`
+        @keyframes cardReveal {
+          from { opacity: 0; transform: translateY(30px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import StatCard from "@/components/admin/StatCard";
 import QuickAction from "@/components/admin/QuickAction";
-import { Users, Flag, FileText, CalendarDays, CheckCircle, Clock, ArrowDownCircle, ArrowUpCircle, Wallet, UserCheck, UserClock } from "lucide-react";
+import { Users, Flag, FileText, CalendarDays, CheckCircle, Clock, ArrowDownCircle, ArrowUpCircle, Wallet, UserCheck, Timer } from "lucide-react";
 import { db } from "@/db";
 import { members, divisions, programs, events, transactions, recruitments } from "@/db/schema";
 import { count, eq, and, sum, or } from "drizzle-orm";
@@ -137,7 +137,7 @@ export default async function AdminDashboard() {
         <StatCard title="Bidang/Divisi" value={divisionsCount[0].value} icon={Flag} color="bg-indigo-500" />
         <StatCard title="Total Pengurus" value={membersCount[0].value} icon={Users} color="bg-blue-500" />
         <StatCard title="Anggota Baru (Diterima)" value={recruitmentAcceptedCount[0].value} icon={UserCheck} color="bg-teal-500" />
-        <StatCard title="Pendaftar Menunggu" value={recruitmentPendingCount[0].value} icon={UserClock} color="bg-yellow-500" />
+        <StatCard title="Pendaftar Menunggu" value={recruitmentPendingCount[0].value} icon={Timer} color="bg-yellow-500" />
       </div>
 
       {/* Quick Actions */}
