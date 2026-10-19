@@ -5,6 +5,45 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { logActivity } from "@/lib/logger";
 
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const session = await auth();
+    if (!session || (session.user.realRole !== "super_admin" && session.user.realRole !== "admin_bendahara")) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id } = await params;
+    const body = await req.json();
+
+    const [updated] = await db
+      .update(transactions)
+      .set({
+        type: body.type,
+        category: body.category,
+        amount: body.amount,
+        date: new Date(body.date),
+        description: body.description,
+        proofUrl: body.proofUrl || null,
+      })
+      .where(eq(transactions.id, parseInt(id)))
+      .returning();
+
+    try {
+      await logActivity({
+        action: "UPDATE",
+        entityType: "TRANSACTION",
+        entityName: body.description,
+        divisionId: session?.user?.divisionId || null,
+      });
+    } catch(e) {}
+
+    return NextResponse.json(updated);
+  } catch (error) {
+    console.error("PATCH error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
+
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await auth();

@@ -2,10 +2,19 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { Plus, RefreshCw, Trash2, Printer, ArrowDownCircle, ArrowUpCircle, ChevronUp, ChevronDown } from "lucide-react";
+import { Plus, RefreshCw, Trash2, Printer, ArrowDownCircle, ArrowUpCircle, ChevronUp, ChevronDown, Pencil } from "lucide-react";
 import DataTable from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
 import PrintHeader from "@/components/admin/PrintHeader";
+
+const EMPTY_FORM = {
+  type: "IN",
+  category: "",
+  amount: 0,
+  date: new Date().toISOString().slice(0, 10),
+  description: "",
+  proofUrl: ""
+};
 
 export default function ClientPage() {
   const [data, setData] = useState<any[]>([]);
@@ -13,15 +22,9 @@ export default function ClientPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
 
-  const [formData, setFormData] = useState({
-    type: "IN",
-    category: "",
-    amount: 0,
-    date: new Date().toISOString().slice(0, 10),
-    description: "",
-    proofUrl: ""
-  });
+  const [formData, setFormData] = useState({ ...EMPTY_FORM });
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -40,6 +43,25 @@ export default function ClientPage() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const openAddForm = () => {
+    setEditingId(null);
+    setFormData({ ...EMPTY_FORM, type: "IN" });
+    setIsFormOpen(true);
+  };
+
+  const openEditForm = (row: any) => {
+    setEditingId(row.id);
+    setFormData({
+      type: row.type,
+      category: row.category,
+      amount: row.amount,
+      date: new Date(row.date).toISOString().slice(0, 10),
+      description: row.description,
+      proofUrl: row.proofUrl || ""
+    });
+    setIsFormOpen(true);
+  };
 
   const handleDelete = async (id: number) => {
     if (!confirm("Yakin ingin menghapus transaksi ini?")) return;
@@ -60,28 +82,30 @@ export default function ClientPage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await fetch("/api/admin/bendahara/transactions", {
-        method: "POST",
+      const isEdit = editingId !== null;
+      const url = isEdit
+        ? `/api/admin/bendahara/transactions/${editingId}`
+        : "/api/admin/bendahara/transactions";
+      const method = isEdit ? "PATCH" : "POST";
+
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
+          amount: Number(formData.amount),
           date: new Date(formData.date).toISOString()
         })
       });
+
       if (res.ok) {
-        toast.success("Transaksi berhasil dicatat");
+        toast.success(isEdit ? "Transaksi berhasil diperbarui" : "Transaksi berhasil dicatat");
         setIsFormOpen(false);
         fetchData();
-        setFormData({
-          type: "IN",
-          category: "",
-          amount: 0,
-          date: new Date().toISOString().slice(0, 10),
-          description: "",
-          proofUrl: ""
-        });
+        setFormData({ ...EMPTY_FORM });
+        setEditingId(null);
       } else {
-        toast.error("Gagal mencatat transaksi");
+        toast.error(isEdit ? "Gagal memperbarui transaksi" : "Gagal mencatat transaksi");
       }
     } catch (error) {
       toast.error("Terjadi kesalahan jaringan");
@@ -91,7 +115,7 @@ export default function ClientPage() {
   };
 
   const formatRupiah = (number: number) => {
-    return new Intl.NumberFormat("id-ID").format(number * 1000);
+    return new Intl.NumberFormat("id-ID").format(number);
   };
 
   const orderedData = rowOrder.map(i => data[i]).filter(Boolean);
@@ -151,6 +175,13 @@ export default function ClientPage() {
           >
             <ChevronDown size={16} />
           </button>
+          <button
+            onClick={() => openEditForm(row)}
+            title="Edit"
+            className="text-blue-500 hover:text-blue-700 dark:text-blue-400 p-1 ml-1 rounded transition-colors"
+          >
+            <Pencil size={16} />
+          </button>
           <button onClick={() => handleDelete(row.id)} className="text-red-500 hover:text-red-700 dark:text-red-400 p-1 ml-1">
             <Trash2 size={18} />
           </button>
@@ -169,7 +200,7 @@ export default function ClientPage() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 print:hidden">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Buku Kas & Transaksi</h1>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Buku Kas &amp; Transaksi</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">Kelola data pemasukan dan pengeluaran</p>
         </div>
         <div className="flex flex-wrap gap-3 w-full md:w-auto">
@@ -178,10 +209,7 @@ export default function ClientPage() {
           </button>
           
           <button
-            onClick={() => {
-              setFormData({ ...formData, type: "IN" });
-              setIsFormOpen(true);
-            }}
+            onClick={openAddForm}
             className="bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm flex-1 sm:flex-none"
           >
             <Plus size={20} /> Catat Transaksi
@@ -274,7 +302,11 @@ export default function ClientPage() {
         )}
       </div>
 
-      <Modal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} title="Catat Transaksi">
+      <Modal
+        isOpen={isFormOpen}
+        onClose={() => { setIsFormOpen(false); setEditingId(null); }}
+        title={editingId !== null ? "Edit Transaksi" : "Catat Transaksi"}
+      >
         <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -299,7 +331,16 @@ export default function ClientPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nominal (Rp)</label>
-            <input type="number" required min="0" value={formData.amount} onChange={e => setFormData({...formData, amount: parseInt(e.target.value)})} className="w-full border rounded-lg p-2 dark:bg-slate-800 dark:border-slate-700" />
+            <input
+              type="number"
+              required
+              min="0"
+              step="1"
+              placeholder="Contoh: 50000"
+              value={formData.amount === 0 ? "" : formData.amount}
+              onChange={e => setFormData({...formData, amount: e.target.value === "" ? 0 : parseInt(e.target.value)})}
+              className="w-full border rounded-lg p-2 dark:bg-slate-800 dark:border-slate-700"
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Keterangan / Deskripsi</label>
@@ -307,8 +348,20 @@ export default function ClientPage() {
           </div>
           
           <div className="flex justify-end gap-3 pt-4">
-            <button type="button" onClick={() => setIsFormOpen(false)} className="px-4 py-2 text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-slate-800 rounded-lg">Batal</button>
-            <button type="submit" disabled={isSubmitting} className="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg">Simpan Transaksi</button>
+            <button
+              type="button"
+              onClick={() => { setIsFormOpen(false); setEditingId(null); }}
+              className="px-4 py-2 text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-slate-800 rounded-lg"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg disabled:opacity-60"
+            >
+              {isSubmitting ? "Menyimpan..." : editingId !== null ? "Perbarui Transaksi" : "Simpan Transaksi"}
+            </button>
           </div>
         </form>
       </Modal>
