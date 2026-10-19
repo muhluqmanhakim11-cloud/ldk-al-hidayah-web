@@ -2,8 +2,8 @@ export const dynamic = "force-dynamic";
 
 import { Metadata } from "next";
 import { db } from "@/db";
-import { periods, members, divisions } from "@/db/schema";
-import { eq, asc } from "drizzle-orm";
+import { periods, members, divisions, recruitments } from "@/db/schema";
+import { eq, asc, and } from "drizzle-orm";
 import PageHero from "@/components/public/PageHero";
 import StrukturClient from "./StrukturClient";
 
@@ -36,28 +36,46 @@ export default async function StrukturPage() {
 
   const periodId = activePeriod.id;
 
-  const activeDivisions = await db.query.divisions.findMany({
-    where: eq(divisions.periodId, periodId),
-    orderBy: [asc(divisions.name)],
-  });
+  // Fetch semua data secara paralel
+  const [activeDivisions, activeMembers, acceptedRecruitments] = await Promise.all([
+    db.query.divisions.findMany({
+      where: eq(divisions.periodId, periodId),
+      orderBy: [asc(divisions.name)],
+    }),
+    db.query.members.findMany({
+      where: eq(members.periodId, periodId),
+      with: { position: true, division: true },
+      orderBy: [asc(members.name)],
+    }),
+    // Semua NIM yang sudah ACCEPTED di period ini (backward compat untuk data lama)
+    db.select({ nim: recruitments.nim })
+      .from(recruitments)
+      .where(and(
+        eq(recruitments.periodId, periodId),
+        eq(recruitments.status, "ACCEPTED")
+      )),
+  ]);
 
-  const activeMembers = await db.query.members.findMany({
-    where: eq(members.periodId, periodId),
-    with: { position: true, division: true },
-    orderBy: [asc(members.name)],
-  });
+  // NIM set dari recruitment ACCEPTED
+  const acceptedNimSet = new Set(acceptedRecruitments.map((r) => r.nim));
 
-  activeMembers.sort((a, b) => {
+  // Annotate: fromRecruitment = true jika kolom DB true ATAU NIM ada di accepted recruitments
+  const annotatedMembers = activeMembers.map((m) => ({
+    ...m,
+    fromRecruitment: m.fromRecruitment || (m.nim ? acceptedNimSet.has(m.nim) : false),
+  }));
+
+  annotatedMembers.sort((a, b) => {
     const levelA = a.position?.level ?? 99;
     const levelB = b.position?.level ?? 99;
     if (levelA !== levelB) return levelA - levelB;
     return a.name.localeCompare(b.name);
   });
 
-  const bphMembers = activeMembers.filter((m) => !m.divisionId);
+  const bphMembers = annotatedMembers.filter((m) => !m.divisionId);
   const groupedByDivision = activeDivisions.map((div) => ({
     ...div,
-    members: activeMembers.filter((m) => m.divisionId === div.id),
+    members: annotatedMembers.filter((m) => m.divisionId === div.id),
   }));
 
   return (

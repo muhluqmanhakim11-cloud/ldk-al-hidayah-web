@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import Image from "next/image";
 
 type MemberProps = {
   member: {
@@ -24,43 +23,45 @@ export default function MemberCard({
   accentColor = "#16a34a",
   accentBg = "rgba(22,163,74,0.07)",
 }: MemberProps) {
-  const [show, setShow] = useState(false);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
 
+  // Close on Escape key
+  useEffect(() => {
+    if (!modalOpen) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setModalOpen(false); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [modalOpen]);
+
   return (
     <>
+      {/* ── Card ── */}
       <div
+        onClick={() => { if (member.photoUrl) setModalOpen(true); }}
         style={{
           background: accentBg,
           border: `1px solid ${accentColor}22`,
           borderRadius: "0.875rem",
-          padding: "0.9rem 0.75rem",
+          padding: "0.9rem 0.75rem 0.75rem",
           textAlign: "center",
           cursor: member.photoUrl ? "pointer" : "default",
           transition: "transform 0.2s ease, box-shadow 0.2s ease",
           position: "relative",
+          userSelect: "none",
         }}
         onMouseEnter={(e) => {
           (e.currentTarget as HTMLElement).style.transform = "translateY(-3px)";
           (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 24px ${accentColor}22`;
-          if (member.photoUrl) setShow(true);
         }}
         onMouseLeave={(e) => {
           (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
           (e.currentTarget as HTMLElement).style.boxShadow = "none";
-          setShow(false);
-        }}
-        onTouchEnd={(e) => {
-          if (!member.photoUrl) return;
-          e.preventDefault();
-          setIsMobileOpen((p) => !p);
         }}
       >
-        {/* Avatar circle */}
-        {/* "Anggota Baru" badge from recruitment */}
+        {/* Badge Anggota Baru */}
         {member.fromRecruitment && (
           <div
             style={{
@@ -69,106 +70,216 @@ export default function MemberCard({
               right: "6px",
               background: "linear-gradient(135deg, #f59e0b, #f97316)",
               color: "white",
-              fontSize: "0.55rem",
+              fontSize: "0.5rem",
               fontWeight: 800,
               padding: "2px 7px",
               borderRadius: "9999px",
               textTransform: "uppercase",
-              letterSpacing: "0.04em",
-              boxShadow: "0 2px 6px rgba(245,158,11,0.35)",
-              lineHeight: 1.5,
+              letterSpacing: "0.05em",
+              boxShadow: "0 2px 8px rgba(245,158,11,0.4)",
+              lineHeight: 1.6,
               zIndex: 2,
               whiteSpace: "nowrap",
+              pointerEvents: "none",
             }}
           >
             ✦ Baru
           </div>
         )}
+
+        {/* Avatar */}
         <div
           style={{
-            width: "52px",
-            height: "52px",
+            width: "56px",
+            height: "56px",
             borderRadius: "50%",
             background: `linear-gradient(135deg, ${accentColor}33, ${accentColor}66)`,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             margin: "0 auto 0.6rem",
-            fontSize: "1.3rem",
+            fontSize: "1.4rem",
             fontWeight: 800,
             color: accentColor,
             overflow: "hidden",
-            border: `2px solid ${accentColor}33`,
+            border: `2.5px solid ${accentColor}44`,
+            position: "relative",
           }}
         >
           {member.photoUrl ? (
-            <img src={member.photoUrl} alt={member.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <img
+              src={member.photoUrl}
+              alt={member.name}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: "center top",
+              }}
+            />
           ) : (
             member.name.charAt(0).toUpperCase()
+          )}
+          {/* Zoom hint */}
+          {member.photoUrl && (
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: "rgba(0,0,0,0.35)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                opacity: 0,
+                transition: "opacity 0.2s",
+                borderRadius: "50%",
+              }}
+              className="zoom-hint"
+            >
+              <svg width="16" height="16" fill="none" stroke="white" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+              </svg>
+            </div>
           )}
         </div>
 
         <h3
           className="text-gray-900 dark:text-gray-100"
           style={{
-            fontSize: "0.85rem",
+            fontSize: "0.82rem",
             fontWeight: 700,
             lineHeight: 1.3,
             marginBottom: "0.25rem",
-            textDecoration: member.photoUrl ? "underline dotted" : "none",
-            textDecorationColor: accentColor + "88",
-            textUnderlineOffset: "3px",
           }}
         >
           {member.name}
         </h3>
-        <p style={{ fontSize: "0.72rem", fontWeight: 600, color: accentColor, letterSpacing: "0.01em" }}>
+        <p style={{ fontSize: "0.7rem", fontWeight: 600, color: accentColor, letterSpacing: "0.01em" }}>
           {member.position?.name ?? "—"}
         </p>
-
-        {/* Desktop hover photo popup */}
-        {show && member.photoUrl && (
-          <div className="hidden md:block"
-            style={{
-              position: "absolute",
-              bottom: "calc(100% + 12px)",
-              left: "50%",
-              transform: "translateX(-50%)",
-              zIndex: 99,
-              pointerEvents: "none",
-              animation: "popUp 0.2s cubic-bezier(0.16,1,0.3,1) both",
-            }}
-          >
-            <div className="bg-white dark:bg-slate-800" style={{ borderRadius: "1.25rem", boxShadow: "0 20px 60px rgba(0,0,0,0.25)", border: "1px solid rgba(255,255,255,0.1)", overflow: "hidden", width: "220px" }}>
-              <div style={{ position: "relative", width: "220px", height: "280px" }}>
-                <Image src={member.photoUrl} alt={member.name} fill style={{ objectFit: "cover" }} unoptimized />
-              </div>
-              <div className="bg-gray-50 dark:bg-slate-700" style={{ padding: "0.6rem 0.75rem", textAlign: "center" }}>
-                <p className="text-gray-900 dark:text-gray-100" style={{ fontSize: "0.78rem", fontWeight: 700 }}>{member.name}</p>
-                <p style={{ fontSize: "0.68rem", color: accentColor }}>{member.position?.name}</p>
-              </div>
-            </div>
-            <div className="bg-white dark:bg-slate-700" style={{ width: "12px", height: "12px", border: "1px solid rgba(255,255,255,0.15)", transform: "rotate(45deg)", position: "absolute", bottom: "-6px", left: "50%", marginLeft: "-6px", borderTop: "none", borderLeft: "none" }} />
-          </div>
-        )}
       </div>
 
-      {/* Mobile modal */}
-      {mounted && isMobileOpen && member.photoUrl &&
+      {/* ── Full Photo Modal (unified for all devices) ── */}
+      {mounted && modalOpen && member.photoUrl &&
         createPortal(
           <div
-            style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)", animation: "fadeIn 0.2s ease both" }}
-            onClick={() => setIsMobileOpen(false)}
-            className="md:hidden"
+            onClick={() => setModalOpen(false)}
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              width: "100vw",
+              height: "100vh",
+              zIndex: 99999,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "rgba(0,0,0,0.75)",
+              backdropFilter: "blur(6px)",
+              WebkitBackdropFilter: "blur(6px)",
+              padding: "1rem",
+              boxSizing: "border-box",
+              animation: "fadeOverlay 0.2s ease both",
+            }}
           >
-            <div className="bg-white dark:bg-slate-800" style={{ borderRadius: "1.5rem", overflow: "hidden", width: "280px", boxShadow: "0 25px 60px rgba(0,0,0,0.3)", animation: "popUp 0.25s cubic-bezier(0.16,1,0.3,1) both" }} onClick={(e) => e.stopPropagation()}>
-              <div style={{ position: "relative", width: "280px", height: "350px" }}>
-                <Image src={member.photoUrl} alt={member.name} fill style={{ objectFit: "cover" }} unoptimized />
+            {/* Modal card — stop propagation */}
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: "white",
+                borderRadius: "1.5rem",
+                overflow: "hidden",
+                width: "min(320px, calc(100vw - 2rem))",
+                maxHeight: "calc(100vh - 3rem)",
+                display: "flex",
+                flexDirection: "column",
+                boxShadow: "0 25px 80px rgba(0,0,0,0.4)",
+                animation: "popModal 0.28s cubic-bezier(0.16,1,0.3,1) both",
+                position: "relative",
+              }}
+              className="dark:bg-slate-800"
+            >
+              {/* Close button */}
+              <button
+                onClick={() => setModalOpen(false)}
+                style={{
+                  position: "absolute",
+                  top: "10px",
+                  right: "10px",
+                  zIndex: 10,
+                  width: "32px",
+                  height: "32px",
+                  borderRadius: "50%",
+                  background: "rgba(0,0,0,0.5)",
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "white",
+                }}
+              >
+                <svg width="14" height="14" fill="none" stroke="white" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+
+              {/* Photo — proper centering */}
+              <div
+                style={{
+                  width: "100%",
+                  aspectRatio: "3 / 4",
+                  overflow: "hidden",
+                  flexShrink: 0,
+                  background: "#f1f5f9",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                className="dark:bg-slate-700"
+              >
+                <img
+                  src={member.photoUrl}
+                  alt={member.name}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    objectPosition: "center top",
+                    display: "block",
+                  }}
+                />
               </div>
-              <div className="bg-white dark:bg-slate-800" style={{ padding: "1rem", textAlign: "center" }}>
-                <p className="text-gray-900 dark:text-gray-100" style={{ fontWeight: 700, fontSize: "0.95rem" }}>{member.name}</p>
-                <p style={{ fontSize: "0.78rem", color: accentColor, marginTop: "2px" }}>{member.position?.name}</p>
-                <p className="text-gray-400" style={{ fontSize: "0.7rem", marginTop: "6px" }}>Ketuk di luar untuk menutup</p>
+
+              {/* Info */}
+              <div
+                style={{ padding: "1rem 1.25rem 1.25rem", textAlign: "center" }}
+                className="bg-white dark:bg-slate-800"
+              >
+                <p className="text-gray-900 dark:text-gray-100" style={{ fontWeight: 700, fontSize: "1rem", marginBottom: "4px" }}>
+                  {member.name}
+                </p>
+                <p style={{ fontSize: "0.8rem", color: accentColor, fontWeight: 600 }}>
+                  {member.position?.name}
+                </p>
+                {member.fromRecruitment && (
+                  <span style={{
+                    display: "inline-block",
+                    marginTop: "6px",
+                    background: "linear-gradient(135deg, #f59e0b, #f97316)",
+                    color: "white",
+                    fontSize: "0.6rem",
+                    fontWeight: 800,
+                    padding: "2px 10px",
+                    borderRadius: "9999px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                  }}>
+                    ✦ Anggota Baru via Rekrutmen
+                  </span>
+                )}
               </div>
             </div>
           </div>,
@@ -177,13 +288,16 @@ export default function MemberCard({
       }
 
       <style>{`
-        @keyframes popUp {
-          from { opacity: 0; transform: translateX(-50%) scale(0.9) translateY(8px); }
-          to   { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
-        }
-        @keyframes fadeIn {
+        @keyframes fadeOverlay {
           from { opacity: 0; }
           to   { opacity: 1; }
+        }
+        @keyframes popModal {
+          from { opacity: 0; transform: scale(0.88) translateY(20px); }
+          to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        [data-card]:hover .zoom-hint {
+          opacity: 1 !important;
         }
       `}</style>
     </>
