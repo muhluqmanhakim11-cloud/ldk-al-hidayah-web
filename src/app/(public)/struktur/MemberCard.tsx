@@ -188,14 +188,14 @@ export default function MemberCard({
             <div
               onClick={(e) => e.stopPropagation()}
               style={{
-                background: "white",
+                background: "#0f172a",
                 borderRadius: "1.5rem",
                 overflow: "hidden",
-                width: "min(320px, calc(100vw - 2rem))",
+                width: "min(340px, calc(100vw - 2rem))",
                 maxHeight: "calc(100vh - 3rem)",
                 display: "flex",
                 flexDirection: "column",
-                boxShadow: "0 25px 80px rgba(0,0,0,0.4)",
+                boxShadow: "0 25px 80px rgba(0,0,0,0.5)",
                 animation: "popModal 0.28s cubic-bezier(0.16,1,0.3,1) both",
                 position: "relative",
               }}
@@ -226,29 +226,25 @@ export default function MemberCard({
                 </svg>
               </button>
 
-              {/* Photo — full cover tanpa ruang putih */}
+              {/* Photo — contain agar tidak terpotong */}
               <div
                 style={{
                   width: "100%",
-                  position: "relative",
-                  paddingTop: "120%", /* portrait ratio */
-                  overflow: "hidden",
-                  flexShrink: 0,
                   background: "#0f172a",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "hidden",
                 }}
-                className="dark:bg-slate-900"
               >
                 <img
                   src={member.photoUrl}
                   alt={member.name}
                   style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
                     width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    objectPosition: "center top",
+                    height: "auto",
+                    maxHeight: "calc(100vh - 12rem)",
+                    objectFit: "contain",
                     display: "block",
                   }}
                 />
@@ -256,13 +252,12 @@ export default function MemberCard({
 
               {/* Info */}
               <div
-                style={{ padding: "1rem 1.25rem 1.25rem", textAlign: "center" }}
-                className="bg-white dark:bg-slate-800"
+                style={{ padding: "0.875rem 1.25rem 1.125rem", textAlign: "center", background: "#0f172a" }}
               >
-                <p className="text-gray-900 dark:text-gray-100" style={{ fontWeight: 700, fontSize: "1rem", marginBottom: "4px" }}>
+                <p style={{ fontWeight: 700, fontSize: "1rem", marginBottom: "4px", color: "#f1f5f9" }}>
                   {member.name}
                 </p>
-                <p style={{ fontSize: "0.8rem", color: accentColor, fontWeight: 600 }}>
+                <p style={{ fontSize: "0.8rem", color: "#4ade80", fontWeight: 600 }}>
                   {member.position?.name}
                 </p>
                 {member.fromRecruitment && (
