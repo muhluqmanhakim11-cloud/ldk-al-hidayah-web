@@ -226,24 +226,25 @@ export default function MemberCard({
                 </svg>
               </button>
 
-              {/* Photo — proper centering */}
+              {/* Photo — full cover tanpa ruang putih */}
               <div
                 style={{
                   width: "100%",
-                  aspectRatio: "3 / 4",
+                  position: "relative",
+                  paddingTop: "120%", /* portrait ratio */
                   overflow: "hidden",
                   flexShrink: 0,
-                  background: "#f1f5f9",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  background: "#0f172a",
                 }}
-                className="dark:bg-slate-700"
+                className="dark:bg-slate-900"
               >
                 <img
                   src={member.photoUrl}
                   alt={member.name}
                   style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
                     width: "100%",
                     height: "100%",
                     objectFit: "cover",

@@ -138,6 +138,7 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
     { name: "Kunjungan Tokoh/Ulama", href: "/admin/pensos/kunjungan", icon: Users, show: isSuperAdmin || isPensos, group: "Pensos" },
     { name: "Relasi FSLDK", href: "/admin/pensos/fsldk", icon: Users, show: isSuperAdmin || isPensos, group: "Pensos" },
     { name: "Catatan Pensos", href: "/admin/pensos/catatan", icon: FileText, show: isSuperAdmin || isPensos, group: "Pensos" },
+    { name: "Mitra Kami", href: "/admin/pensos/mitra", icon: Users, show: isSuperAdmin || isPensos, group: "Pensos" },
 
     // Seni & Olahraga
     { name: "Agenda Latihan", href: "/admin/seni-olahraga/agenda", icon: CalendarDays, show: isSuperAdmin || isSeni, group: "Seni & Olahraga" },

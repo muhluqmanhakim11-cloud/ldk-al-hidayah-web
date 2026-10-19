@@ -1,8 +1,13 @@
 import Link from "next/link";
 import { db } from "@/db";
+import { mitra } from "@/db/schema";
+import { eq, asc } from "drizzle-orm";
 
 export default async function Footer() {
-  const settings = await db.query.siteSettings.findFirst();
+  const [settings, mitraList] = await Promise.all([
+    db.query.siteSettings.findFirst(),
+    db.select().from(mitra).where(eq(mitra.isActive, true)).orderBy(asc(mitra.orderIndex), asc(mitra.createdAt)),
+  ]);
 
   const orgName = settings?.orgName || "LDK Al-Hidayah";
   const description = settings?.description || "Unit Kegiatan Mahasiswa tingkat Institut yang bergerak di bidang kerohanian Islam, bertujuan untuk mewujudkan kampus madani.";
@@ -15,6 +20,55 @@ export default async function Footer() {
 
   return (
     <footer className="bg-gray-900 text-gray-300 pt-16 pb-8 border-t border-gray-800">
+      {/* ── Mitra Kami ── */}
+      {mitraList.length > 0 && (
+        <div className="container mx-auto px-4 lg:px-8 pb-10 mb-10 border-b border-gray-800">
+          <h3 className="text-center text-white font-semibold text-sm uppercase tracking-widest mb-6 opacity-60">
+            Mitra Kami
+          </h3>
+          <div
+            className="flex flex-wrap items-center justify-center gap-6"
+          >
+            {mitraList.map((m) => (
+              m.websiteUrl ? (
+                <a
+                  key={m.id}
+                  href={m.websiteUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={m.nama}
+                  className="group"
+                >
+                  <div
+                    className="h-12 w-auto max-w-[140px] flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-xl px-4 py-2 transition-all duration-300 group-hover:scale-105"
+                    style={{ minWidth: "80px" }}
+                  >
+                    <img
+                      src={m.logoUrl}
+                      alt={m.nama}
+                      className="max-h-8 max-w-[120px] object-contain opacity-60 group-hover:opacity-100 transition-opacity duration-300"
+                    />
+                  </div>
+                </a>
+              ) : (
+                <div
+                  key={m.id}
+                  title={m.nama}
+                  className="h-12 w-auto max-w-[140px] flex items-center justify-center bg-white/5 rounded-xl px-4 py-2"
+                  style={{ minWidth: "80px" }}
+                >
+                  <img
+                    src={m.logoUrl}
+                    alt={m.nama}
+                    className="max-h-8 max-w-[120px] object-contain opacity-60"
+                  />
+                </div>
+              )
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="container mx-auto px-4 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1 md:col-span-2">

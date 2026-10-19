@@ -668,3 +668,16 @@ export const donors = pgTable('donors', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
+// --- MITRA KAMI (Partners) ---
+export const mitra = pgTable('mitra', {
+  id: serial('id').primaryKey(),
+  nama: varchar('nama', { length: 255 }).notNull(),
+  logoUrl: varchar('logo_url', { length: 500 }).notNull(),
+  websiteUrl: varchar('website_url', { length: 500 }),
+  isActive: boolean('is_active').default(true).notNull(),
+  orderIndex: integer('order_index').default(0).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+
