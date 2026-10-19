@@ -15,6 +15,7 @@ type Member = {
 type Division = {
   id: number;
   name: string;
+  description?: string | null;
   members: Member[];
 };
 
@@ -206,29 +207,46 @@ export default function StrukturClient({ bphMembers, groupedByDivision, periodNa
 
       {/* ── Member grid ── */}
       <div key={String(activeTab) + search} style={{ animation: "fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) both" }}>
-        {/* Section header bar */}
-        <div
-          className="bg-white dark:bg-slate-900 border-gray-100 dark:border-slate-800"
-          style={{
-            borderRadius: "1rem",
-            border: "1px solid",
-            padding: "1rem 1.25rem",
-            marginBottom: "1.25rem",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.75rem",
-            borderLeft: `4px solid ${isBph ? "#3b82f6" : (accent?.line ?? "#16a34a")}`,
-          }}
-        >
-          <div>
-            <h2 className="text-gray-900 dark:text-gray-100" style={{ fontSize: "1.05rem", fontWeight: 700 }}>
-              {isBph ? "Badan Pengurus Harian & Penasehat" : allTabs.find((t) => t.id === activeTab)?.label}
-            </h2>
-            <p className="text-gray-400 dark:text-gray-500" style={{ fontSize: "0.75rem", marginTop: "2px" }}>
-              {search ? `${filtered.length} dari ${currentMembers.length} pengurus ditemukan` : `${currentMembers.length} pengurus`}
-            </p>
-          </div>
-        </div>
+        {/* Section header bar with description */}
+        {(() => {
+          const currentDiv = !isBph ? groupedByDivision.find((d) => d.id === activeTab) : null;
+          const sectionDesc = isBph
+            ? "Pengurus inti yang menjalankan fungsi manajemen harian organisasi LDK Al-Hidayah."
+            : currentDiv?.description || null;
+          return (
+            <div
+              className="bg-white dark:bg-slate-900 border-gray-100 dark:border-slate-800"
+              style={{
+                borderRadius: "1rem",
+                border: "1px solid",
+                padding: "1.25rem 1.5rem",
+                marginBottom: "1.25rem",
+                borderLeft: `4px solid ${isBph ? "#3b82f6" : (accent?.line ?? "#16a34a")}`,
+              }}
+            >
+              <h2 className="text-gray-900 dark:text-gray-100" style={{ fontSize: "1.1rem", fontWeight: 700 }}>
+                {isBph ? "Badan Pengurus Harian & Penasehat" : currentDiv?.name}
+              </h2>
+              <p className="text-gray-400 dark:text-gray-500" style={{ fontSize: "0.78rem", marginTop: "3px" }}>
+                {search ? `${filtered.length} dari ${currentMembers.length} pengurus ditemukan` : `${currentMembers.length} pengurus`}
+              </p>
+              {sectionDesc && (
+                <div
+                  className="text-gray-600 dark:text-gray-400"
+                  style={{
+                    fontSize: "0.875rem",
+                    lineHeight: 1.65,
+                    marginTop: "0.75rem",
+                    paddingTop: "0.75rem",
+                    borderTop: "1px solid #f1f5f9",
+                  }}
+                >
+                  {sectionDesc}
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
         {filtered.length > 0 ? (
           <div
