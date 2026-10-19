@@ -1,10 +1,10 @@
 import { auth } from "@/auth";
 import StatCard from "@/components/admin/StatCard";
 import QuickAction from "@/components/admin/QuickAction";
-import { Users, Flag, FileText, CalendarDays, CheckCircle, Clock, ArrowDownCircle, ArrowUpCircle, Wallet } from "lucide-react";
+import { Users, Flag, FileText, CalendarDays, CheckCircle, Clock, ArrowDownCircle, ArrowUpCircle, Wallet, UserCheck, UserClock } from "lucide-react";
 import { db } from "@/db";
-import { members, divisions, programs, events, transactions } from "@/db/schema";
-import { count, eq, and, sum } from "drizzle-orm";
+import { members, divisions, programs, events, transactions, recruitments } from "@/db/schema";
+import { count, eq, and, sum, or } from "drizzle-orm";
 import Link from "next/link";
 
 export default async function AdminDashboard() {
@@ -108,6 +108,8 @@ export default async function AdminDashboard() {
     programsPublishedCount,
     eventsCount,
     eventsUpcomingCount,
+    recruitmentAcceptedCount,
+    recruitmentPendingCount,
   ] = await Promise.all([
     db.select({ value: count() }).from(members),
     db.select({ value: count() }).from(divisions),
@@ -115,6 +117,8 @@ export default async function AdminDashboard() {
     db.select({ value: count() }).from(programs).where(eq(programs.status, "PUBLISHED")),
     db.select({ value: count() }).from(events),
     db.select({ value: count() }).from(events).where(eq(events.status, "UPCOMING")),
+    db.select({ value: count() }).from(recruitments).where(eq(recruitments.status, "ACCEPTED")),
+    db.select({ value: count() }).from(recruitments).where(or(eq(recruitments.status, "PENDING"), eq(recruitments.status, "REVIEWED"))),
   ]);
 
   return (
@@ -132,6 +136,8 @@ export default async function AdminDashboard() {
         <StatCard title="Kegiatan Mendatang" value={eventsUpcomingCount[0].value} icon={Clock} color="bg-amber-500" />
         <StatCard title="Bidang/Divisi" value={divisionsCount[0].value} icon={Flag} color="bg-indigo-500" />
         <StatCard title="Total Pengurus" value={membersCount[0].value} icon={Users} color="bg-blue-500" />
+        <StatCard title="Anggota Baru (Diterima)" value={recruitmentAcceptedCount[0].value} icon={UserCheck} color="bg-teal-500" />
+        <StatCard title="Pendaftar Menunggu" value={recruitmentPendingCount[0].value} icon={UserClock} color="bg-yellow-500" />
       </div>
 
       {/* Quick Actions */}
