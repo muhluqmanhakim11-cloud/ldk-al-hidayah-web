@@ -103,7 +103,7 @@ export default function MemberCard({
 
         {/* Desktop hover photo popup */}
         {show && member.photoUrl && (
-          <div
+          <div className="hidden md:block"
             style={{
               position: "absolute",
               bottom: "calc(100% + 12px)",
@@ -113,18 +113,17 @@ export default function MemberCard({
               pointerEvents: "none",
               animation: "popUp 0.2s cubic-bezier(0.16,1,0.3,1) both",
             }}
-            className="hidden md:block"
           >
-            <div style={{ background: "white", borderRadius: "1.25rem", boxShadow: "0 20px 60px rgba(0,0,0,0.2)", border: "1px solid #f1f5f9", overflow: "hidden", width: "220px" }}>
+            <div className="bg-white dark:bg-slate-800" style={{ borderRadius: "1.25rem", boxShadow: "0 20px 60px rgba(0,0,0,0.25)", border: "1px solid rgba(255,255,255,0.1)", overflow: "hidden", width: "220px" }}>
               <div style={{ position: "relative", width: "220px", height: "280px" }}>
                 <Image src={member.photoUrl} alt={member.name} fill style={{ objectFit: "cover" }} unoptimized />
               </div>
-              <div style={{ padding: "0.6rem 0.75rem", textAlign: "center", background: "linear-gradient(to bottom, #f9fafb, white)" }}>
-                <p style={{ fontSize: "0.78rem", fontWeight: 700, color: "#1e293b" }}>{member.name}</p>
+              <div className="bg-gray-50 dark:bg-slate-700" style={{ padding: "0.6rem 0.75rem", textAlign: "center" }}>
+                <p className="text-gray-900 dark:text-gray-100" style={{ fontSize: "0.78rem", fontWeight: 700 }}>{member.name}</p>
                 <p style={{ fontSize: "0.68rem", color: accentColor }}>{member.position?.name}</p>
               </div>
             </div>
-            <div style={{ width: "12px", height: "12px", background: "white", border: "1px solid #f1f5f9", transform: "rotate(45deg)", position: "absolute", bottom: "-6px", left: "50%", marginLeft: "-6px", borderTop: "none", borderLeft: "none" }} />
+            <div className="bg-white dark:bg-slate-700" style={{ width: "12px", height: "12px", border: "1px solid rgba(255,255,255,0.15)", transform: "rotate(45deg)", position: "absolute", bottom: "-6px", left: "50%", marginLeft: "-6px", borderTop: "none", borderLeft: "none" }} />
           </div>
         )}
       </div>
@@ -137,14 +136,14 @@ export default function MemberCard({
             onClick={() => setIsMobileOpen(false)}
             className="md:hidden"
           >
-            <div style={{ background: "white", borderRadius: "1.5rem", overflow: "hidden", width: "280px", boxShadow: "0 25px 60px rgba(0,0,0,0.3)", animation: "popUp 0.25s cubic-bezier(0.16,1,0.3,1) both" }} onClick={(e) => e.stopPropagation()}>
+            <div className="bg-white dark:bg-slate-800" style={{ borderRadius: "1.5rem", overflow: "hidden", width: "280px", boxShadow: "0 25px 60px rgba(0,0,0,0.3)", animation: "popUp 0.25s cubic-bezier(0.16,1,0.3,1) both" }} onClick={(e) => e.stopPropagation()}>
               <div style={{ position: "relative", width: "280px", height: "350px" }}>
                 <Image src={member.photoUrl} alt={member.name} fill style={{ objectFit: "cover" }} unoptimized />
               </div>
-              <div style={{ padding: "1rem", textAlign: "center" }}>
-                <p style={{ fontWeight: 700, color: "#1e293b", fontSize: "0.95rem" }}>{member.name}</p>
+              <div className="bg-white dark:bg-slate-800" style={{ padding: "1rem", textAlign: "center" }}>
+                <p className="text-gray-900 dark:text-gray-100" style={{ fontWeight: 700, fontSize: "0.95rem" }}>{member.name}</p>
                 <p style={{ fontSize: "0.78rem", color: accentColor, marginTop: "2px" }}>{member.position?.name}</p>
-                <p style={{ fontSize: "0.7rem", color: "#94a3b8", marginTop: "6px" }}>Ketuk di luar untuk menutup</p>
+                <p className="text-gray-400" style={{ fontSize: "0.7rem", marginTop: "6px" }}>Ketuk di luar untuk menutup</p>
               </div>
             </div>
           </div>,

@@ -188,8 +188,6 @@ export default function StrukturClient({ bphMembers, groupedByDivision, periodNa
               {tab.label}
               <span
                 style={{
-                  background: isActive ? "rgba(255,255,255,0.25)" : "#e2e8f0",
-                  color: isActive ? "white" : "#64748b",
                   borderRadius: "9999px",
                   padding: "1px 7px",
                   fontSize: "0.7rem",
@@ -197,6 +195,7 @@ export default function StrukturClient({ bphMembers, groupedByDivision, periodNa
                   minWidth: "20px",
                   textAlign: "center",
                 }}
+                className={isActive ? "bg-white/25 text-white" : "bg-gray-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300"}
               >
                 {tab.count}
               </span>
@@ -232,13 +231,13 @@ export default function StrukturClient({ bphMembers, groupedByDivision, periodNa
               </p>
               {sectionDesc && (
                 <div
-                  className="text-gray-600 dark:text-gray-400"
+                  className="text-gray-600 dark:text-gray-400 border-gray-100 dark:border-slate-700"
                   style={{
                     fontSize: "0.875rem",
                     lineHeight: 1.65,
                     marginTop: "0.75rem",
                     paddingTop: "0.75rem",
-                    borderTop: "1px solid #f1f5f9",
+                    borderTop: "1px solid",
                   }}
                 >
                   {sectionDesc}
@@ -274,7 +273,7 @@ export default function StrukturClient({ bphMembers, groupedByDivision, periodNa
           </div>
         ) : (
           <div style={{ textAlign: "center", padding: "4rem 1rem" }}>
-            <div style={{ width: "60px", height: "60px", borderRadius: "16px", background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1rem" }}>
+            <div className="bg-gray-100 dark:bg-slate-800" style={{ width: "60px", height: "60px", borderRadius: "16px", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1rem" }}>
               <svg width="28" height="28" fill="none" stroke="#94a3b8" strokeWidth="1.5" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>

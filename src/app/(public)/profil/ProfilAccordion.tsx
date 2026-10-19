@@ -77,16 +77,16 @@ function AccordionItem({
         animation: `accordionEntrance 0.55s ${index * 0.08}s cubic-bezier(0.16,1,0.3,1) both`,
         borderRadius: "1.25rem",
         overflow: "hidden",
-        border: isOpen
-          ? "1.5px solid rgba(22,163,74,0.35)"
-          : "1.5px solid #f1f5f9",
-        background: "white",
         boxShadow: isOpen
           ? "0 8px 40px rgba(22,163,74,0.12), 0 2px 10px rgba(0,0,0,0.06)"
           : "0 2px 8px rgba(0,0,0,0.05)",
         transition: "border-color 0.3s ease, box-shadow 0.3s ease",
       }}
-      className="dark:bg-slate-900 dark:border-slate-800"
+      className={`bg-white dark:bg-slate-900 ${
+        isOpen
+          ? "border border-green-400/40 dark:border-green-600/40"
+          : "border border-gray-100 dark:border-slate-800"
+      }`}
     >
       {/* ── Header / trigger ── */}
       <button
@@ -106,6 +106,7 @@ function AccordionItem({
       >
         {/* Number + Icon badge */}
         <div
+          className={isOpen ? "" : "dark:bg-green-900/30"}
           style={{
             width: "46px",
             height: "46px",
@@ -127,12 +128,11 @@ function AccordionItem({
         {/* Title + subtitle hint */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
-            className="text-gray-900 dark:text-gray-100"
+            className={isOpen ? "text-green-700 dark:text-green-400" : "text-gray-900 dark:text-gray-100"}
             style={{
               fontSize: "1.1rem",
               fontWeight: 700,
               lineHeight: 1.3,
-              color: isOpen ? "#15803d" : undefined,
               transition: "color 0.25s",
             }}
           >
@@ -150,11 +150,11 @@ function AccordionItem({
 
         {/* Chevron */}
         <div
+          className={isOpen ? "bg-green-100 dark:bg-green-900/40" : "bg-gray-100 dark:bg-slate-700"}
           style={{
             width: "32px",
             height: "32px",
             borderRadius: "50%",
-            background: isOpen ? "rgba(22,163,74,0.1)" : "#f8fafc",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -238,42 +238,6 @@ export default function ProfilAccordion({ sections }: { sections: Section[] }) {
 
   return (
     <>
-      {/* Stats bar */}
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "1rem",
-          marginBottom: "2.5rem",
-          animation: "accordionEntrance 0.5s cubic-bezier(0.16,1,0.3,1) both",
-        }}
-      >
-        {[
-          { label: "Total Seksi", value: sections.length, icon: "📄" },
-          { label: "Informasi Tersedia", value: sections.filter((s) => s.content).length, icon: "✅" },
-        ].map((stat) => (
-          <div
-            key={stat.label}
-            className="bg-white dark:bg-slate-900 border-gray-100 dark:border-slate-800 text-gray-900 dark:text-gray-100"
-            style={{
-              borderRadius: "1rem",
-              border: "1px solid",
-              padding: "0.75rem 1.25rem",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.6rem",
-              boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
-            }}
-          >
-            <span style={{ fontSize: "1.1rem" }}>{stat.icon}</span>
-            <div>
-              <div style={{ fontSize: "1.1rem", fontWeight: 800, lineHeight: 1 }}>{stat.value}</div>
-              <div className="text-gray-400 dark:text-gray-500" style={{ fontSize: "0.7rem", marginTop: "1px" }}>{stat.label}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-
       {/* Accordion list */}
       <div style={{ display: "flex", flexDirection: "column", gap: "0.9rem" }}>
         {sections.map((section, i) => (

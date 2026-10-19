@@ -46,7 +46,7 @@ export default function KegiatanClient({ events }: Props) {
   if (events.length === 0) {
     return (
       <div style={{ textAlign: "center", padding: "6rem 1rem" }}>
-        <div style={{ width: "80px", height: "80px", borderRadius: "20px", background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.5rem" }}>
+        <div className="bg-gray-100 dark:bg-slate-800" style={{ width: "80px", height: "80px", borderRadius: "20px", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.5rem" }}>
           <svg width="36" height="36" fill="none" stroke="#94a3b8" strokeWidth="1.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
@@ -128,10 +128,9 @@ export default function KegiatanClient({ events }: Props) {
             return (
               <article
                 key={event.id}
-                className="bg-white dark:bg-slate-900"
+                className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800"
                 style={{
                   borderRadius: "1.25rem",
-                  border: "1px solid #f1f5f9",
                   overflow: "hidden",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
                   transition: "transform 0.25s ease, box-shadow 0.25s ease",

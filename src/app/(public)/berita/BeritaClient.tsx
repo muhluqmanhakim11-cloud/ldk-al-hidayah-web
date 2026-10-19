@@ -34,7 +34,7 @@ export default function BeritaClient({ articles, divisions }: Props) {
   if (articles.length === 0) {
     return (
       <div style={{ textAlign: "center", padding: "6rem 1rem" }}>
-        <div style={{ width: "80px", height: "80px", borderRadius: "20px", background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.5rem" }}>
+        <div className="bg-gray-100 dark:bg-slate-800" style={{ width: "80px", height: "80px", borderRadius: "20px", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.5rem" }}>
           <svg width="36" height="36" fill="none" stroke="#94a3b8" strokeWidth="1.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
           </svg>
@@ -100,12 +100,11 @@ export default function BeritaClient({ articles, divisions }: Props) {
             <Link
               key={article.id}
               href={`/berita/${article.slug}`}
-              className="group bg-white dark:bg-slate-900"
+              className="group bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800"
               style={{
                 display: "flex",
                 flexDirection: "column",
                 borderRadius: "1.25rem",
-                border: "1px solid #f1f5f9",
                 overflow: "hidden",
                 boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
                 transition: "transform 0.25s ease, box-shadow 0.25s ease",

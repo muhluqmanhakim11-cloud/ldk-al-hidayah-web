@@ -38,10 +38,9 @@ export default async function GaleriPage() {
                 }}
               >
                 <div
-                  className="bg-white dark:bg-slate-900 dark:border-slate-800"
+                  className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800"
                   style={{
                     borderRadius: "1.5rem",
-                    border: "1px solid #f1f5f9",
                     overflow: "hidden",
                     boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
                   }}
@@ -164,7 +163,7 @@ export default async function GaleriPage() {
           </div>
         ) : (
           <div style={{ textAlign: "center", padding: "6rem 1rem" }}>
-            <div style={{ width: "80px", height: "80px", borderRadius: "20px", background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.5rem" }}>
+            <div className="bg-gray-100 dark:bg-slate-800" style={{ width: "80px", height: "80px", borderRadius: "20px", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.5rem" }}>
               <svg width="36" height="36" fill="none" stroke="#94a3b8" strokeWidth="1.5" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
