@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default async function AdminRecruitmentPage({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const session = await auth();
   if (!session?.user) return null;
@@ -43,9 +43,9 @@ export default async function AdminRecruitmentPage({
   if (statusFilter) conditions.push(eq(recruitments.status, statusFilter as any));
   if (searchName) conditions.push(ilike(recruitments.name, `%${searchName}%`));
   if (searchNim) conditions.push(ilike(recruitments.nim, `%${searchNim}%`));
-  
+
   // RBAC for division
-  if (session.user.role === 'ADMIN_BIDANG' && session.user.divisionId) {
+  if (session.user.role === "ADMIN_BIDANG" && session.user.divisionId) {
     conditions.push(eq(recruitments.interestedDivisionId, session.user.divisionId));
   } else if (divisionFilter) {
     conditions.push(eq(recruitments.interestedDivisionId, parseInt(divisionFilter, 10)));
@@ -62,21 +62,23 @@ export default async function AdminRecruitmentPage({
 
   // Calculate Stats
   const total = list.length;
-  const pending = list.filter(r => r.status === 'PENDING').length;
-  const reviewed = list.filter(r => r.status === 'REVIEWED').length;
-  const accepted = list.filter(r => r.status === 'ACCEPTED').length;
-  const rejected = list.filter(r => r.status === 'REJECTED').length;
+  const pending = list.filter((r) => r.status === "PENDING").length;
+  const reviewed = list.filter((r) => r.status === "REVIEWED").length;
+  const accepted = list.filter((r) => r.status === "ACCEPTED").length;
+  const rejected = list.filter((r) => r.status === "REJECTED").length;
 
   const allPeriods = await db.query.periods.findMany({ orderBy: [desc(periods.id)] });
   const allDivisions = await db.query.divisions.findMany({ orderBy: [asc(divisions.name)] });
-  const currentPeriodInfo = allPeriods.find(p => p.id === targetPeriodId);
+  const currentPeriodInfo = allPeriods.find((p) => p.id === targetPeriodId);
 
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Kelola Pendaftar</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Periode: {currentPeriodInfo?.name || 'Semua'}</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+            Periode: {currentPeriodInfo?.name || "Semua"}
+          </p>
         </div>
       </div>
 
@@ -105,26 +107,48 @@ export default async function AdminRecruitmentPage({
       </div>
 
       {/* Control Status Pendaftaran (Super Admin / Ketua) */}
-      {(session.user.role === 'SUPER_ADMIN' || session.user.role === 'KETUA') && currentPeriodInfo && (
+      {(session.user.role === "SUPER_ADMIN" || session.user.role === "KETUA") && currentPeriodInfo && (
         <div className="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border mb-6 flex items-center justify-between">
           <div>
-            <h3 className="font-bold text-gray-900 dark:text-gray-100">Status Pendaftaran Periode {currentPeriodInfo.name}</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Buka atau tutup akses formulir pendaftaran untuk publik.</p>
+            <h3 className="font-bold text-gray-900 dark:text-gray-100">
+              Status Pendaftaran Periode {currentPeriodInfo.name}
+            </h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Buka atau tutup akses formulir pendaftaran untuk publik.
+            </p>
           </div>
           <div>
-             <form action={async () => {
-                'use server';
-                const { revalidatePath } = await import('next/cache');
+            <form
+              action={async () => {
+                "use server";
+                const { revalidatePath } = await import("next/cache");
                 const newState = !currentPeriodInfo.isRecruitmentOpen;
-                await db.update(periods).set({ isRecruitmentOpen: newState }).where(eq(periods.id, currentPeriodInfo.id));
-                revalidatePath('/admin/recruitment');
-                revalidatePath('/rekrutmen/daftar');
-             }}>
-                <button type="submit" className={`px-6 py-2 rounded-lg font-bold text-sm flex items-center gap-2 ${currentPeriodInfo.isRecruitmentOpen ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-red-600 text-white hover:bg-red-700'}`}>
-                  <div className={`w-3 h-3 rounded-full ${currentPeriodInfo.isRecruitmentOpen ? 'bg-green-300' : 'bg-red-300'}`}></div>
-                  {currentPeriodInfo.isRecruitmentOpen ? "Status: BUKA (Klik untuk Tutup)" : "Status: TUTUP (Klik untuk Buka)"}
-                </button>
-             </form>
+                await db
+                  .update(periods)
+                  .set({ isRecruitmentOpen: newState })
+                  .where(eq(periods.id, currentPeriodInfo.id));
+                revalidatePath("/admin/recruitment");
+                revalidatePath("/rekrutmen/daftar");
+              }}
+            >
+              <button
+                type="submit"
+                className={`px-6 py-2 rounded-lg font-bold text-sm flex items-center gap-2 ${
+                  currentPeriodInfo.isRecruitmentOpen
+                    ? "bg-green-600 text-white hover:bg-green-700"
+                    : "bg-red-600 text-white hover:bg-red-700"
+                }`}
+              >
+                <div
+                  className={`w-3 h-3 rounded-full ${
+                    currentPeriodInfo.isRecruitmentOpen ? "bg-green-300" : "bg-red-300"
+                  }`}
+                ></div>
+                {currentPeriodInfo.isRecruitmentOpen
+                  ? "Status: BUKA (Klik untuk Tutup)"
+                  : "Status: TUTUP (Klik untuk Buka)"}
+              </button>
+            </form>
           </div>
         </div>
       )}
@@ -134,23 +158,43 @@ export default async function AdminRecruitmentPage({
         <form className="flex flex-wrap gap-4 items-end">
           <div>
             <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Periode</label>
-            <select name="periodId" defaultValue={targetPeriodId || ""} className="border rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-950 min-w-[120px]">
+            <select
+              name="periodId"
+              defaultValue={targetPeriodId || ""}
+              className="border rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-950 min-w-[120px]"
+            >
               <option value="">Semua</option>
-              {allPeriods.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+              {allPeriods.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
             </select>
           </div>
-          {session.user.role !== 'ADMIN_BIDANG' && (
+          {session.user.role !== "ADMIN_BIDANG" && (
             <div>
               <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Divisi</label>
-              <select name="divisionId" defaultValue={divisionFilter || ""} className="border rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-950 min-w-[150px]">
+              <select
+                name="divisionId"
+                defaultValue={divisionFilter || ""}
+                className="border rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-950 min-w-[150px]"
+              >
                 <option value="">Semua Divisi</option>
-                {allDivisions.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                {allDivisions.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.name}
+                  </option>
+                ))}
               </select>
             </div>
           )}
           <div>
             <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Status</label>
-            <select name="status" defaultValue={statusFilter || ""} className="border rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-950 min-w-[120px]">
+            <select
+              name="status"
+              defaultValue={statusFilter || ""}
+              className="border rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-950 min-w-[120px]"
+            >
               <option value="">Semua</option>
               <option value="PENDING">PENDING</option>
               <option value="REVIEWED">REVIEWED</option>
@@ -160,23 +204,67 @@ export default async function AdminRecruitmentPage({
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Cari Nama</label>
-            <input type="text" name="name" defaultValue={searchName || ""} placeholder="Nama..." className="border rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-950" />
+            <input
+              type="text"
+              name="name"
+              defaultValue={searchName || ""}
+              placeholder="Nama..."
+              className="border rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-950"
+            />
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Cari NIM</label>
-            <input type="text" name="nim" defaultValue={searchNim || ""} placeholder="NIM..." className="border rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-950" />
+            <input
+              type="text"
+              name="nim"
+              defaultValue={searchNim || ""}
+              placeholder="NIM..."
+              className="border rounded-md p-2 text-sm bg-gray-50 dark:bg-slate-950"
+            />
           </div>
-          <div className="flex gap-2">
-            <button type="submit" className="bg-gray-900 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-gray-800">Filter</button>
-            <Link href="/admin/recruitment" className="bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-md text-sm font-bold hover:bg-gray-300">Reset</Link>
-            
-            <a 
-              href={`/admin/recruitment/print?periodId=${targetPeriodId || ''}&divisionId=${divisionFilter || ''}&status=${statusFilter || ''}`} 
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="submit"
+              className="bg-gray-900 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-gray-800"
+            >
+              Filter
+            </button>
+            <Link
+              href="/admin/recruitment"
+              className="bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-md text-sm font-bold hover:bg-gray-300"
+            >
+              Reset
+            </Link>
+
+            <a
+              href={`/admin/recruitment/print?periodId=${targetPeriodId || ""}&divisionId=${divisionFilter || ""}&status=${statusFilter || ""}${searchName ? `&name=${encodeURIComponent(searchName)}` : ""}${searchNim ? `&nim=${encodeURIComponent(searchNim)}` : ""}`}
               target="_blank"
               className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-blue-700 flex items-center gap-2"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                />
+              </svg>
               Cetak PDF
+            </a>
+
+            <a
+              href={`/api/admin/recruitments/export-excel?periodId=${targetPeriodId || ""}&divisionId=${divisionFilter || ""}&status=${statusFilter || ""}${searchName ? `&name=${encodeURIComponent(searchName)}` : ""}${searchNim ? `&nim=${encodeURIComponent(searchNim)}` : ""}`}
+              className="bg-emerald-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-emerald-700 flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              Cetak Excel
             </a>
           </div>
         </form>
@@ -197,13 +285,15 @@ export default async function AdminRecruitmentPage({
               </tr>
             </thead>
             <tbody className="divide-y text-gray-800 dark:text-gray-200">
-              {list.length > 0 ? list.map((item) => (
-                <RecruitmentTableRow
-                  key={item.id}
-                  item={item}
-                  canDelete={session.user.role === 'SUPER_ADMIN' || session.user.role === 'KETUA'}
-                />
-              )) : (
+              {list.length > 0 ? (
+                list.map((item) => (
+                  <RecruitmentTableRow
+                    key={item.id}
+                    item={item}
+                    canDelete={session.user.role === "SUPER_ADMIN" || session.user.role === "KETUA"}
+                  />
+                ))
+              ) : (
                 <tr>
                   <td colSpan={6} className="p-8 text-center text-gray-500 dark:text-gray-400 border-dashed">
                     Tidak ada data pendaftar yang cocok.
