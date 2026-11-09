@@ -142,11 +142,12 @@ ldk-al-hidayah/
 │   ├── components/           # Shared components
 │   ├── lib/                  # Utilities & helpers
 │   └── db/                   # Drizzle ORM schema & config
+├── docs/                     # Dokumentasi proyek & spesifikasi
 ├── public/                   # Static assets
 ├── .agents/                  # Agent configuration
 ├── drizzle.config.ts
 ├── next.config.ts
-├── tailwind.config.ts
+├── postcss.config.mjs
 ├── tsconfig.json
 └── package.json
 ```
