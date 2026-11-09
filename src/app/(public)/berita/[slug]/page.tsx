@@ -102,4 +102,4 @@ export default async function BeritaDetailPage({ params }: { params: Promise<{ s
   );
 }
 
-export const revalidate = 300;
+export const revalidate = 60;

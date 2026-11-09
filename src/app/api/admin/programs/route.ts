@@ -5,6 +5,7 @@ import { eq, and, or, ilike, desc } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { logActivity } from "@/lib/logger";
+import { revalidatePublic } from "@/lib/revalidate";
 
 const programSchema = z.object({
   name: z.string().min(1, "Nama program wajib diisi"),
@@ -117,6 +118,8 @@ export async function POST(req: Request) {
         divisionId: session?.user?.divisionId || null,
       });
     } catch(e) {}
+
+    revalidatePublic("/program-kerja", "/");
     return NextResponse.json(newProgram, { status: 201 });
   } catch (error: any) {
     console.error("Program Creation Error:", error);
@@ -146,6 +149,8 @@ export async function DELETE(req: Request) {
         divisionId: session?.user?.divisionId || null,
       });
     } catch(e) {}
+
+    revalidatePublic("/program-kerja", "/");
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

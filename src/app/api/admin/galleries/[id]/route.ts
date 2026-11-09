@@ -6,6 +6,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import cloudinary from "@/lib/cloudinary";
 import { logActivity } from "@/lib/logger";
+import { revalidatePublic } from "@/lib/revalidate";
 
 const gallerySchema = z.object({
   title: z.string().min(1, "Judul galeri wajib diisi"),
@@ -85,6 +86,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         divisionId: session?.user?.divisionId || null,
       });
     } catch(e) {}
+
+    revalidatePublic("/galeri", "/");
     return NextResponse.json(updated);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -143,6 +146,8 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
         divisionId: session?.user?.divisionId || null,
       });
     } catch(e) {}
+
+    revalidatePublic("/galeri", "/");
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

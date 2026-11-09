@@ -5,6 +5,7 @@ import { asc } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { logActivity } from "@/lib/logger";
+import { revalidatePublic } from "@/lib/revalidate";
 
 const runningTextSchema = z.object({
   text: z.string().min(1, "Teks wajib diisi"),
@@ -46,6 +47,8 @@ export async function POST(req: Request) {
         divisionId: session?.user?.divisionId || null,
       });
     } catch(e) {}
+
+    revalidatePublic("/");
     return NextResponse.json(newItem, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
@@ -67,6 +70,8 @@ export async function DELETE(req: Request) {
         divisionId: session?.user?.divisionId || null,
       });
     } catch(e) {}
+
+    revalidatePublic("/");
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

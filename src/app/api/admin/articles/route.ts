@@ -5,6 +5,7 @@ import { eq, ilike, desc, and } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary";
 import { logActivity } from "@/lib/logger";
+import { revalidatePublic } from "@/lib/revalidate";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -124,6 +125,8 @@ export async function POST(req: Request) {
         divisionId: session?.user?.divisionId || null,
       });
     } catch(e) {}
+
+    revalidatePublic("/berita", "/");
     return NextResponse.json(newArticle, { status: 201 });
   } catch (error) {
     console.error(error);
@@ -146,6 +149,8 @@ export async function DELETE(req: Request) {
         divisionId: session?.user?.divisionId || null,
       });
     } catch(e) {}
+
+    revalidatePublic("/berita", "/");
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

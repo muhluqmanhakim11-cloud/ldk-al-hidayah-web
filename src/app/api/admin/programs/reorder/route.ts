@@ -4,6 +4,7 @@ import { programs } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { logActivity } from "@/lib/logger";
+import { revalidatePublic } from "@/lib/revalidate";
 
 export async function POST(req: Request) {
   try {
@@ -35,6 +36,7 @@ export async function POST(req: Request) {
       });
     } catch (e) {}
 
+    revalidatePublic("/program-kerja", "/");
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Reorder Error:", error);

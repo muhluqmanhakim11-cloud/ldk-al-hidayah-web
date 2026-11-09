@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { logActivity } from "@/lib/logger";
+import { revalidatePublic } from "@/lib/revalidate";
 
 const eventSchema = z.object({
   name: z.string().min(1, "Nama kegiatan wajib diisi"),
@@ -101,6 +102,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         divisionId: session?.user?.divisionId || null,
       });
     } catch(e) {}
+
+    revalidatePublic("/kegiatan", "/");
     return NextResponse.json(updated);
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -142,6 +145,8 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
         divisionId: session?.user?.divisionId || null,
       });
     } catch(e) {}
+
+    revalidatePublic("/kegiatan", "/");
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

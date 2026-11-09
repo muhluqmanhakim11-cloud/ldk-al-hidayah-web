@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { logActivity } from "@/lib/logger";
+import { revalidatePublic } from "@/lib/revalidate";
 
 const memberSchema = z.object({
   periodId: z.coerce.number().min(1, "Periode harus dipilih"),
@@ -104,6 +105,8 @@ export async function POST(req: Request) {
         divisionId: session?.user?.divisionId || null,
       });
     } catch(e) {}
+
+    revalidatePublic("/struktur", "/");
     return NextResponse.json(newMember, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -128,6 +131,8 @@ export async function DELETE(req: Request) {
         divisionId: session?.user?.divisionId || null,
       });
     } catch(e) {}
+
+    revalidatePublic("/struktur", "/");
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

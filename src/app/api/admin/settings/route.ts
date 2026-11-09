@@ -4,6 +4,7 @@ import { siteSettings } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import { logActivity } from "@/lib/logger";
+import { revalidateAll, revalidatePublic } from "@/lib/revalidate";
 
 export async function GET() {
   try {
@@ -71,12 +72,14 @@ export async function PUT(req: NextRequest) {
     
     if (!settings) {
       const [newSettings] = await db.insert(siteSettings).values(body).returning();
+      revalidateAll();
       return NextResponse.json(newSettings);
     } else {
       const [updated] = await db.update(siteSettings)
         .set(updateData)
         .where(eq(siteSettings.id, settings.id))
         .returning();
+      revalidateAll();
       return NextResponse.json(updated);
     }
   } catch (error) {
@@ -100,6 +103,7 @@ export async function DELETE(req: Request) {
         divisionId: session?.user?.divisionId || null,
       });
     } catch(e) {}
+    revalidateAll();
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { logActivity } from "@/lib/logger";
+import { revalidatePublic } from "@/lib/revalidate";
 
 const periodSchema = z.object({
   name: z.string().min(1, "Nama periode wajib diisi"),
@@ -55,6 +56,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         divisionId: session?.user?.divisionId || null,
       });
     } catch(e) {}
+
+    revalidatePublic("/struktur", "/rekrutmen", "/");
     return NextResponse.json(updated);
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
@@ -90,6 +93,8 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
         divisionId: session?.user?.divisionId || null,
       });
     } catch(e) {}
+
+    revalidatePublic("/struktur", "/rekrutmen", "/");
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

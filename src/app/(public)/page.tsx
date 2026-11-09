@@ -1,4 +1,4 @@
-export const revalidate = 300;
+export const revalidate = 60;
 import Link from "next/link";
 import { db } from "@/db";
 import { heroImages, events, articles, runningTexts } from "@/db/schema";

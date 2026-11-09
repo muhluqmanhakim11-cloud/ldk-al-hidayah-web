@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { auth } from "@/auth";
 import { logActivity } from "@/lib/logger";
+import { revalidatePublic } from "@/lib/revalidate";
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -71,6 +72,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         divisionId: session?.user?.divisionId || null,
       });
     } catch(e) {}
+
+    revalidatePublic("/rekrutmen", "/rekrutmen/daftar", "/");
     return NextResponse.json({
       success: true,
       message: `Pendaftaran rekrutmen berhasil ${parsed.data.isOpen ? 'dibuka' : 'ditutup'}.`,

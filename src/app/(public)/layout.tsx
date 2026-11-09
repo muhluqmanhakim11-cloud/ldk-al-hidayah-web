@@ -3,7 +3,7 @@ import Footer from "@/components/public/Footer";
 import { Metadata } from "next";
 import { db } from "@/db";
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   description: "Unit Kegiatan Mahasiswa tingkat Institut yang bergerak di bidang kerohanian Islam untuk mewujudkan kampus madani.",

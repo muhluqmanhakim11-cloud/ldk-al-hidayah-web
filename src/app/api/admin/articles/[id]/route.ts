@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary";
 import { logActivity } from "@/lib/logger";
+import { revalidatePublic } from "@/lib/revalidate";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -86,6 +87,8 @@ export async function PATCH(req: Request, { params }: any) {
         divisionId: session?.user?.divisionId || null,
       });
     } catch(e) {}
+
+    revalidatePublic("/berita", `/berita/${updatedArticle.slug || ""}`, "/");
     return NextResponse.json(updatedArticle);
   } catch (error) {
     console.error(error);
@@ -122,6 +125,8 @@ export async function DELETE(req: Request, { params }: any) {
         divisionId: session?.user?.divisionId || null,
       });
     } catch(e) {}
+
+    revalidatePublic("/berita", `/berita/${existingArticle.slug || ""}`, "/");
     return NextResponse.json(deleted);
   } catch (error) {
     console.error(error);
