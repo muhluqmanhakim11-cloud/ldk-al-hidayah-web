@@ -1,11 +1,14 @@
 "use client";
 
+import { parseVideoUrl } from "@/lib/video";
+
 type Props = {
   videoUrl?: string | null;
 };
 
 export default function CompanyVideoSection({ videoUrl }: Props) {
-  if (!videoUrl) return null;
+  const embedInfo = parseVideoUrl(videoUrl);
+  if (!embedInfo) return null;
 
   return (
     <section
@@ -77,23 +80,41 @@ export default function CompanyVideoSection({ videoUrl }: Props) {
           boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
         }}
       >
-        <video
-          src={videoUrl}
-          controls
-          playsInline
-          preload="metadata"
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "contain",
-            borderRadius: "1.25rem",
-          }}
-        >
-          Browser Anda tidak mendukung pemutar video.
-        </video>
+        {embedInfo.type === "youtube" || embedInfo.type === "vimeo" ? (
+          <iframe
+            src={embedInfo.embedUrl}
+            title="Video Company Profile LDK Al-Hidayah"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              border: 0,
+              borderRadius: "1.25rem",
+            }}
+          />
+        ) : (
+          <video
+            src={embedInfo.url}
+            controls
+            playsInline
+            preload="metadata"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+              borderRadius: "1.25rem",
+            }}
+          >
+            Browser Anda tidak mendukung pemutar video.
+          </video>
+        )}
       </div>
 
       <style>{`

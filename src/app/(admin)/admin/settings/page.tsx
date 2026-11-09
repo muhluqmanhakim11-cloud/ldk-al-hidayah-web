@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { parseVideoUrl } from "@/lib/video";
 
 
 export default function SettingsPage() {
@@ -368,27 +369,41 @@ export default function SettingsPage() {
                 </div>
 
                 {/* Preview existing video */}
-                {settings.companyVideoUrl && (
-                  <div className="mb-4">
-                    <div className="relative w-full rounded-xl overflow-hidden bg-black" style={{ paddingBottom: "56.25%" }}>
-                      <video
-                        src={settings.companyVideoUrl}
-                        controls
-                        playsInline
-                        preload="metadata"
-                        style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "contain" }}
-                      />
+                {(() => {
+                  const embedInfo = parseVideoUrl(settings.companyVideoUrl);
+                  if (!embedInfo) return null;
+                  return (
+                    <div className="mb-4">
+                      <div className="relative w-full rounded-xl overflow-hidden bg-black" style={{ paddingBottom: "56.25%" }}>
+                        {embedInfo.type === "youtube" || embedInfo.type === "vimeo" ? (
+                          <iframe
+                            src={embedInfo.embedUrl}
+                            title="Preview Video Company Profile"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: 0 }}
+                          />
+                        ) : (
+                          <video
+                            src={embedInfo.url}
+                            controls
+                            playsInline
+                            preload="metadata"
+                            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "contain" }}
+                          />
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setSettings(prev => ({ ...prev, companyVideoUrl: "" }))}
+                        className="mt-2 text-xs text-red-500 hover:text-red-700 font-semibold flex items-center gap-1"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        Hapus Video
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setSettings(prev => ({ ...prev, companyVideoUrl: "" }))}
-                      className="mt-2 text-xs text-red-500 hover:text-red-700 font-semibold flex items-center gap-1"
-                    >
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                      Hapus Video
-                    </button>
-                  </div>
-                )}
+                  );
+                })()}
 
                 {/* Upload area */}
                 <label
@@ -450,7 +465,7 @@ export default function SettingsPage() {
 
                 {/* Manual URL input fallback */}
                 <div className="mt-3">
-                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Atau tempel URL video (YouTube embed / Cloudinary)</label>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Atau tempel URL video (YouTube / Shorts / Vimeo / MP4 link)</label>
                   <input
                     type="url"
                     name="companyVideoUrl"
