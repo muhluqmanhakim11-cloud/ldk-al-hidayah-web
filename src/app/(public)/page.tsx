@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 import Link from "next/link";
 import { db } from "@/db";
 import { heroImages, events, articles, runningTexts } from "@/db/schema";

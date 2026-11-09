@@ -54,6 +54,8 @@ export default function PopupBanner({ imageUrl, duration }: PopupBannerProps) {
         <img 
           src={imageUrl} 
           alt="Pengumuman LDK Al-Hidayah" 
+          loading="lazy"
+          decoding="async"
           className="w-full h-auto max-h-[80vh] object-contain rounded-xl shadow-2xl"
         />
         

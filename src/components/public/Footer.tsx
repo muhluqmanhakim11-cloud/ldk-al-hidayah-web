@@ -107,10 +107,10 @@ export default async function Footer() {
           <div>
             <h3 className="text-white font-semibold mb-4 uppercase text-sm tracking-wider">Tautan Cepat</h3>
             <ul className="space-y-3">
-              <li><Link href="/profil" className="hover:text-green-400 transition-colors">Profil Organisasi</Link></li>
-              <li><Link href="/struktur" className="hover:text-green-400 transition-colors">Struktur Pengurus</Link></li>
-              <li><Link href="/program-kerja" className="hover:text-green-400 transition-colors">Program Kerja</Link></li>
-              <li><Link href="/kegiatan" className="hover:text-green-400 transition-colors">Kegiatan & Agenda</Link></li>
+              <li><Link href="/profil" prefetch={false} className="hover:text-green-400 transition-colors">Profil Organisasi</Link></li>
+              <li><Link href="/struktur" prefetch={false} className="hover:text-green-400 transition-colors">Struktur Pengurus</Link></li>
+              <li><Link href="/program-kerja" prefetch={false} className="hover:text-green-400 transition-colors">Program Kerja</Link></li>
+              <li><Link href="/kegiatan" prefetch={false} className="hover:text-green-400 transition-colors">Kegiatan & Agenda</Link></li>
             </ul>
           </div>
           
@@ -136,7 +136,7 @@ export default async function Footer() {
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm">
           <p>&copy; {new Date().getFullYear()} {orgName}. All rights reserved.</p>
           <div className="mt-4 md:mt-0 space-x-4">
-            <Link href="/login" className="hover:text-white transition-colors">Admin Login</Link>
+            <Link href="/login" prefetch={false} className="hover:text-white transition-colors">Admin Login</Link>
           </div>
         </div>
       </div>

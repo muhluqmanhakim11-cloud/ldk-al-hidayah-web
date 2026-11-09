@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: "Inisiatif dan program kerja yang dijalankan LDK Al-Hidayah.",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export default async function ProgramKerjaPage() {
   const activePeriod = await db.query.periods.findFirst({

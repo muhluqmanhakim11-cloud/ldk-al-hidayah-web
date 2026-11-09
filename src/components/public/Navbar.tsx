@@ -121,6 +121,7 @@ export default function Navbar({ logoUrl }: { logoUrl?: string | null }) {
               <Link 
                 key={link.path} 
                 href={link.path}
+                prefetch={false}
                 onClick={() => setIsOpen(false)}
                 className={`px-4 py-3 rounded-2xl text-base font-bold transition-colors ${
                   isActive ? "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400" : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800/50 dark:bg-slate-950 hover:text-gray-900 dark:hover:text-gray-100 dark:text-gray-100"

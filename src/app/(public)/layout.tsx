@@ -3,6 +3,8 @@ import Footer from "@/components/public/Footer";
 import { Metadata } from "next";
 import { db } from "@/db";
 
+export const revalidate = 300;
+
 export const metadata: Metadata = {
   title: {
     template: "%s | LDK Al-Hidayah",

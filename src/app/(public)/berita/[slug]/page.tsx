@@ -99,4 +99,4 @@ export default async function BeritaDetailPage({ params }: { params: Promise<{ s
   );
 }
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
