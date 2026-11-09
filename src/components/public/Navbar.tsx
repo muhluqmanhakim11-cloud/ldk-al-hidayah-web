@@ -87,7 +87,7 @@ export default function Navbar({ logoUrl }: { logoUrl?: string | null }) {
                 <ThemeToggle />
               </div>
               <button 
-                className={`lg:hidden p-2.5 rounded-full transition-colors ${
+                className={`lg:hidden w-11 h-11 flex items-center justify-center rounded-full transition-colors ${
                   scrolled
                     ? isOpen 
                       ? 'bg-gray-200 dark:bg-slate-700 text-gray-900 dark:text-gray-100' 
@@ -96,6 +96,8 @@ export default function Navbar({ logoUrl }: { logoUrl?: string | null }) {
                 }`}
                 onClick={() => setIsOpen(!isOpen)}
                 aria-label="Toggle menu"
+                aria-expanded={isOpen}
+                aria-controls="mobile-menu"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   {isOpen ? (
@@ -111,7 +113,9 @@ export default function Navbar({ logoUrl }: { logoUrl?: string | null }) {
       </nav>
 
       {/* Mobile Menu Dropdown (Glassmorphism) */}
-      <div className={`fixed inset-x-4 top-24 lg:hidden z-40 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+      <div 
+        id="mobile-menu"
+        className={`fixed inset-x-4 top-24 lg:hidden z-40 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
         isOpen ? 'max-h-[500px] opacity-100 pointer-events-auto shadow-2xl rounded-3xl' : 'max-h-0 opacity-0 pointer-events-none'
       }`}>
         <div className="bg-white dark:bg-slate-900/95 backdrop-blur-xl border border-white/50 px-6 py-8 flex flex-col space-y-2">

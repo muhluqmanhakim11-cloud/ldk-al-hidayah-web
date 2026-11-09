@@ -27,29 +27,38 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: {
     template: "%s | LDK Al-Hidayah",
-    default: "LDK Al-Hidayah - Lembaga Dakwah Kampus",
+    default: "LDK Al-Hidayah STMIK IKMI Cirebon",
   },
-  description: "Website resmi Lembaga Dakwah Kampus Al-Hidayah. Mari berkolaborasi dalam kebaikan dan merajut ukhuwah.",
-  keywords: ["LDK", "Dakwah Kampus", "Mahasiswa Muslim", "Organisasi Islam"],
+  description: "Website resmi Lembaga Dakwah Kampus Al-Hidayah STMIK IKMI Cirebon. Mari berkolaborasi dalam kebaikan dan merajut ukhuwah.",
+  keywords: ["LDK", "Dakwah Kampus", "Mahasiswa Muslim", "Organisasi Islam", "STMIK IKMI Cirebon"],
   authors: [{ name: "LDK Al-Hidayah" }],
   creator: "LDK Al-Hidayah",
   publisher: "LDK Al-Hidayah",
-  metadataBase: new URL("https://ldk-alhidayah.vercel.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://ldk-al-hidayah.vercel.app"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "LDK Al-Hidayah",
-    description: "Lembaga Dakwah Kampus Al-Hidayah",
-    url: "https://ldk-alhidayah.vercel.app",
+    title: "LDK Al-Hidayah STMIK IKMI Cirebon",
+    description: "Website resmi Lembaga Dakwah Kampus Al-Hidayah STMIK IKMI Cirebon",
+    url: "https://ldk-al-hidayah.vercel.app",
     siteName: "LDK Al-Hidayah",
     locale: "id_ID",
     type: "website",
+    images: [
+      {
+        url: "/logo-stmik.png",
+        width: 1200,
+        height: 630,
+        alt: "LDK Al-Hidayah STMIK IKMI Cirebon",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "LDK Al-Hidayah",
-    description: "Website resmi Lembaga Dakwah Kampus Al-Hidayah",
+    title: "LDK Al-Hidayah STMIK IKMI Cirebon",
+    description: "Website resmi Lembaga Dakwah Kampus Al-Hidayah STMIK IKMI Cirebon",
+    images: ["/logo-stmik.png"],
   },
   robots: {
     index: true,

@@ -54,13 +54,13 @@ export default function RecruitmentForm({ divisions }: { divisions: { id: number
         
         <div>
           <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1" htmlFor="name">Nama Lengkap <span className="text-red-500">*</span></label>
-          <input type="text" id="name" name="name" required className="w-full border-gray-300 dark:border-slate-600 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 p-2 border" placeholder="John Doe" />
+          <input type="text" id="name" name="name" required className="w-full border-gray-300 dark:border-slate-600 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 p-2 border" placeholder="Nama Lengkap Anda" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1" htmlFor="nim">NIM <span className="text-red-500">*</span></label>
-            <input type="text" id="nim" name="nim" required pattern="[0-9]+" title="Hanya angka" className="w-full border-gray-300 dark:border-slate-600 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 p-2 border" placeholder="1301234567" />
+            <input type="text" id="nim" name="nim" required pattern="[0-9]+" title="Hanya angka" className="w-full border-gray-300 dark:border-slate-600 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 p-2 border" placeholder="Contoh: 4122001" />
           </div>
           <div>
             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1" htmlFor="semester">Semester Saat Ini <span className="text-red-500">*</span></label>
@@ -83,7 +83,7 @@ export default function RecruitmentForm({ divisions }: { divisions: { id: number
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1" htmlFor="email">Email <span className="text-red-500">*</span></label>
-            <input type="email" id="email" name="email" required className="w-full border-gray-300 dark:border-slate-600 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 p-2 border" placeholder="john@student.telkomuniversity.ac.id" />
+            <input type="email" id="email" name="email" required className="w-full border-gray-300 dark:border-slate-600 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 p-2 border" placeholder="mahasiswa@ikmi.ac.id" />
           </div>
           <div>
             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1" htmlFor="whatsapp">Nomor WhatsApp <span className="text-red-500">*</span></label>

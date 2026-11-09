@@ -6,10 +6,6 @@ import { db } from "@/db";
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: {
-    template: "%s | LDK Al-Hidayah",
-    default: "LDK Al-Hidayah - Unit Kegiatan Mahasiswa Islam",
-  },
   description: "Unit Kegiatan Mahasiswa tingkat Institut yang bergerak di bidang kerohanian Islam untuk mewujudkan kampus madani.",
 };
 

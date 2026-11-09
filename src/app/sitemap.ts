@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { db } from "@/db";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://ldk-alhidayah.vercel.app";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ldk-al-hidayah.vercel.app";
 
   const staticRoutes = [
     "",

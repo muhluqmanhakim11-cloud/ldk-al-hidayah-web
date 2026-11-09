@@ -12,8 +12,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     where: eq(articles.slug, slug),
   });
 
-  if (!article) {
-    return { title: "Artikel Tidak Ditemukan" };
+  if (!article || article.status !== 'PUBLISHED') {
+    return {
+      title: "Halaman Tidak Ditemukan",
+      robots: { index: false, follow: false },
+    };
   }
 
   return {
