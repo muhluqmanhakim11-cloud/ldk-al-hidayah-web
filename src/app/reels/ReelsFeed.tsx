@@ -383,7 +383,7 @@ export default function ReelsFeed({ initialReels }: Props) {
               )}
 
               {/* ── RIGHT ACTION BAR (TikTok / Reels Style) ── */}
-              <aside className="absolute right-3.5 bottom-16 z-30 flex flex-col items-center gap-5 pointer-events-auto">
+              <aside className="absolute right-3.5 bottom-24 sm:bottom-20 z-30 flex flex-col items-center gap-4 sm:gap-5 pointer-events-auto">
                 {/* LDK Avatar */}
                 <div className="relative group">
                   <div className="w-11 h-11 rounded-full p-0.5 bg-gradient-to-tr from-green-600 to-emerald-400 shadow-lg">
@@ -454,7 +454,7 @@ export default function ReelsFeed({ initialReels }: Props) {
               </aside>
 
               {/* ── BOTTOM INFO OVERLAY (Speaker, Title, Caption, Music) ── */}
-              <div className="absolute left-4 right-20 bottom-5 z-20 pointer-events-auto space-y-2">
+              <div className="absolute left-4 right-20 bottom-8 sm:bottom-6 z-20 pointer-events-auto space-y-2 pb-[env(safe-area-inset-bottom,0px)]">
                 {/* Speaker Badge */}
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-sm text-white drop-shadow-md tracking-tight">
