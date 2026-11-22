@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { mitra } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { revalidateAll, revalidatePublic } from "@/lib/revalidate";
 
 // PUT - update mitra
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -14,6 +15,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       .where(eq(mitra.id, parseInt(id)))
       .returning();
     if (!updated) return NextResponse.json({ error: "Tidak ditemukan" }, { status: 404 });
+
+    revalidateAll();
+    revalidatePublic("/", "/profil", "/struktur", "/program-kerja", "/kegiatan", "/galeri");
+
     return NextResponse.json(updated);
   } catch (err) {
     console.error(err);
@@ -26,6 +31,10 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
   try {
     const { id } = await params;
     await db.delete(mitra).where(eq(mitra.id, parseInt(id)));
+
+    revalidateAll();
+    revalidatePublic("/", "/profil", "/struktur", "/program-kerja", "/kegiatan", "/galeri");
+
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error(err);

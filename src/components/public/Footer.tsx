@@ -24,12 +24,10 @@ export default async function Footer() {
       {/* ── Mitra Kami ── */}
       {mitraList.length > 0 && (
         <div className="container mx-auto px-4 lg:px-8 pb-10 mb-10 border-b border-gray-800">
-          <h3 className="text-center text-white font-semibold text-sm uppercase tracking-widest mb-6 opacity-60">
-            Mitra Kami
+          <h3 className="text-center text-white font-semibold text-xs sm:text-sm uppercase tracking-widest mb-6 opacity-75">
+            Mitra &amp; Kerjasama Kami
           </h3>
-          <div
-            className="flex flex-wrap items-center justify-center gap-6"
-          >
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
             {mitraList.map((m) => (
               m.websiteUrl ? (
                 <a
@@ -38,31 +36,39 @@ export default async function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   title={m.nama}
-                  className="group"
+                  className="group flex flex-col items-center"
                 >
                   <div
-                    className="h-12 w-auto max-w-[140px] flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-xl px-4 py-2 transition-all duration-300 group-hover:scale-105"
-                    style={{ minWidth: "80px" }}
+                    className="h-14 w-auto min-w-[100px] max-w-[160px] flex items-center justify-center bg-white rounded-2xl px-4 py-2.5 transition-all duration-300 group-hover:scale-105 shadow-md shadow-black/30 group-hover:shadow-green-500/20"
                   >
                     <img
                       src={m.logoUrl}
                       alt={m.nama}
-                      className="max-h-8 max-w-[120px] object-contain opacity-60 group-hover:opacity-100 transition-opacity duration-300"
+                      className="max-h-9 max-w-[130px] object-contain transition-all"
                     />
                   </div>
+                  <span className="text-[11px] text-gray-400 mt-2 opacity-80 group-hover:opacity-100 transition-opacity text-center font-medium max-w-[160px] truncate">
+                    {m.nama}
+                  </span>
                 </a>
               ) : (
                 <div
                   key={m.id}
                   title={m.nama}
-                  className="h-12 w-auto max-w-[140px] flex items-center justify-center bg-white/5 rounded-xl px-4 py-2"
-                  style={{ minWidth: "80px" }}
+                  className="group flex flex-col items-center"
                 >
-                  <img
-                    src={m.logoUrl}
-                    alt={m.nama}
-                    className="max-h-8 max-w-[120px] object-contain opacity-60"
-                  />
+                  <div
+                    className="h-14 w-auto min-w-[100px] max-w-[160px] flex items-center justify-center bg-white rounded-2xl px-4 py-2.5 transition-all duration-300 hover:scale-105 shadow-md shadow-black/30"
+                  >
+                    <img
+                      src={m.logoUrl}
+                      alt={m.nama}
+                      className="max-h-9 max-w-[130px] object-contain"
+                    />
+                  </div>
+                  <span className="text-[11px] text-gray-400 mt-2 opacity-80 text-center font-medium max-w-[160px] truncate">
+                    {m.nama}
+                  </span>
                 </div>
               )
             ))}

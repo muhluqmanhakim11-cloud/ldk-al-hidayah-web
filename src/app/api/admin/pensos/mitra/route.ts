@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { mitra } from "@/db/schema";
 import { eq, asc } from "drizzle-orm";
+import { revalidateAll, revalidatePublic } from "@/lib/revalidate";
 
 // GET - list semua mitra aktif
 export async function GET() {
@@ -29,6 +30,11 @@ export async function POST(req: NextRequest) {
       isActive: isActive ?? true,
       orderIndex: orderIndex ?? 0,
     }).returning();
+
+    // Revalidate public site layout and pages immediately
+    revalidateAll();
+    revalidatePublic("/", "/profil", "/struktur", "/program-kerja", "/kegiatan", "/galeri");
+
     return NextResponse.json(inserted, { status: 201 });
   } catch (err) {
     console.error(err);
