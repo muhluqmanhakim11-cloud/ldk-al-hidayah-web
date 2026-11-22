@@ -6,20 +6,6 @@ import { useState, useEffect, useMemo } from "react";
 import DataTable from "@/components/admin/DataTable";
 import Modal from "@/components/admin/Modal";
 
-const TIME_PRESETS = [
-  "08:00 - 12:00",
-  "13:00 - 15:30",
-  "16:00 - 17:30",
-  "19:30 - 21:30",
-  "Ba'da Isya - Selesai",
-];
-
-const LOCATION_PRESETS = [
-  "Masjid Kampus",
-  "Aula STMIK IKMI",
-  "Online (Zoom / Meet)",
-];
-
 export default function EventsClient({ periods, divisions, programs, userRole, userDivisionId }: any) {
   const [data, setData] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -532,7 +518,7 @@ export default function EventsClient({ periods, divisions, programs, userRole, u
             />
           </div>
 
-          {/* 4. Tanggal & Waktu (Satu Baris + Preset Jam Cepat) */}
+          {/* 4. Tanggal & Waktu (Custom Input) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-gray-700 dark:text-gray-200 mb-1">
@@ -553,29 +539,10 @@ export default function EventsClient({ periods, divisions, programs, userRole, u
                 type="text" 
                 value={formData.time} 
                 onChange={e => setFormData({ ...formData, time: e.target.value })} 
-                placeholder="contoh: 08:00 - 12:00" 
+                placeholder="Contoh: 08:30 - 11:30 WIB / Ba'da Ashar" 
                 className="w-full border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-colors" 
               />
             </div>
-          </div>
-
-          {/* Preset Jam Cepat */}
-          <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-            <span className="text-[11px] text-gray-400 dark:text-gray-500 font-medium mr-1">Preset Jam:</span>
-            {TIME_PRESETS.map((preset) => (
-              <button
-                key={preset}
-                type="button"
-                onClick={() => setFormData(prev => ({ ...prev, time: preset }))}
-                className={`text-[11px] px-2 py-0.5 rounded-md border transition-all ${
-                  formData.time === preset
-                    ? "bg-blue-50 dark:bg-blue-950/60 border-blue-400 text-blue-700 dark:text-blue-300 font-semibold"
-                    : "bg-gray-50 dark:bg-slate-800/80 border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
-                }`}
-              >
-                {preset}
-              </button>
-            ))}
           </div>
 
           {/* 5. Field Pelengkap di Balik Toggle Opsional */}
@@ -607,25 +574,9 @@ export default function EventsClient({ periods, divisions, programs, userRole, u
                     type="text" 
                     value={formData.location} 
                     onChange={e => setFormData({ ...formData, location: e.target.value })} 
-                    placeholder="contoh: Masjid Al-Hidayah STMIK IKMI"
+                    placeholder="Contoh: Masjid Al-Hidayah STMIK IKMI / Online Zoom"
                     className="w-full border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" 
                   />
-                  <div className="flex flex-wrap gap-1.5 mt-1.5">
-                    {LOCATION_PRESETS.map((loc) => (
-                      <button
-                        key={loc}
-                        type="button"
-                        onClick={() => setFormData(prev => ({ ...prev, location: loc }))}
-                        className={`text-[11px] px-2 py-0.5 rounded border transition-colors ${
-                          formData.location === loc
-                            ? "bg-blue-50 dark:bg-blue-950/60 border-blue-400 text-blue-700 dark:text-blue-300 font-semibold"
-                            : "bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
-                        }`}
-                      >
-                        {loc}
-                      </button>
-                    ))}
-                  </div>
                 </div>
 
                 {/* Deskripsi */}
