@@ -6,7 +6,8 @@ import {
   LayoutDashboard, Users, UserCog, Briefcase, 
   CalendarDays, Image as ImageIcon, FileText, 
   Settings, Menu, X, Landmark, Flag, Globe, LogOut, Megaphone,
-  Layers, ChevronDown, ChevronRight, Tags, Wallet, FileDown, HeartHandshake, BarChart3
+  Layers, ChevronDown, ChevronRight, Tags, Wallet, FileDown, HeartHandshake, BarChart3,
+  Film
 } from "lucide-react";
 import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
@@ -108,6 +109,7 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
     { name: "Program Kerja", href: "/admin/programs", icon: FileText, show: isSuperAdmin },
     { name: "Agenda / Kegiatan", href: "/admin/events", icon: CalendarDays, show: isSuperAdmin || isKader },
     { name: "Artikel & Berita", href: "/admin/artikel", icon: FileText, show: isSuperAdmin || isKominfo },
+    { name: "Reels Dakwah", href: "/admin/reels", icon: Film, show: isSuperAdmin || isKominfo },
     { name: "Dokumentasi & Galeri", href: "/admin/dokumentasi", icon: ImageIcon, show: isSuperAdmin || isKominfo },
     { name: "Recruitment", href: "/admin/recruitment", icon: UserCog, show: isSuperAdmin || isKader },
     { name: "Running Text", href: "/admin/running-text", icon: FileText, show: isSuperAdmin || isKominfo },

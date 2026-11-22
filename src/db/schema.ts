@@ -26,6 +26,7 @@ export const eventStatusEnum = pgEnum('event_status', ['UPCOMING', 'ONGOING', 'D
 export const articleStatusEnum = pgEnum('article_status', ['DRAFT', 'PUBLISHED']);
 export const recruitmentStatusEnum = pgEnum('recruitment_status', ['PENDING', 'REVIEWED', 'ACCEPTED', 'REJECTED']);
 export const galleryStatusEnum = pgEnum('gallery_status', ['DRAFT', 'PUBLISHED', 'ARCHIVED']);
+export const reelStatusEnum = pgEnum('reel_status', ['DRAFT', 'PUBLISHED', 'ARCHIVED']);
 
 // 1. users
 export const users = pgTable('users', {
@@ -679,5 +680,26 @@ export const mitra = pgTable('mitra', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
+
+// --- REELS DAKWAH ---
+export const reels = pgTable('reels', {
+  id: serial('id').primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  speaker: varchar('speaker', { length: 255 }), // Nama Da'i / Pembicara / Pemateri
+  videoUrl: varchar('video_url', { length: 1000 }).notNull(),
+  thumbnailUrl: varchar('thumbnail_url', { length: 1000 }),
+  duration: integer('duration'), // Durasi video dalam detik (opsional)
+  likesCount: integer('likes_count').default(0).notNull(),
+  viewsCount: integer('views_count').default(0).notNull(),
+  orderIndex: integer('order_index').default(0).notNull(),
+  status: reelStatusEnum('status').default('PUBLISHED').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+export type Reel = typeof reels.$inferSelect;
+export type NewReel = typeof reels.$inferInsert;
+
 
 

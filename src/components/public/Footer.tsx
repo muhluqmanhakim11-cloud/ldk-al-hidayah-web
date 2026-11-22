@@ -112,6 +112,7 @@ export default async function Footer() {
               <li><Link href="/struktur" prefetch={false} className="hover:text-green-400 transition-colors">Struktur Pengurus</Link></li>
               <li><Link href="/program-kerja" prefetch={false} className="hover:text-green-400 transition-colors">Program Kerja</Link></li>
               <li><Link href="/kegiatan" prefetch={false} className="hover:text-green-400 transition-colors">Kegiatan & Agenda</Link></li>
+              <li><Link href="/reels" prefetch={false} className="hover:text-green-400 transition-colors">Reels Dakwah</Link></li>
             </ul>
           </div>
           

@@ -17,13 +17,18 @@ export default function Navbar({ logoUrl }: { logoUrl?: string | null }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Di halaman /reels, gunakan kontrol navigasi terdedikasi ala TikTok / Shorts
+  if (pathname === "/reels" || pathname.startsWith("/reels/")) {
+    return null;
+  }
+
   const navLinks = [
     { name: "Beranda", path: "/" },
     { name: "Profil", path: "/profil" },
     { name: "Pengurus", path: "/struktur" },
     { name: "Program Kerja", path: "/program-kerja" },
     { name: "Kegiatan", path: "/kegiatan" },
-    { name: "Berita", path: "/berita" },
+    { name: "Reels Dakwah", path: "/reels" },
     { name: "Galeri", path: "/galeri" },
   ];
 
