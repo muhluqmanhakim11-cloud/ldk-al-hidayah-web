@@ -687,6 +687,7 @@ export const reels = pgTable('reels', {
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
   speaker: varchar('speaker', { length: 255 }), // Nama Da'i / Pembicara / Pemateri
+  isLdkDai: boolean('is_ldk_dai').default(true).notNull(), // Tampilkan badge "Da'i LDK"
   videoUrl: varchar('video_url', { length: 1000 }).notNull(),
   thumbnailUrl: varchar('thumbnail_url', { length: 1000 }),
   duration: integer('duration'), // Durasi video dalam detik (opsional)

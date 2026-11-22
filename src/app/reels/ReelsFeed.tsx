@@ -13,6 +13,7 @@ interface ReelItem {
   title: string;
   description: string | null;
   speaker: string | null;
+  isLdkDai: boolean;
   videoUrl: string;
   thumbnailUrl: string | null;
   duration: number | null;
@@ -460,9 +461,11 @@ export default function ReelsFeed({ initialReels }: Props) {
                   <span className="font-bold text-sm text-white drop-shadow-md tracking-tight">
                     @{reel.speaker ? reel.speaker.replace(/^@/, "") : "ldkalhidayah"}
                   </span>
-                  <span className="px-2 py-0.5 rounded-full bg-green-500/30 border border-green-500/40 text-[10px] font-bold text-green-300">
-                    Da&apos;i LDK
-                  </span>
+                  {reel.isLdkDai && (
+                    <span className="px-2 py-0.5 rounded-full bg-green-500/30 border border-green-500/40 text-[10px] font-bold text-green-300">
+                      Da&apos;i LDK
+                    </span>
+                  )}
                 </div>
 
                 {/* Title */}

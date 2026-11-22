@@ -29,6 +29,7 @@ export default function ReelsClient({ initialReels }: Props) {
   // Form Fields
   const [title, setTitle] = useState("");
   const [speaker, setSpeaker] = useState("");
+  const [isLdkDai, setIsLdkDai] = useState(true);
   const [description, setDescription] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
@@ -61,6 +62,7 @@ export default function ReelsClient({ initialReels }: Props) {
   const resetForm = () => {
     setTitle("");
     setSpeaker("");
+    setIsLdkDai(true);
     setDescription("");
     setVideoUrl("");
     setThumbnailUrl("");
@@ -82,6 +84,7 @@ export default function ReelsClient({ initialReels }: Props) {
     setEditingReel(reel);
     setTitle(reel.title);
     setSpeaker(reel.speaker || "");
+    setIsLdkDai(reel.isLdkDai ?? true);
     setDescription(reel.description || "");
     setVideoUrl(reel.videoUrl);
     setThumbnailUrl(reel.thumbnailUrl || "");
@@ -220,6 +223,7 @@ export default function ReelsClient({ initialReels }: Props) {
       const payload = {
         title: title.trim(),
         speaker: speaker.trim() || null,
+        isLdkDai,
         description: description.trim() || null,
         videoUrl: videoUrl.trim(),
         thumbnailUrl: thumbnailUrl.trim() || null,
@@ -717,6 +721,17 @@ export default function ReelsClient({ initialReels }: Props) {
                     onChange={(e) => setSpeaker(e.target.value)}
                     className="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900 dark:text-gray-100"
                   />
+                  <label className="mt-2.5 flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={isLdkDai}
+                      onChange={(e) => setIsLdkDai(e.target.checked)}
+                      className="w-4 h-4 rounded text-green-600 focus:ring-green-500 border-gray-300 dark:border-slate-700 dark:bg-slate-800 cursor-pointer"
+                    />
+                    <span className="text-xs text-gray-700 dark:text-gray-300">
+                      Tampilkan badge <span className="font-semibold text-green-600 dark:text-green-400">&ldquo;Da&apos;i LDK&rdquo;</span>
+                    </span>
+                  </label>
                 </div>
               </div>
 

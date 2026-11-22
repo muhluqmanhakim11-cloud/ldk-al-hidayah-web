@@ -12,6 +12,7 @@ const reelUpdateSchema = z.object({
   title: z.string().min(1, "Judul reels wajib diisi").max(255).optional(),
   description: z.string().optional().nullable(),
   speaker: z.string().optional().nullable(),
+  isLdkDai: z.boolean().optional(),
   videoUrl: z.string().url("URL video harus valid").optional(),
   thumbnailUrl: z.string().optional().nullable(),
   duration: z.coerce.number().optional().nullable(),
@@ -70,6 +71,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     if (data.title !== undefined) updateValues.title = data.title;
     if (data.description !== undefined) updateValues.description = data.description;
     if (data.speaker !== undefined) updateValues.speaker = data.speaker;
+    if (data.isLdkDai !== undefined) updateValues.isLdkDai = data.isLdkDai;
     if (data.videoUrl !== undefined) {
       const optimized = getOptimizedVideoUrl(data.videoUrl);
       updateValues.videoUrl = optimized;

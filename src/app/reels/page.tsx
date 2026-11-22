@@ -22,6 +22,7 @@ export default async function ReelsPage() {
       title: reels.title,
       description: reels.description,
       speaker: reels.speaker,
+      isLdkDai: reels.isLdkDai,
       videoUrl: reels.videoUrl,
       thumbnailUrl: reels.thumbnailUrl,
       duration: reels.duration,
