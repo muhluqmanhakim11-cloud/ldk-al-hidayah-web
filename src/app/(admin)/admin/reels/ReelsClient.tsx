@@ -4,10 +4,10 @@ import { useState, useRef } from "react";
 import { 
   Plus, Search, Edit3, Trash2, Eye, Heart, Film, 
   Upload, Link as LinkIcon, CheckCircle2, AlertCircle, 
-  Play, Pause, Volume2, VolumeX, RefreshCw, Sparkles, ExternalLink
+  Play, Pause, Volume2, VolumeX, RefreshCw, Sparkles, ExternalLink, X
 } from "lucide-react";
 import toast from "react-hot-toast";
-import { formatDuration, getOptimizedVideoUrl } from "@/lib/video-optimization";
+import { formatDuration, getOptimizedVideoUrl, getVideoPosterUrl } from "@/lib/video-optimization";
 import type { Reel } from "@/db/schema";
 
 interface Props {
@@ -107,44 +107,98 @@ export default function ReelsClient({ initialReels }: Props) {
     }
 
     setIsUploading(true);
-    setUploadProgress(15);
+    setUploadProgress(0);
 
     try {
+      // 1. Ambil upload signature dari server (request kecil < 1KB, aman dari limit Vercel)
+      const sigRes = await fetch("/api/admin/reels/upload-signature", { method: "POST" });
+      if (!sigRes.ok) {
+        let errMessage = "Gagal meminta izin upload";
+        try {
+          const sigErr = await sigRes.json();
+          if (sigErr?.error) errMessage = sigErr.error;
+        } catch {
+          // ignore
+        }
+        throw new Error(errMessage);
+      }
+      const sigData = await sigRes.json();
+      const { signature, timestamp, apiKey, cloudName, folder } = sigData;
+
+      // 2. Upload langsung dari browser ke API Cloudinary via XMLHttpRequest untuk tracking persentase nyata
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("api_key", apiKey);
+      formData.append("timestamp", timestamp.toString());
+      formData.append("signature", signature);
+      formData.append("folder", folder);
 
-      // Simulasi progress
-      const progressTimer = setInterval(() => {
-        setUploadProgress((p) => (p < 85 ? p + 10 : p));
-      }, 400);
+      const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`;
 
-      const res = await fetch("/api/admin/reels/upload", {
-        method: "POST",
-        body: formData,
+      const result: any = await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", uploadUrl);
+
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percent = Math.round((event.loaded / event.total) * 100);
+            setUploadProgress(percent);
+          }
+        };
+
+        xhr.onload = () => {
+          try {
+            const response = JSON.parse(xhr.responseText);
+            if (xhr.status >= 200 && xhr.status < 300) {
+              resolve(response);
+            } else {
+              reject(new Error(response?.error?.message || "Upload gagal"));
+            }
+          } catch {
+            reject(new Error(`Server merespons status ${xhr.status}`));
+          }
+        };
+
+        xhr.onerror = () => {
+          reject(new Error("Koneksi jaringan terputus saat mengunggah video"));
+        };
+
+        xhr.send(formData);
       });
 
-      clearInterval(progressTimer);
-      setUploadProgress(100);
+      const secureUrl = result.secure_url;
+      const optimized = getOptimizedVideoUrl(secureUrl);
+      const poster = getVideoPosterUrl(secureUrl);
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Gagal upload video");
+      setVideoUrl(optimized);
+      if (!thumbnailUrl) {
+        setThumbnailUrl(poster);
       }
-
-      setVideoUrl(data.optimizedUrl || data.url);
-      if (data.thumbnailUrl && !thumbnailUrl) {
-        setThumbnailUrl(data.thumbnailUrl);
-      }
-      if (data.duration) {
-        setDuration(data.duration);
+      if (result.duration) {
+        setDuration(Math.round(result.duration));
       }
 
       toast.success("Video berhasil diunggah & dikompresi otomatis!");
     } catch (err: any) {
+      console.error("Upload error:", err);
       toast.error(err.message || "Gagal mengunggah video");
     } finally {
       setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
+  };
+
+  const handleRemoveVideo = () => {
+    setVideoUrl("");
+    setThumbnailUrl("");
+    setDuration(null);
+    setUploadProgress(0);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    toast.success("Video berhasil dihapus");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -492,10 +546,12 @@ export default function ReelsClient({ initialReels }: Props) {
                 </p>
               </div>
               <button
+                type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+                className="w-10 h-10 rounded-full flex items-center justify-center text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+                aria-label="Tutup Modal"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
             </div>
 
@@ -590,27 +646,46 @@ export default function ReelsClient({ initialReels }: Props) {
 
                 {/* Video Preview inside Modal */}
                 {videoUrl && (
-                  <div className="mt-3 p-3 bg-gray-50 dark:bg-slate-800/60 rounded-xl flex items-center gap-3 border border-gray-200/50 dark:border-slate-700/50">
-                    <div className="w-16 h-24 bg-black rounded-lg overflow-hidden flex-shrink-0 relative">
-                      <video
-                        src={videoUrl}
-                        className="w-full h-full object-cover"
-                        preload="metadata"
-                        muted
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                        <Play className="w-4 h-4 text-white" />
+                  <div className="mt-3 p-3 bg-gray-50 dark:bg-slate-800/80 rounded-xl flex items-center justify-between gap-3 border border-gray-200 dark:border-slate-700">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-16 h-24 bg-black rounded-lg overflow-hidden flex-shrink-0 relative">
+                        <video
+                          src={videoUrl}
+                          className="w-full h-full object-cover"
+                          preload="metadata"
+                          muted
+                          playsInline
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                          <Play className="w-4 h-4 text-white" />
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5 text-xs font-semibold text-green-600 dark:text-green-400 mb-1">
+                          <Sparkles className="w-3.5 h-3.5" />
+                          Video Berhasil Dipilih & Teroptimasi
+                        </div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px] sm:max-w-xs">
+                          {videoUrl}
+                        </p>
+                        {duration && (
+                          <span className="text-[11px] text-gray-400 mt-1 inline-block">
+                            Durasi: {formatDuration(duration)}
+                          </span>
+                        )}
                       </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-green-600 dark:text-green-400 mb-1">
-                        <Sparkles className="w-3.5 h-3.5" />
-                        Video Siap & Teroptimasi
-                      </div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                        {videoUrl}
-                      </p>
-                    </div>
+
+                    {/* Tombol Hapus / Ganti Video */}
+                    <button
+                      type="button"
+                      onClick={handleRemoveVideo}
+                      className="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 dark:hover:bg-rose-900/60 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors flex-shrink-0 border border-rose-200/60 dark:border-rose-900/40 active:scale-95"
+                      title="Hapus video ini untuk memilih file lain"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span>Hapus Video</span>
+                    </button>
                   </div>
                 )}
               </div>
