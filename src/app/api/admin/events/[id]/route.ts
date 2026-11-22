@@ -11,7 +11,7 @@ const eventSchema = z.object({
   name: z.string().min(1, "Nama kegiatan wajib diisi"),
   periodId: z.coerce.number().min(1, "Periode wajib diisi"),
   divisionId: z.coerce.number().min(1, "Bidang wajib diisi"),
-  programId: z.coerce.number().min(1, "Program kerja wajib diisi"),
+  programId: z.coerce.number().optional().nullable(),
   date: z.string().optional().nullable(),
   time: z.string().optional().nullable(),
   location: z.string().optional().nullable(),
@@ -54,17 +54,27 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       return NextResponse.json({ error: "Data tidak ditemukan" }, { status: 404 });
     }
 
-    // Verify program ownership from DB
-    const program = await db.query.programs.findFirst({
-      where: eq(programs.id, validated.programId)
-    });
+    // Verify program ownership from DB if programId is supplied
+    let validatedProgramId: number | null = null;
+    if (validated.programId && Number(validated.programId) > 0) {
+      validatedProgramId = Number(validated.programId);
+      const program = await db.query.programs.findFirst({
+        where: eq(programs.id, validatedProgramId)
+      });
 
-    if (!program) {
-      return NextResponse.json({ error: "Program Kerja tidak ditemukan" }, { status: 404 });
-    }
+      if (!program) {
+        return NextResponse.json({ error: "Program Kerja tidak ditemukan" }, { status: 404 });
+      }
 
-    if (program.divisionId !== validated.divisionId) {
-      return NextResponse.json({ error: "Program Kerja tidak cocok dengan bidang yang dipilih" }, { status: 400 });
+      if (program.divisionId !== validated.divisionId) {
+        return NextResponse.json({ error: "Program Kerja tidak cocok dengan bidang yang dipilih" }, { status: 400 });
+      }
+
+      if (session.user.role === "ADMIN_BIDANG") {
+        if (program.divisionId !== session.user.divisionId) {
+          return NextResponse.json({ error: "Forbidden: Program Kerja bukan milik bidang Anda" }, { status: 403 });
+        }
+      }
     }
 
     if (session.user.role === "ADMIN_BIDANG") {
@@ -76,10 +86,6 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       if (validated.divisionId !== session.user.divisionId) {
         return NextResponse.json({ error: "Forbidden: Anda tidak dapat memindahkan kegiatan ke bidang lain" }, { status: 403 });
       }
-      // 3. New program must belong to their division
-      if (program.divisionId !== session.user.divisionId) {
-        return NextResponse.json({ error: "Forbidden: Program Kerja bukan milik bidang Anda" }, { status: 403 });
-      }
     }
 
     let dateObj = null;
@@ -89,6 +95,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
     const [updated] = await db.update(events).set({
       ...validated,
+      programId: validatedProgramId,
       date: dateObj,
       updatedAt: new Date()
     }).where(eq(events.id, id)).returning();

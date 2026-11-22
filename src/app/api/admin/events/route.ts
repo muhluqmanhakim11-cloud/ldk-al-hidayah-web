@@ -11,7 +11,7 @@ const eventSchema = z.object({
   name: z.string().min(1, "Nama kegiatan wajib diisi"),
   periodId: z.coerce.number().min(1, "Periode wajib diisi"),
   divisionId: z.coerce.number().min(1, "Bidang wajib diisi"),
-  programId: z.coerce.number().min(1, "Program kerja wajib diisi"),
+  programId: z.coerce.number().optional().nullable(),
   date: z.string().optional().nullable(),
   time: z.string().optional().nullable(),
   location: z.string().optional().nullable(),
@@ -95,29 +95,34 @@ export async function POST(req: Request) {
     }
     const validated = parsed.data;
 
-    // INTEGRITY CHECK DIVISION
-    // Verify program ownership from DB
-    const program = await db.query.programs.findFirst({
-      where: eq(programs.id, validated.programId)
-    });
+    // INTEGRITY CHECK DIVISION & PROGRAM
+    let validatedProgramId: number | null = null;
+    if (validated.programId && Number(validated.programId) > 0) {
+      validatedProgramId = Number(validated.programId);
+      const program = await db.query.programs.findFirst({
+        where: eq(programs.id, validatedProgramId)
+      });
 
-    if (!program) {
-      return NextResponse.json({ error: "Program Kerja tidak ditemukan" }, { status: 404 });
-    }
+      if (!program) {
+        return NextResponse.json({ error: "Program Kerja tidak ditemukan" }, { status: 404 });
+      }
 
-    // Program must belong to the requested division
-    if (program.divisionId !== validated.divisionId) {
-      return NextResponse.json({ error: "Program Kerja tidak cocok dengan bidang yang dipilih" }, { status: 400 });
+      // Program must belong to the requested division
+      if (program.divisionId !== validated.divisionId) {
+        return NextResponse.json({ error: "Program Kerja tidak cocok dengan bidang yang dipilih" }, { status: 400 });
+      }
+
+      if (session.user.role === "ADMIN_BIDANG") {
+        if (program.divisionId !== session.user.divisionId) {
+          return NextResponse.json({ error: "Forbidden: Program Kerja bukan milik bidang Anda" }, { status: 403 });
+        }
+      }
     }
 
     if (session.user.role === "ADMIN_BIDANG") {
-      // 1. event.divisionId == session.divisionId
+      // event.divisionId == session.divisionId
       if (validated.divisionId !== session.user.divisionId) {
         return NextResponse.json({ error: "Forbidden: Event division_id palsu" }, { status: 403 });
-      }
-      // 2. program.divisionId == session.divisionId
-      if (program.divisionId !== session.user.divisionId) {
-        return NextResponse.json({ error: "Forbidden: Program Kerja bukan milik bidang Anda" }, { status: 403 });
       }
     }
 
@@ -129,6 +134,7 @@ export async function POST(req: Request) {
 
     const [newEvent] = await db.insert(events).values({
       ...validated,
+      programId: validatedProgramId,
       date: dateObj,
     }).returning();
     
