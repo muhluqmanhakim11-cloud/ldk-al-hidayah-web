@@ -170,7 +170,10 @@ export default function Sidebar({ session, isOpen, setIsOpen, vercelBadgeUrl }: 
       {/* Sidebar */}
       <div className={`fixed flex flex-col inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-900 border-r dark:border-slate-800 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto lg:h-screen ${isOpen ? "translate-x-0 shadow-2xl lg:shadow-none" : "-translate-x-full lg:translate-x-0"}`}>
         <div className="flex h-16 items-center justify-between px-4 border-b dark:border-slate-800">
-          <span className="text-lg font-bold text-blue-700 dark:text-blue-400 dark:text-blue-500">Admin LDK</span>
+          <div className="flex items-center gap-2.5">
+            <img src="/logo-ldk.png" alt="Logo LDK" className="w-8 h-8 object-contain rounded-full bg-white shadow-sm p-0.5 border border-gray-200 dark:border-slate-700" />
+            <span className="text-base font-bold text-gray-900 dark:text-gray-100">Admin LDK</span>
+          </div>
           <button onClick={() => setIsOpen(false)} className="lg:hidden text-gray-500 dark:text-gray-400">
             <X size={24} />
           </button>

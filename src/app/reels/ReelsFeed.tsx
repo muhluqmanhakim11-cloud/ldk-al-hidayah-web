@@ -388,8 +388,12 @@ export default function ReelsFeed({ initialReels }: Props) {
                 {/* LDK Avatar */}
                 <div className="relative group">
                   <div className="w-11 h-11 rounded-full p-0.5 bg-gradient-to-tr from-green-600 to-emerald-400 shadow-lg">
-                    <div className="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden">
-                      <span className="text-xs font-black text-white">LDK</span>
+                    <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+                      <img
+                        src="/logo-ldk.png"
+                        alt="Logo LDK Al-Hidayah"
+                        className="w-full h-full object-contain p-0.5"
+                      />
                     </div>
                   </div>
                   <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-green-500 border border-black flex items-center justify-center text-[10px] text-white font-bold">

@@ -34,6 +34,11 @@ export const metadata: Metadata = {
   authors: [{ name: "LDK Al-Hidayah" }],
   creator: "LDK Al-Hidayah",
   publisher: "LDK Al-Hidayah",
+  icons: {
+    icon: "/logo-ldk.png",
+    shortcut: "/logo-ldk.png",
+    apple: "/logo-ldk.png",
+  },
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://ldk-al-hidayah.vercel.app"),
   alternates: {
     canonical: "/",

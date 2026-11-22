@@ -45,13 +45,11 @@ export default function Navbar({ logoUrl }: { logoUrl?: string | null }) {
           <div className="flex justify-between items-center">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 group">
-              {logoUrl ? (
-                <img src={logoUrl} alt="Logo" className="w-10 h-10 object-contain rounded-full bg-white shadow-sm" />
-              ) : (
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${scrolled ? 'bg-green-600 text-white' : 'bg-white/20 backdrop-blur-sm text-white'}`}>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
-                </div>
-              )}
+              <img
+                src={logoUrl || "/logo-ldk.png"}
+                alt="Logo LDK Al-Hidayah"
+                className="w-10 h-10 object-contain rounded-full bg-white shadow-sm p-0.5 border border-white/20"
+              />
               <span className={`font-bold text-lg md:text-xl tracking-tight transition-colors ${scrolled ? 'text-gray-900 dark:text-gray-100' : 'text-white drop-shadow-md'}`}>
                 LDK Al-Hidayah
               </span>
@@ -121,9 +119,9 @@ export default function Navbar({ logoUrl }: { logoUrl?: string | null }) {
       <div 
         id="mobile-menu"
         className={`fixed inset-x-4 top-24 lg:hidden z-40 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-        isOpen ? 'max-h-[500px] opacity-100 pointer-events-auto shadow-2xl rounded-3xl' : 'max-h-0 opacity-0 pointer-events-none'
+        isOpen ? 'max-h-[85vh] opacity-100 pointer-events-auto shadow-2xl rounded-3xl' : 'max-h-0 opacity-0 pointer-events-none'
       }`}>
-        <div className="bg-white dark:bg-slate-900/95 backdrop-blur-xl border border-white/50 px-6 py-8 flex flex-col space-y-2">
+        <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-gray-200/60 dark:border-white/10 px-6 py-6 flex flex-col space-y-2 max-h-[80vh] overflow-y-auto">
           {navLinks.map((link) => {
             const isActive = pathname === link.path || (link.path !== '/' && pathname.startsWith(link.path));
             return (
@@ -133,7 +131,9 @@ export default function Navbar({ logoUrl }: { logoUrl?: string | null }) {
                 prefetch={false}
                 onClick={() => setIsOpen(false)}
                 className={`px-4 py-3 rounded-2xl text-base font-bold transition-colors ${
-                  isActive ? "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400" : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800/50 dark:bg-slate-950 hover:text-gray-900 dark:hover:text-gray-100 dark:text-gray-100"
+                  isActive 
+                    ? "bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300" 
+                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-green-600 dark:hover:text-green-400"
                 }`}
               >
                 {link.name}

@@ -195,8 +195,7 @@ export default function PageHero({ title, subtitle, badge, children }: Props) {
           </defs>
           <path
             d="M0,35 C240,65 480,10 720,38 C960,66 1200,12 1440,35 L1440,70 L0,70 Z"
-            fill="url(#waveGrad)"
-            className="dark:fill-slate-950"
+            className="fill-gray-50 dark:fill-slate-950 transition-colors"
           />
         </svg>
       </div>
