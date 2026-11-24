@@ -982,7 +982,7 @@ export default function ReelsClient({ initialReels }: Props) {
                 title={previewVideo.title}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
-                className="w-full h-full border-0"
+                className="w-full h-full border-0 scale-[1.08] object-cover pointer-events-none"
               />
             ) : (
               <video

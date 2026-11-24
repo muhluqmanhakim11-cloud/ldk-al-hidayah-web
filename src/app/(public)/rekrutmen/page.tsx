@@ -190,7 +190,7 @@ export default async function RecruitmentLandingPage() {
               <div className="mt-10 pt-8 border-t dark:border-slate-800 text-center">
                 <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Punya pertanyaan lain?</h3>
                 <a 
-                  href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_CONTACT || "6289660856000"}?text=${encodeURIComponent("Assalamu'alaikum Kak, saya ingin bertanya seputar pendaftaran LDK Al-Hidayah STMIK IKMI.")}`} 
+                  href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_CONTACT || "6285129910201"}?text=${encodeURIComponent("Assalamu'alaikum Kak, saya ingin bertanya seputar pendaftaran LDK Al-Hidayah STMIK IKMI.")}`} 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="inline-flex items-center gap-2 text-green-600 dark:text-green-400 font-bold hover:underline"

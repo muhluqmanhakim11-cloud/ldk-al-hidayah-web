@@ -48,7 +48,7 @@ export function formatEmbedUrl(
   if (type === "tiktok") {
     const id = extractTikTokId(url);
     if (id) {
-      return `https://www.tiktok.com/player/v1/${id}?autoplay=${autoplay ? 1 : 0}&muted=${muted ? 1 : 0}&loop=${loop ? 1 : 0}&controls=1&description=1&music_info=1`;
+      return `https://www.tiktok.com/player/v1/${id}?autoplay=${autoplay ? 1 : 0}&muted=${muted ? 1 : 0}&loop=${loop ? 1 : 0}&controls=0&description=0&music_info=0&rel=0&progress_bar=0&volume_control=0&play_button=0`;
     }
     // Jika sudah embed player URL
     if (url.includes("/player/v1/")) return url;
@@ -58,7 +58,7 @@ export function formatEmbedUrl(
   if (type === "youtube") {
     const id = extractYouTubeId(url);
     if (id) {
-      return `https://www.youtube.com/embed/${id}?autoplay=${autoplay ? 1 : 0}&mute=${muted ? 1 : 0}&loop=${loop ? 1 : 0}&playlist=${id}&controls=1&modestbranding=1&rel=0&enablejsapi=1`;
+      return `https://www.youtube.com/embed/${id}?autoplay=${autoplay ? 1 : 0}&mute=${muted ? 1 : 0}&loop=${loop ? 1 : 0}&playlist=${id}&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&enablejsapi=1`;
     }
     return url;
   }

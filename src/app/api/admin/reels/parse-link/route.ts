@@ -51,7 +51,7 @@ export async function POST(req: Request) {
     if (type === "tiktok") {
       const id = extractTikTokId(url);
       videoId = id || "";
-      embedUrl = id ? `https://www.tiktok.com/player/v1/${id}?autoplay=1&muted=0&loop=1&controls=1&description=1&music_info=1` : url;
+      embedUrl = id ? `https://www.tiktok.com/player/v1/${id}?autoplay=1&muted=0&loop=1&controls=0&description=0&music_info=0&rel=0&progress_bar=0&volume_control=0&play_button=0` : url;
 
       // Ambil metadata dari TikTok oEmbed API (Resmi & Gratis)
       try {
@@ -76,7 +76,7 @@ export async function POST(req: Request) {
     } else if (type === "youtube") {
       const id = extractYouTubeId(url);
       videoId = id || "";
-      embedUrl = id ? `https://www.youtube.com/embed/${id}?autoplay=1&mute=0&loop=1&playlist=${id}&controls=1&modestbranding=1&rel=0&enablejsapi=1` : url;
+      embedUrl = id ? `https://www.youtube.com/embed/${id}?autoplay=1&mute=0&loop=1&playlist=${id}&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&enablejsapi=1` : url;
       thumbnailUrl = id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : "";
 
       // Ambil metadata dari YouTube oEmbed API

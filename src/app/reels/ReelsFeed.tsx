@@ -435,7 +435,10 @@ export default function ReelsFeed({ initialReels }: Props) {
               {/* Embed Player (TikTok / YouTube Shorts) or Direct Video */}
               {isEmbed ? (
                 isNearActive ? (
-                  <div className="w-full h-full relative overflow-hidden flex items-center justify-center bg-black">
+                  <div 
+                    onClick={() => handleVideoTap(reel.id)}
+                    className="w-full h-full relative overflow-hidden flex items-center justify-center bg-black cursor-pointer"
+                  >
                     <iframe
                       ref={(el) => {
                         iframeRefs.current[index] = el;
@@ -459,7 +462,7 @@ export default function ReelsFeed({ initialReels }: Props) {
                           }, 1000);
                         }
                       }}
-                      className="w-full h-full border-0 object-cover"
+                      className="w-full h-full border-0 object-cover scale-[1.08] pointer-events-none transition-transform duration-300"
                     />
                   </div>
                 ) : (
@@ -640,24 +643,10 @@ export default function ReelsFeed({ initialReels }: Props) {
                   </div>
                 )}
 
-                {/* Audio Ticker & Platform Link */}
-                <div className="flex items-center justify-between gap-2 pt-0.5">
-                  <div className="flex items-center gap-2 text-[11px] text-white/70 min-w-0">
-                    <Music2 className="w-3 h-3 text-green-400 flex-shrink-0 animate-spin" />
-                    <span className="truncate">Suara Asli • LDK Al-Hidayah IKMI Cirebon</span>
-                  </div>
-
-                  {isEmbed && (
-                    <a
-                      href={reel.videoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-white/90 hover:text-white bg-black/60 hover:bg-black/80 px-2 py-0.5 rounded-full border border-white/20 backdrop-blur-md transition-colors flex-shrink-0"
-                    >
-                      <ExternalLink className="w-3 h-3 text-green-400" />
-                      <span>{sourceType === "tiktok" ? "TikTok" : "YouTube"}</span>
-                    </a>
-                  )}
+                {/* Audio Ticker */}
+                <div className="flex items-center gap-2 pt-0.5 text-[11px] text-white/70">
+                  <Music2 className="w-3 h-3 text-green-400 flex-shrink-0 animate-spin" />
+                  <span className="truncate">Suara Asli • LDK Al-Hidayah IKMI Cirebon</span>
                 </div>
               </div>
 
