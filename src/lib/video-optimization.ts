@@ -1,19 +1,87 @@
 /**
- * Video Optimization Helper
- * Mengoptimalkan URL video untuk Reels Dakwah (Cloudinary & Direct Stream)
- * Memastikan kompresi ukuran file minimal dengan kualitas HD tetap terjaga
+ * Video Optimization & Embed Helper
+ * Mendukung Cloudinary, TikTok Embed Player, YouTube Shorts, dan Direct MP4
+ * Menghemat 100% storage Cloudinary saat menggunakan link TikTok / Shorts
  */
+
+export type VideoSourceType = "direct" | "tiktok" | "youtube" | "instagram";
+
+export function getVideoSourceType(url: string | null | undefined): VideoSourceType {
+  if (!url) return "direct";
+  if (url.includes("tiktok.com")) return "tiktok";
+  if (url.includes("youtube.com") || url.includes("youtu.be")) return "youtube";
+  if (url.includes("instagram.com")) return "instagram";
+  return "direct";
+}
+
+export function extractTikTokId(url: string): string | null {
+  if (!url) return null;
+  const match = url.match(/(?:video|photo|v|player\/v1|embed\/v2)\/(\d+)/i) || url.match(/[?&]item_id=(\d+)/i);
+  return match ? match[1] : null;
+}
+
+export function extractYouTubeId(url: string): string | null {
+  if (!url) return null;
+  const match = url.match(/(?:shorts\/|youtu\.be\/|v\/|watch\?v=|embed\/)([a-zA-Z0-9_-]{11})/i);
+  return match ? match[1] : null;
+}
+
+export function extractInstagramId(url: string): string | null {
+  if (!url) return null;
+  const match = url.match(/(?:reel|p)\/([a-zA-Z0-9_-]+)/i);
+  return match ? match[1] : null;
+}
+
+/**
+ * Format URL video untuk iframe player (TikTok, YouTube, IG) atau Cloudinary
+ */
+export function formatEmbedUrl(
+  url: string | null | undefined, 
+  options?: { autoplay?: boolean; muted?: boolean; loop?: boolean }
+): string {
+  if (!url) return "";
+  const type = getVideoSourceType(url);
+  const autoplay = options?.autoplay ?? true;
+  const muted = options?.muted ?? true;
+  const loop = options?.loop ?? true;
+
+  if (type === "tiktok") {
+    const id = extractTikTokId(url);
+    if (id) {
+      return `https://www.tiktok.com/player/v1/${id}?autoplay=${autoplay ? 1 : 0}&muted=${muted ? 1 : 0}&loop=${loop ? 1 : 0}&controls=1&description=1&music_info=1`;
+    }
+    // Jika sudah embed player URL
+    if (url.includes("/player/v1/")) return url;
+    return url;
+  }
+
+  if (type === "youtube") {
+    const id = extractYouTubeId(url);
+    if (id) {
+      return `https://www.youtube.com/embed/${id}?autoplay=${autoplay ? 1 : 0}&mute=${muted ? 1 : 0}&loop=${loop ? 1 : 0}&playlist=${id}&controls=1&modestbranding=1&rel=0`;
+    }
+    return url;
+  }
+
+  if (type === "instagram") {
+    const id = extractInstagramId(url);
+    if (id) {
+      return `https://www.instagram.com/reel/${id}/embed`;
+    }
+    return url;
+  }
+
+  return getOptimizedVideoUrl(url);
+}
 
 export function getOptimizedVideoUrl(url: string | null | undefined): string {
   if (!url) return "";
 
   // Jika URL Cloudinary Video
   if (url.includes("res.cloudinary.com") && url.includes("/video/upload/")) {
-    // Cek apakah sudah ada parameter transformasi
     if (url.includes("/video/upload/q_auto") || url.includes("/video/upload/c_limit")) {
       return url;
     }
-    // Sisipkan transformasi hemat kuota + kualitas jernih (720p HD, q_auto:good, vc_auto)
     return url.replace(
       "/video/upload/",
       "/video/upload/f_auto,q_auto:good,vc_auto,w_720,c_limit/"
@@ -27,7 +95,13 @@ export function getVideoPosterUrl(videoUrl: string | null | undefined, customPos
   if (customPoster) return customPoster;
   if (!videoUrl) return "";
 
-  // Jika Cloudinary, ekstrak snapshot detik ke-0 sebagai poster cover
+  // Jika YouTube
+  if (videoUrl.includes("youtube.com") || videoUrl.includes("youtu.be")) {
+    const ytId = extractYouTubeId(videoUrl);
+    if (ytId) return `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`;
+  }
+
+  // Jika Cloudinary
   if (videoUrl.includes("res.cloudinary.com") && videoUrl.includes("/video/upload/")) {
     const posterUrl = videoUrl
       .replace("/video/upload/", "/video/upload/so_0,w_720,c_limit,q_auto,f_jpg/")
@@ -47,4 +121,3 @@ export function formatDuration(seconds: number | null | undefined): string {
   const s = Math.floor(seconds % 60);
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
-

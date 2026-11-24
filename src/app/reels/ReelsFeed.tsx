@@ -4,9 +4,10 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { 
   Heart, Volume2, VolumeX, Share2, Play, Pause, 
-  ChevronUp, ChevronDown, ArrowLeft, Sparkles, Check, Music2
+  ChevronUp, ChevronDown, ArrowLeft, Sparkles, Check, Music2, ExternalLink
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
+import { getVideoSourceType, formatEmbedUrl, getVideoPosterUrl } from "@/lib/video-optimization";
 
 interface ReelItem {
   id: number;
@@ -112,7 +113,7 @@ export default function ReelsFeed({ initialReels }: Props) {
     return () => observer.disconnect();
   }, [reels]);
 
-  // Video playback sync with activeIndex
+  // Video playback sync with activeIndex (for direct video files)
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
@@ -128,21 +129,24 @@ export default function ReelsFeed({ initialReels }: Props) {
             setIsMuted(true);
             video.play().catch(() => {});
           });
-
-        // Log view after 3 seconds of watching
-        const currentReel = reels[activeIndex];
-        if (currentReel && !viewLoggedRefs.current[currentReel.id]) {
-          viewLoggedRefs.current[currentReel.id] = true;
-          setTimeout(() => {
-            fetch(`/api/public/reels/${currentReel.id}/view`, { method: "POST" }).catch(() => {});
-          }, 3000);
-        }
       } else {
         video.pause();
         video.currentTime = 0; // Rewind inactive video
       }
     });
   }, [activeIndex, isMuted, reels]);
+
+  // Log view after 3 seconds of watching activeIndex (supports both direct & embed reels)
+  useEffect(() => {
+    const currentReel = reels[activeIndex];
+    if (currentReel && !viewLoggedRefs.current[currentReel.id]) {
+      viewLoggedRefs.current[currentReel.id] = true;
+      const timer = setTimeout(() => {
+        fetch(`/api/public/reels/${currentReel.id}/view`, { method: "POST" }).catch(() => {});
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [activeIndex, reels]);
 
   // Update mute across all video elements
   useEffect(() => {
@@ -327,6 +331,9 @@ export default function ReelsFeed({ initialReels }: Props) {
           const isExpanded = expandedDesc[reel.id];
           const progress = progressMap[index] || 0;
           const isCurrentActive = index === activeIndex;
+          const sourceType = getVideoSourceType(reel.videoUrl);
+          const isEmbed = sourceType !== "direct";
+          const isNearActive = Math.abs(index - activeIndex) <= 1;
 
           return (
             <section
@@ -334,24 +341,48 @@ export default function ReelsFeed({ initialReels }: Props) {
               data-index={index}
               className="reel-card relative w-full h-[100dvh] md:h-[calc(100dvh-2.5rem)] snap-start snap-always flex items-center justify-center bg-black overflow-hidden"
             >
-              {/* Video Element */}
-              <video
-                ref={(el) => {
-                  videoRefs.current[index] = el;
-                }}
-                src={reel.videoUrl}
-                poster={reel.thumbnailUrl || undefined}
-                loop
-                playsInline
-                muted={isMuted}
-                preload={Math.abs(index - activeIndex) <= 1 ? "auto" : "none"}
-                onTimeUpdate={(e) => handleTimeUpdate(index, e)}
-                onClick={() => handleVideoTap(reel.id)}
-                className="w-full h-full object-cover cursor-pointer"
-              />
+              {/* Embed Player (TikTok / YouTube Shorts) or Direct Video */}
+              {isEmbed ? (
+                isNearActive ? (
+                  <div className="w-full h-full relative overflow-hidden flex items-center justify-center bg-black">
+                    <iframe
+                      src={formatEmbedUrl(reel.videoUrl, {
+                        autoplay: isCurrentActive,
+                        muted: isMuted,
+                      })}
+                      title={reel.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      className="w-full h-full border-0 object-cover"
+                    />
+                  </div>
+                ) : (
+                  <img
+                    src={reel.thumbnailUrl || getVideoPosterUrl(reel.videoUrl) || "/hero-pattern.png"}
+                    alt={reel.title}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                )
+              ) : (
+                <video
+                  ref={(el) => {
+                    videoRefs.current[index] = el;
+                  }}
+                  src={reel.videoUrl}
+                  poster={reel.thumbnailUrl || undefined}
+                  loop
+                  playsInline
+                  muted={isMuted}
+                  preload={isNearActive ? "auto" : "none"}
+                  onTimeUpdate={(e) => handleTimeUpdate(index, e)}
+                  onClick={() => handleVideoTap(reel.id)}
+                  className="w-full h-full object-cover cursor-pointer"
+                />
+              )}
 
-              {/* Play / Pause Animated Icon Overlay */}
-              {!isPlaying && isCurrentActive && (
+              {/* Play / Pause Animated Icon Overlay (Direct Video Only) */}
+              {!isEmbed && !isPlaying && isCurrentActive && (
                 <div 
                   onClick={togglePlayCurrent}
                   className="absolute inset-0 flex items-center justify-center bg-black/30 cursor-pointer pointer-events-auto z-20"
@@ -503,20 +534,36 @@ export default function ReelsFeed({ initialReels }: Props) {
                   </div>
                 )}
 
-                {/* Audio Ticker */}
-                <div className="flex items-center gap-2 text-[11px] text-white/70">
-                  <Music2 className="w-3 h-3 text-green-400 flex-shrink-0 animate-spin" />
-                  <span className="truncate">Suara Asli • LDK Al-Hidayah IKMI Cirebon</span>
+                {/* Audio Ticker & Platform Link */}
+                <div className="flex items-center justify-between gap-2 pt-0.5">
+                  <div className="flex items-center gap-2 text-[11px] text-white/70 min-w-0">
+                    <Music2 className="w-3 h-3 text-green-400 flex-shrink-0 animate-spin" />
+                    <span className="truncate">Suara Asli • LDK Al-Hidayah IKMI Cirebon</span>
+                  </div>
+
+                  {isEmbed && (
+                    <a
+                      href={reel.videoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-white/90 hover:text-white bg-black/60 hover:bg-black/80 px-2 py-0.5 rounded-full border border-white/20 backdrop-blur-md transition-colors flex-shrink-0"
+                    >
+                      <ExternalLink className="w-3 h-3 text-green-400" />
+                      <span>{sourceType === "tiktok" ? "TikTok" : "YouTube"}</span>
+                    </a>
+                  )}
                 </div>
               </div>
 
-              {/* ── THIN PLAYBACK PROGRESS BAR AT BOTTOM ── */}
-              <div className="absolute bottom-0 inset-x-0 h-1 bg-white/20 z-30">
-                <div
-                  className="h-full bg-green-500 transition-all duration-150"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
+              {/* ── THIN PLAYBACK PROGRESS BAR AT BOTTOM (Direct Video) ── */}
+              {!isEmbed && (
+                <div className="absolute bottom-0 inset-x-0 h-1 bg-white/20 z-30">
+                  <div
+                    className="h-full bg-green-500 transition-all duration-150"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+              )}
             </section>
           );
         })}

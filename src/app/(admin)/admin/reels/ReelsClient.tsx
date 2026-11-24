@@ -7,7 +7,7 @@ import {
   Play, Pause, Volume2, VolumeX, RefreshCw, Sparkles, ExternalLink, X
 } from "lucide-react";
 import toast from "react-hot-toast";
-import { formatDuration, getOptimizedVideoUrl, getVideoPosterUrl } from "@/lib/video-optimization";
+import { formatDuration, getOptimizedVideoUrl, getVideoPosterUrl, getVideoSourceType, formatEmbedUrl } from "@/lib/video-optimization";
 import type { Reel } from "@/db/schema";
 
 interface Props {
@@ -25,6 +25,7 @@ export default function ReelsClient({ initialReels }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [isParsingLink, setIsParsingLink] = useState(false);
 
   // Form Fields
   const [title, setTitle] = useState("");
@@ -73,6 +74,7 @@ export default function ReelsClient({ initialReels }: Props) {
     setEditingReel(null);
     setUploadProgress(0);
     setIsUploading(false);
+    setIsParsingLink(false);
   };
 
   const handleOpenAdd = () => {
@@ -93,6 +95,47 @@ export default function ReelsClient({ initialReels }: Props) {
     setStatus(reel.status as any);
     setVideoSourceType("url");
     setIsModalOpen(true);
+  };
+
+  const handleParseVideoLink = async (customUrl?: string) => {
+    const targetUrl = (customUrl || videoUrl).trim();
+    if (!targetUrl) {
+      toast.error("Silakan masukkan URL link video terlebih dahulu");
+      return;
+    }
+
+    setIsParsingLink(true);
+    try {
+      const res = await fetch("/api/admin/reels/parse-link", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: targetUrl }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Gagal memproses link video");
+      }
+
+      setVideoUrl(data.originalUrl || targetUrl);
+
+      if (data.title && !title.trim()) {
+        setTitle(data.title);
+      }
+      if (data.speaker && !speaker.trim()) {
+        setSpeaker(data.speaker);
+      }
+      if (data.thumbnailUrl) {
+        setThumbnailUrl(data.thumbnailUrl);
+      }
+
+      const platformName = data.type === "tiktok" ? "TikTok" : data.type === "youtube" ? "YouTube Shorts" : "Video";
+      toast.success(`Link ${platformName} valid! Data berhasil diambil otomatis (0 MB Cloudinary).`);
+    } catch (err: any) {
+      toast.error(err.message || "Gagal mengambil data video");
+    } finally {
+      setIsParsingLink(false);
+    }
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -426,6 +469,12 @@ export default function ReelsClient({ initialReels }: Props) {
                       alt={reel.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
+                  ) : getVideoSourceType(reel.videoUrl) === "youtube" ? (
+                    <img
+                      src={getVideoPosterUrl(reel.videoUrl)}
+                      alt={reel.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
                   ) : (
                     <video
                       src={reel.videoUrl}
@@ -434,6 +483,18 @@ export default function ReelsClient({ initialReels }: Props) {
                       muted
                       playsInline
                     />
+                  )}
+
+                  {/* Platform Indicator */}
+                  {getVideoSourceType(reel.videoUrl) === "tiktok" && (
+                    <span className="absolute bottom-3 left-3 text-[10px] font-bold px-2 py-0.5 rounded-md bg-black/80 text-white backdrop-blur-sm z-10 shadow">
+                      TikTok
+                    </span>
+                  )}
+                  {getVideoSourceType(reel.videoUrl) === "youtube" && (
+                    <span className="absolute bottom-3 left-3 text-[10px] font-bold px-2 py-0.5 rounded-md bg-red-600/90 text-white backdrop-blur-sm z-10 shadow">
+                      Shorts
+                    </span>
                   )}
 
                   {/* Gradient Overlay */}
@@ -637,59 +698,147 @@ export default function ReelsClient({ initialReels }: Props) {
                     </div>
                   </div>
                 ) : (
-                  <div>
-                    <input
-                      type="url"
-                      placeholder="https://.../video.mp4 atau link video Cloudinary"
-                      value={videoUrl}
-                      onChange={(e) => setVideoUrl(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900 dark:text-gray-100"
-                    />
+                  <div className="space-y-3">
+                    {/* Info Card Hemat Storage */}
+                    <div className="p-3.5 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50 rounded-xl text-xs space-y-1">
+                      <div className="flex items-center gap-1.5 font-bold text-emerald-800 dark:text-emerald-300">
+                        <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                        <span>Hemat 100% Storage Cloudinary (Gratis!)</span>
+                      </div>
+                      <p className="text-emerald-700 dark:text-emerald-400 text-[11px] leading-relaxed">
+                        Cukup tempel link <strong>TikTok</strong> (contoh: <code>vt.tiktok.com/...</code> atau <code>tiktok.com/@user/video/...</code>) atau <strong>YouTube Shorts</strong>. Video akan diputar langsung via embed resmi tanpa memakan storage Cloudinary Anda!
+                      </p>
+                    </div>
+
+                    {/* Input Link Bar with Auto-fetch Button */}
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <div className="relative flex-1">
+                        <input
+                          type="url"
+                          placeholder="Tempel link TikTok (vt.tiktok.com) atau YouTube Shorts..."
+                          value={videoUrl}
+                          onChange={(e) => setVideoUrl(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              handleParseVideoLink();
+                            }
+                          }}
+                          className="w-full pl-3.5 pr-9 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-900 dark:text-gray-100"
+                        />
+                        {videoUrl && (
+                          <button
+                            type="button"
+                            onClick={() => setVideoUrl("")}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleParseVideoLink()}
+                        disabled={isParsingLink || !videoUrl.trim()}
+                        className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5 flex-shrink-0 active:scale-95"
+                      >
+                        {isParsingLink ? (
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <Sparkles className="w-3.5 h-3.5" />
+                        )}
+                        <span>{isParsingLink ? "Mengambil Data..." : "⚡ Ambil Data Video"}</span>
+                      </button>
+                    </div>
                   </div>
                 )}
 
                 {/* Video Preview inside Modal */}
                 {videoUrl && (
-                  <div className="mt-3 p-3 bg-gray-50 dark:bg-slate-800/80 rounded-xl flex items-center justify-between gap-3 border border-gray-200 dark:border-slate-700">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-16 h-24 bg-black rounded-lg overflow-hidden flex-shrink-0 relative">
-                        <video
-                          src={videoUrl}
-                          className="w-full h-full object-cover"
-                          preload="metadata"
-                          muted
-                          playsInline
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                          <Play className="w-4 h-4 text-white" />
+                  <div className="mt-3 p-3.5 bg-gray-50 dark:bg-slate-800/80 rounded-xl border border-gray-200 dark:border-slate-700 space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        {/* Video Thumbnail / Mini Embed */}
+                        <div className="w-20 h-28 bg-black rounded-lg overflow-hidden flex-shrink-0 relative shadow-sm border border-black/20">
+                          {getVideoSourceType(videoUrl) !== "direct" ? (
+                            thumbnailUrl ? (
+                              <img
+                                src={thumbnailUrl}
+                                alt="Thumbnail"
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <iframe
+                                src={formatEmbedUrl(videoUrl, { autoplay: false, muted: true })}
+                                className="w-full h-full border-0 pointer-events-none scale-75 origin-top-left w-[133%] h-[133%]"
+                                title="Preview"
+                              />
+                            )
+                          ) : (
+                            <video
+                              src={videoUrl}
+                              className="w-full h-full object-cover"
+                              preload="metadata"
+                              muted
+                              playsInline
+                            />
+                          )}
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/20 pointer-events-none">
+                            <Play className="w-4 h-4 text-white drop-shadow" />
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 text-xs font-semibold text-green-600 dark:text-green-400 mb-1">
-                          <Sparkles className="w-3.5 h-3.5" />
-                          Video Berhasil Dipilih & Teroptimasi
-                        </div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px] sm:max-w-xs">
-                          {videoUrl}
-                        </p>
-                        {duration && (
-                          <span className="text-[11px] text-gray-400 mt-1 inline-block">
-                            Durasi: {formatDuration(duration)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
 
-                    {/* Tombol Hapus / Ganti Video */}
-                    <button
-                      type="button"
-                      onClick={handleRemoveVideo}
-                      className="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 dark:hover:bg-rose-900/60 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors flex-shrink-0 border border-rose-200/60 dark:border-rose-900/40 active:scale-95"
-                      title="Hapus video ini untuk memilih file lain"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      <span>Hapus Video</span>
-                    </button>
+                        <div className="flex-1 min-w-0 space-y-1">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            {getVideoSourceType(videoUrl) === "tiktok" ? (
+                              <span className="px-2 py-0.5 rounded-md bg-black text-white text-[10px] font-bold inline-flex items-center gap-1">
+                                TikTok Embed
+                              </span>
+                            ) : getVideoSourceType(videoUrl) === "youtube" ? (
+                              <span className="px-2 py-0.5 rounded-md bg-red-600 text-white text-[10px] font-bold inline-flex items-center gap-1">
+                                YouTube Shorts
+                              </span>
+                            ) : (
+                              <span className="px-2 py-0.5 rounded-md bg-blue-600 text-white text-[10px] font-bold inline-flex items-center gap-1">
+                                Direct Video
+                              </span>
+                            )}
+                            <span className="text-emerald-600 dark:text-emerald-400 text-[11px] font-semibold">
+                              {getVideoSourceType(videoUrl) !== "direct"
+                                ? "🟢 0 MB Storage Cloudinary"
+                                : "Tersimpan di Cloud"}
+                            </span>
+                          </div>
+
+                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[200px] sm:max-w-xs font-mono">
+                            {videoUrl}
+                          </p>
+
+                          {speaker && (
+                            <p className="text-xs text-gray-700 dark:text-gray-300 font-medium">
+                              Pembicara: <span className="font-semibold text-green-600 dark:text-green-400">{speaker}</span>
+                            </p>
+                          )}
+
+                          {duration && (
+                            <span className="text-[11px] text-gray-400 inline-block">
+                              Durasi: {formatDuration(duration)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Tombol Hapus / Ganti Video */}
+                      <button
+                        type="button"
+                        onClick={handleRemoveVideo}
+                        className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 dark:hover:bg-rose-900/60 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors flex-shrink-0 border border-rose-200/60 dark:border-rose-900/40 active:scale-95"
+                        title="Hapus video ini untuk memilih file atau link lain"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Hapus</span>
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -823,16 +972,26 @@ export default function ReelsClient({ initialReels }: Props) {
           <div className="relative w-full max-w-sm aspect-[9/16] bg-black rounded-3xl overflow-hidden shadow-2xl border border-white/20">
             <button
               onClick={() => setPreviewVideo(null)}
-              className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/90 transition-colors"
+              className="absolute top-4 right-4 z-30 w-9 h-9 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/90 transition-colors"
             >
               ✕
             </button>
-            <video
-              src={previewVideo.videoUrl}
-              controls
-              autoPlay
-              className="w-full h-full object-cover"
-            />
+            {getVideoSourceType(previewVideo.videoUrl) !== "direct" ? (
+              <iframe
+                src={formatEmbedUrl(previewVideo.videoUrl, { autoplay: true, muted: false })}
+                title={previewVideo.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                className="w-full h-full border-0"
+              />
+            ) : (
+              <video
+                src={previewVideo.videoUrl}
+                controls
+                autoPlay
+                className="w-full h-full object-cover"
+              />
+            )}
           </div>
         </div>
       )}
