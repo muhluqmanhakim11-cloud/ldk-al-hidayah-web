@@ -42,7 +42,7 @@ export function formatEmbedUrl(
   if (!url) return "";
   const type = getVideoSourceType(url);
   const autoplay = options?.autoplay ?? true;
-  const muted = options?.muted ?? true;
+  const muted = options?.muted ?? false;
   const loop = options?.loop ?? true;
 
   if (type === "tiktok") {
@@ -58,7 +58,7 @@ export function formatEmbedUrl(
   if (type === "youtube") {
     const id = extractYouTubeId(url);
     if (id) {
-      return `https://www.youtube.com/embed/${id}?autoplay=${autoplay ? 1 : 0}&mute=${muted ? 1 : 0}&loop=${loop ? 1 : 0}&playlist=${id}&controls=1&modestbranding=1&rel=0`;
+      return `https://www.youtube.com/embed/${id}?autoplay=${autoplay ? 1 : 0}&mute=${muted ? 1 : 0}&loop=${loop ? 1 : 0}&playlist=${id}&controls=1&modestbranding=1&rel=0&enablejsapi=1`;
     }
     return url;
   }

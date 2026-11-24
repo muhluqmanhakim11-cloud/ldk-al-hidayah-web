@@ -30,7 +30,7 @@ interface Props {
 export default function ReelsFeed({ initialReels }: Props) {
   const [reels, setReels] = useState<ReelItem[]>(initialReels);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [likedReels, setLikedReels] = useState<Record<number, boolean>>({});
   const [copiedId, setCopiedId] = useState<number | null>(null);
@@ -40,8 +40,67 @@ export default function ReelsFeed({ initialReels }: Props) {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const iframeRefs = useRef<(HTMLIFrameElement | null)[]>([]);
   const viewLoggedRefs = useRef<Record<number, boolean>>({});
   const lastTapRef = useRef<number>(0);
+
+  // Helper untuk mengirim perintah ke TikTok player / YouTube embed via postMessage API
+  const sendEmbedCommand = useCallback(
+    (iframe: HTMLIFrameElement | null, command: "play" | "pause" | "mute" | "unMute") => {
+      if (!iframe || !iframe.contentWindow) return;
+
+      // 1. TikTok Player v1 API (mendukung unMute, mute, play, pause)
+      const tiktokMsg = {
+        "x-tiktok-player": true,
+        "type": command,
+        "value": null,
+      };
+      try {
+        iframe.contentWindow.postMessage(tiktokMsg, "https://www.tiktok.com");
+        iframe.contentWindow.postMessage(tiktokMsg, "*");
+      } catch (e) {}
+
+      // 2. YouTube Shorts / Embed API
+      try {
+        const ytFunc =
+          command === "play"
+            ? "playVideo"
+            : command === "pause"
+            ? "pauseVideo"
+            : command === "mute"
+            ? "mute"
+            : "unMute";
+        const ytMsg = JSON.stringify({
+          event: "command",
+          func: ytFunc,
+          args: [],
+        });
+        iframe.contentWindow.postMessage(ytMsg, "*");
+      } catch (e) {}
+    },
+    []
+  );
+
+  // Toggle Mute terkendali dari tombol LDK Al-Hidayah
+  const toggleMute = useCallback(() => {
+    setIsMuted((prev) => {
+      const nextMuted = !prev;
+
+      // Update HTML5 video
+      videoRefs.current.forEach((video) => {
+        if (video) video.muted = nextMuted;
+      });
+
+      // Update embed player TikTok / YouTube
+      iframeRefs.current.forEach((iframe, idx) => {
+        if (iframe && idx === activeIndex) {
+          sendEmbedCommand(iframe, nextMuted ? "mute" : "unMute");
+        }
+      });
+
+      return nextMuted;
+    });
+  }, [activeIndex, sendEmbedCommand]);
 
   // Lock body scroll while in Reels view
   useEffect(() => {
@@ -68,7 +127,7 @@ export default function ReelsFeed({ initialReels }: Props) {
         togglePlayCurrent();
       } else if (e.key === "m" || e.key === "M") {
         e.preventDefault();
-        setIsMuted((prev) => !prev);
+        toggleMute();
       }
     };
 
@@ -155,8 +214,34 @@ export default function ReelsFeed({ initialReels }: Props) {
     });
   }, [isMuted]);
 
+  // Embed iframe playback & audio sync with activeIndex
+  useEffect(() => {
+    iframeRefs.current.forEach((iframe, index) => {
+      if (!iframe) return;
+      if (index === activeIndex) {
+        sendEmbedCommand(iframe, "play");
+        sendEmbedCommand(iframe, isMuted ? "mute" : "unMute");
+      } else {
+        sendEmbedCommand(iframe, "pause");
+        sendEmbedCommand(iframe, "mute");
+      }
+    });
+  }, [activeIndex, isMuted, sendEmbedCommand]);
+
   const togglePlayCurrent = () => {
     const currentVideo = videoRefs.current[activeIndex];
+    const currentIframe = iframeRefs.current[activeIndex];
+
+    if (currentIframe) {
+      // Toggle play/pause for embed iframe
+      setIsPlaying((prev) => {
+        const nextState = !prev;
+        sendEmbedCommand(currentIframe, nextState ? "play" : "pause");
+        return nextState;
+      });
+      return;
+    }
+
     if (!currentVideo) return;
 
     if (currentVideo.paused) {
@@ -172,6 +257,12 @@ export default function ReelsFeed({ initialReels }: Props) {
   const handleVideoTap = (reelId: number) => {
     const now = Date.now();
     const DOUBLE_TAP_DELAY = 300;
+
+    // Wake up audio on embed player if needed
+    const currentIframe = iframeRefs.current[activeIndex];
+    if (currentIframe) {
+      sendEmbedCommand(currentIframe, isMuted ? "mute" : "unMute");
+    }
 
     if (now - lastTapRef.current < DOUBLE_TAP_DELAY) {
       // Double tap triggered
@@ -312,7 +403,7 @@ export default function ReelsFeed({ initialReels }: Props) {
 
         {/* Sound Toggle (Top corner) */}
         <button
-          onClick={() => setIsMuted(!isMuted)}
+          onClick={toggleMute}
           className="w-9 h-9 rounded-full bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center text-white/90 hover:text-white hover:bg-black/60 transition-colors"
           title={isMuted ? "Aktifkan Suara" : "Matikan Suara"}
         >
@@ -346,6 +437,9 @@ export default function ReelsFeed({ initialReels }: Props) {
                 isNearActive ? (
                   <div className="w-full h-full relative overflow-hidden flex items-center justify-center bg-black">
                     <iframe
+                      ref={(el) => {
+                        iframeRefs.current[index] = el;
+                      }}
                       src={formatEmbedUrl(reel.videoUrl, {
                         autoplay: isCurrentActive,
                         muted: isMuted,
@@ -353,6 +447,18 @@ export default function ReelsFeed({ initialReels }: Props) {
                       title={reel.title}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       allowFullScreen
+                      onLoad={(e) => {
+                        const iframe = e.currentTarget;
+                        if (isCurrentActive) {
+                          setTimeout(() => {
+                            sendEmbedCommand(iframe, "play");
+                            sendEmbedCommand(iframe, isMuted ? "mute" : "unMute");
+                          }, 300);
+                          setTimeout(() => {
+                            sendEmbedCommand(iframe, isMuted ? "mute" : "unMute");
+                          }, 1000);
+                        }
+                      }}
                       className="w-full h-full border-0 object-cover"
                     />
                   </div>
@@ -406,7 +512,7 @@ export default function ReelsFeed({ initialReels }: Props) {
               {/* Mute Tap-to-Unmute Banner (if muted on active) */}
               {isMuted && isCurrentActive && (
                 <button
-                  onClick={() => setIsMuted(false)}
+                  onClick={toggleMute}
                   className="absolute top-16 left-1/2 -translate-x-1/2 z-30 px-3.5 py-1.5 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-xs font-semibold text-white flex items-center gap-2 animate-bounce shadow-lg"
                 >
                   <VolumeX className="w-3.5 h-3.5 text-rose-400" />
@@ -455,7 +561,7 @@ export default function ReelsFeed({ initialReels }: Props) {
                 {/* Sound Toggle Button */}
                 <div className="flex flex-col items-center">
                   <button
-                    onClick={() => setIsMuted(!isMuted)}
+                    onClick={toggleMute}
                     aria-label="Mute / Unmute"
                     className="w-11 h-11 rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center justify-center active:scale-75 transition-all text-white hover:bg-black/70"
                   >
