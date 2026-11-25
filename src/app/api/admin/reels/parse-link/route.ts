@@ -78,6 +78,25 @@ export async function POST(req: Request) {
         const userMatch = url.match(/@([a-zA-Z0-9_.-]+)/);
         if (userMatch) speaker = `@${userMatch[1]}`;
       }
+
+      // Fallback ambil thumbnail cover via TikWM jika oEmbed tidak menyediakannya
+      if (!thumbnailUrl) {
+        try {
+          const tikwmRes = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(url)}`, {
+            next: { revalidate: 3600 },
+          });
+          if (tikwmRes.ok) {
+            const twData = await tikwmRes.json();
+            if (twData?.data) {
+              if (!title && twData.data.title) title = twData.data.title;
+              if (!speaker && twData.data.author) {
+                speaker = twData.data.author.nickname || `@${twData.data.author.unique_id}` || "";
+              }
+              if (twData.data.cover) thumbnailUrl = twData.data.cover;
+            }
+          }
+        } catch (e) {}
+      }
     } else if (type === "youtube") {
       const id = extractYouTubeId(url);
       videoId = id || "";
