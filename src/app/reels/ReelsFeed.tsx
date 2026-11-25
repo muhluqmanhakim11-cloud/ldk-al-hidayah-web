@@ -57,10 +57,10 @@ export default function ReelsFeed({ initialReels }: Props) {
         const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
         if (!data) return;
 
-        // TikTok player events (play / timeUpdate / onPlayerReady)
+        // TikTok player events: hanya buka overlay saat video benar-benar memutar (timeUpdate / play)
         if (data["x-tiktok-player"] === true) {
           const type = data.type || data.event;
-          if (type === "play" || type === "timeUpdate" || type === "onPlayerReady") {
+          if (type === "timeUpdate" || type === "play") {
             const currentReel = reels[activeIndex];
             if (currentReel) {
               setLoadedIframes((prev) => ({ ...prev, [currentReel.id]: true }));
@@ -515,7 +515,17 @@ export default function ReelsFeed({ initialReels }: Props) {
 
                     {/* LDK Branded Loading Overlay — selalu hadir di DOM, menutupi iframe sepenuhnya */}
                     <div
-                      className="absolute inset-0 z-10 flex items-center justify-center transition-opacity duration-700"
+                      onClick={() => {
+                        const iframe = iframeRefs.current[index];
+                        if (iframe) {
+                          sendEmbedCommand(iframe, "play");
+                          sendEmbedCommand(iframe, isMuted ? "mute" : "unMute");
+                          setTimeout(() => {
+                            setLoadedIframes((prev) => ({ ...prev, [reel.id]: true }));
+                          }, 400);
+                        }
+                      }}
+                      className="absolute inset-0 z-10 flex items-center justify-center transition-opacity duration-700 cursor-pointer"
                       style={{
                         backgroundColor: "black",
                         opacity: loadedIframes[reel.id] && isCurrentActive ? 0 : 1,
