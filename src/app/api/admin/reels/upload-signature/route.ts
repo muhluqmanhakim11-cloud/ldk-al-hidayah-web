@@ -9,6 +9,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const userRole = (session.user as any)?.realRole || (session.user as any)?.role;
+    if (userRole !== "super_admin" && userRole !== "SUPER_ADMIN" && userRole !== "admin_kominfo") {
+      return NextResponse.json({ error: "Forbidden: Hanya Superadmin dan Kominfo yang dapat mengunggah video reels" }, { status: 403 });
+    }
+
     const timestamp = Math.round(new Date().getTime() / 1000);
     const folder = "ldk-alhidayah/reels";
 

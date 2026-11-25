@@ -13,6 +13,12 @@ export default async function ReelsAdminPage() {
   const session = await auth();
   if (!session) redirect("/login");
 
+  const userRole = (session.user as any)?.realRole || (session.user as any)?.role;
+  const isAuthorized = userRole === "super_admin" || userRole === "SUPER_ADMIN" || userRole === "admin_kominfo";
+  if (!isAuthorized) {
+    redirect("/admin");
+  }
+
   const initialReels = await db
     .select()
     .from(reels)

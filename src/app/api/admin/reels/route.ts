@@ -25,6 +25,11 @@ export async function GET(req: Request) {
     const session = await auth();
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+    const userRole = (session.user as any)?.realRole || (session.user as any)?.role;
+    if (userRole !== "super_admin" && userRole !== "SUPER_ADMIN" && userRole !== "admin_kominfo") {
+      return NextResponse.json({ error: "Forbidden: Hanya Superadmin dan Kominfo yang dapat mengakses Reels Dakwah" }, { status: 403 });
+    }
+
     const url = new URL(req.url);
     const search = url.searchParams.get("search");
     const status = url.searchParams.get("status");
@@ -67,6 +72,11 @@ export async function POST(req: Request) {
   try {
     const session = await auth();
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const userRole = (session.user as any)?.realRole || (session.user as any)?.role;
+    if (userRole !== "super_admin" && userRole !== "SUPER_ADMIN" && userRole !== "admin_kominfo") {
+      return NextResponse.json({ error: "Forbidden: Hanya Superadmin dan Kominfo yang dapat mengelola Reels Dakwah" }, { status: 403 });
+    }
 
     const body = await req.json();
     const validated = reelCreateSchema.safeParse(body);

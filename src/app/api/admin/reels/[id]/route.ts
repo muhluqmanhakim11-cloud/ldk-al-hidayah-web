@@ -25,6 +25,11 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     const session = await auth();
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+    const userRole = (session.user as any)?.realRole || (session.user as any)?.role;
+    if (userRole !== "super_admin" && userRole !== "SUPER_ADMIN" && userRole !== "admin_kominfo") {
+      return NextResponse.json({ error: "Forbidden: Hanya Superadmin dan Kominfo yang dapat mengakses Reels Dakwah" }, { status: 403 });
+    }
+
     const { id } = await params;
     const reelId = parseInt(id);
 
@@ -44,6 +49,11 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   try {
     const session = await auth();
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const userRole = (session.user as any)?.realRole || (session.user as any)?.role;
+    if (userRole !== "super_admin" && userRole !== "SUPER_ADMIN" && userRole !== "admin_kominfo") {
+      return NextResponse.json({ error: "Forbidden: Hanya Superadmin dan Kominfo yang dapat mengelola Reels Dakwah" }, { status: 403 });
+    }
 
     const { id } = await params;
     const reelId = parseInt(id);
@@ -110,6 +120,11 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
   try {
     const session = await auth();
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const userRole = (session.user as any)?.realRole || (session.user as any)?.role;
+    if (userRole !== "super_admin" && userRole !== "SUPER_ADMIN" && userRole !== "admin_kominfo") {
+      return NextResponse.json({ error: "Forbidden: Hanya Superadmin dan Kominfo yang dapat mengelola Reels Dakwah" }, { status: 403 });
+    }
 
     const { id } = await params;
     const reelId = parseInt(id);
