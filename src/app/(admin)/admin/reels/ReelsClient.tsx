@@ -48,10 +48,28 @@ export default function ReelsClient({ initialReels }: Props) {
       setPreviewLoading(true);
       const timer = setTimeout(() => {
         setPreviewLoading(false);
-      }, 2000);
+      }, 3500);
       return () => clearTimeout(timer);
     }
   }, [previewVideo]);
+
+  // Tangkap event play dari pemutar embed agar overlay loading langsung dibuka saat video siap
+  useEffect(() => {
+    const handleMsg = (event: MessageEvent) => {
+      try {
+        const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
+        if (!data) return;
+        if (data["x-tiktok-player"] === true) {
+          const type = data.type || data.event;
+          if (type === "play" || type === "timeUpdate" || type === "onPlayerReady") {
+            setPreviewLoading(false);
+          }
+        }
+      } catch (e) {}
+    };
+    window.addEventListener("message", handleMsg);
+    return () => window.removeEventListener("message", handleMsg);
+  }, []);
 
   // Video input ref
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -982,9 +1000,9 @@ export default function ReelsClient({ initialReels }: Props) {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
           <div className="relative w-full max-w-sm aspect-[9/16] bg-black rounded-3xl overflow-hidden shadow-2xl border border-white/20">
             {/* Top disguise gradient mask to hide any embed header */}
-            <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-black via-black/80 to-transparent z-20 pointer-events-none" />
+            <div className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-black via-black/90 to-transparent z-20 pointer-events-none" />
             {/* Bottom disguise gradient mask */}
-            <div className="absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-black via-black/80 to-transparent z-20 pointer-events-none" />
+            <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-black via-black/90 to-transparent z-20 pointer-events-none" />
 
             <button
               onClick={() => setPreviewVideo(null)}
@@ -999,30 +1017,31 @@ export default function ReelsClient({ initialReels }: Props) {
                   title={previewVideo.title}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
-                  className="absolute -top-[65px] left-[-5%] w-[110%] h-[calc(100%+130px)] border-0 object-cover pointer-events-none"
+                  className="absolute -top-[80px] left-[-6%] w-[112%] h-[calc(100%+160px)] border-0 object-cover pointer-events-none"
                 />
 
                 {/* Branded LDK Loading Overlay to eliminate TikTok loading logo */}
                 <div
-                  className={`absolute inset-0 z-10 bg-black flex flex-col items-center justify-center transition-opacity duration-700 pointer-events-none ${
-                    previewLoading ? "opacity-100" : "opacity-0"
+                  className={`absolute inset-0 z-10 bg-black flex flex-col items-center justify-center transition-opacity duration-700 ${
+                    previewLoading ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
                   }`}
                 >
                   {previewVideo.thumbnailUrl ? (
                     <img
                       src={previewVideo.thumbnailUrl}
                       alt="Thumbnail"
-                      className="absolute inset-0 w-full h-full object-cover opacity-50"
+                      className="absolute inset-0 w-full h-full object-cover opacity-60"
+                      referrerPolicy="no-referrer"
                     />
                   ) : null}
-                  <div className="relative flex flex-col items-center justify-center z-10">
+                  <div className="relative flex flex-col items-center justify-center z-10 bg-black/50 p-6 rounded-2xl backdrop-blur-sm">
                     <div className="relative flex items-center justify-center">
-                      <div className="w-14 h-14 rounded-full border-2 border-emerald-500/20 border-t-emerald-400 animate-spin" />
-                      <div className="absolute w-9 h-9 rounded-full bg-black/70 p-1 flex items-center justify-center border border-white/20 shadow-lg">
+                      <div className="w-16 h-16 rounded-full border-3 border-emerald-500/20 border-t-emerald-400 animate-spin" />
+                      <div className="absolute w-10 h-10 rounded-full bg-black/80 p-1 flex items-center justify-center border border-white/20 shadow-lg">
                         <img src="/logo-ldk.png" alt="LDK" className="w-full h-full object-contain" />
                       </div>
                     </div>
-                    <span className="text-xs font-medium text-white/90 mt-3 tracking-wide drop-shadow">
+                    <span className="text-xs font-semibold text-white/95 mt-3 tracking-wider drop-shadow">
                       Memuat Video Dakwah...
                     </span>
                   </div>

@@ -45,6 +45,41 @@ export default function ReelsFeed({ initialReels }: Props) {
   const viewLoggedRefs = useRef<Record<number, boolean>>({});
   const lastTapRef = useRef<number>(0);
 
+  // Listen for TikTok / YouTube embed player status messages
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      try {
+        const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
+        if (!data) return;
+
+        // TikTok player events (play / timeUpdate / onPlayerReady)
+        if (data["x-tiktok-player"] === true) {
+          const type = data.type || data.event;
+          if (type === "play" || type === "timeUpdate" || type === "onPlayerReady") {
+            const currentReel = reels[activeIndex];
+            if (currentReel) {
+              setLoadedIframes((prev) => ({ ...prev, [currentReel.id]: true }));
+            }
+          }
+        }
+      } catch (e) {}
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [activeIndex, reels]);
+
+  // Track active reel loading fallback
+  useEffect(() => {
+    const currentReel = reels[activeIndex];
+    if (currentReel && getVideoSourceType(currentReel.videoUrl) !== "direct") {
+      const fallbackTimer = setTimeout(() => {
+        setLoadedIframes((prev) => ({ ...prev, [currentReel.id]: true }));
+      }, 3500);
+      return () => clearTimeout(fallbackTimer);
+    }
+  }, [activeIndex, reels]);
+
   // Helper untuk mengirim perintah ke TikTok player / YouTube embed via postMessage API
   const sendEmbedCommand = useCallback(
     (iframe: HTMLIFrameElement | null, command: "play" | "pause" | "mute" | "unMute") => {
@@ -462,48 +497,49 @@ export default function ReelsFeed({ initialReels }: Props) {
                             sendEmbedCommand(iframe, isMuted ? "mute" : "unMute");
                           }, 1000);
                         }
-                        // Beri waktu 2 detik agar stream video TikTok sudah mulai merender frame sebelum overlay dibuka
+                        // Beri waktu 3.5 detik agar stream video TikTok sudah mulai merender frame sebelum overlay dibuka
                         setTimeout(() => {
                           setLoadedIframes((prev) => ({ ...prev, [reel.id]: true }));
-                        }, 2000);
+                        }, 3500);
                       }}
-                      className="absolute -top-[65px] left-[-5%] w-[110%] h-[calc(100%+130px)] border-0 object-cover pointer-events-none transition-transform duration-300"
+                      className="absolute -top-[80px] left-[-6%] w-[112%] h-[calc(100%+160px)] border-0 object-cover pointer-events-none transition-transform duration-300"
                     />
 
                     {/* Smooth Poster / LDK Branded Overlay agar logo watermark TikTok di awal tidak terlihat */}
                     <div
-                      className={`absolute inset-0 z-10 bg-black flex items-center justify-center transition-opacity duration-700 pointer-events-none ${
-                        loadedIframes[reel.id] && isCurrentActive ? "opacity-0" : "opacity-100"
+                      className={`absolute inset-0 z-10 bg-black flex items-center justify-center transition-opacity duration-700 ${
+                        loadedIframes[reel.id] && isCurrentActive ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"
                       }`}
                     >
                       {reel.thumbnailUrl || getVideoPosterUrl(reel.videoUrl) ? (
-                        <div className="relative w-full h-full">
+                        <div className="relative w-full h-full bg-black">
                           <img
                             src={reel.thumbnailUrl || getVideoPosterUrl(reel.videoUrl)}
                             alt={reel.title}
                             className="w-full h-full object-cover"
+                            referrerPolicy="no-referrer"
                           />
-                          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
+                          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm">
                             <div className="relative flex items-center justify-center">
-                              <div className="w-14 h-14 rounded-full border-2 border-emerald-500/20 border-t-emerald-400 animate-spin" />
-                              <div className="absolute w-9 h-9 rounded-full bg-black/70 p-1 flex items-center justify-center border border-white/20 shadow-lg">
+                              <div className="w-16 h-16 rounded-full border-3 border-emerald-500/20 border-t-emerald-400 animate-spin" />
+                              <div className="absolute w-10 h-10 rounded-full bg-black/80 p-1 flex items-center justify-center border border-white/20 shadow-xl">
                                 <img src="/logo-ldk.png" alt="LDK" className="w-full h-full object-contain" />
                               </div>
                             </div>
-                            <span className="text-xs font-medium text-white/90 mt-3 drop-shadow tracking-wide">
+                            <span className="text-xs font-semibold text-white/95 mt-3 drop-shadow tracking-wider">
                               Memuat Video Dakwah...
                             </span>
                           </div>
                         </div>
                       ) : (
-                        <div className="flex flex-col items-center justify-center gap-3 text-white">
+                        <div className="w-full h-full bg-black flex flex-col items-center justify-center gap-3 text-white">
                           <div className="relative flex items-center justify-center">
-                            <div className="w-14 h-14 rounded-full border-2 border-emerald-500/20 border-t-emerald-400 animate-spin" />
-                            <div className="absolute w-9 h-9 rounded-full bg-black/70 p-1 flex items-center justify-center border border-white/20 shadow-lg">
+                            <div className="w-16 h-16 rounded-full border-3 border-emerald-500/20 border-t-emerald-400 animate-spin" />
+                            <div className="absolute w-10 h-10 rounded-full bg-black/80 p-1 flex items-center justify-center border border-white/20 shadow-xl">
                               <img src="/logo-ldk.png" alt="LDK" className="w-full h-full object-contain" />
                             </div>
                           </div>
-                          <span className="text-xs font-medium text-white/90 drop-shadow tracking-wide">
+                          <span className="text-xs font-semibold text-white/95 drop-shadow tracking-wider">
                             Memuat Video Dakwah...
                           </span>
                         </div>
@@ -556,7 +592,7 @@ export default function ReelsFeed({ initialReels }: Props) {
 
               {/* Gradient Vignette Overlays for Maximum Readability & Disguise */}
               <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-black/90 pointer-events-none z-10" />
-              <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-black via-black/80 to-transparent pointer-events-none z-20" />
+              <div className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-black via-black/90 to-transparent pointer-events-none z-20" />
 
               {/* Mute Tap-to-Unmute Banner (if muted on active) */}
               {isMuted && isCurrentActive && (
