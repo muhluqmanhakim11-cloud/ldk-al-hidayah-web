@@ -38,6 +38,8 @@ export default function ReelsFeed({ initialReels }: Props) {
   const [expandedDesc, setExpandedDesc] = useState<Record<number, boolean>>({});
   const [progressMap, setProgressMap] = useState<Record<number, number>>({});
   const [loadedIframes, setLoadedIframes] = useState<Record<number, boolean>>({});
+  // isMounted: defer iframe injection until AFTER first paint so overlay renders first
+  const [isMounted, setIsMounted] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
@@ -47,6 +49,9 @@ export default function ReelsFeed({ initialReels }: Props) {
 
   // Listen for TikTok / YouTube embed player status messages
   useEffect(() => {
+    // Mark mounted so iframe injection starts (after overlay is already in DOM)
+    setIsMounted(true);
+
     const handleMessage = (event: MessageEvent) => {
       try {
         const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
@@ -475,41 +480,47 @@ export default function ReelsFeed({ initialReels }: Props) {
                     onClick={() => handleVideoTap(reel.id)}
                     className="w-full h-full relative overflow-hidden flex items-center justify-center bg-black cursor-pointer"
                   >
-                    <iframe
-                      ref={(el) => {
-                        iframeRefs.current[index] = el;
-                      }}
-                      src={formatEmbedUrl(reel.videoUrl, {
-                        autoplay: isCurrentActive,
-                        muted: isMuted,
-                      })}
-                      title={reel.title}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                      onLoad={(e) => {
-                        const iframe = e.currentTarget;
-                        if (isCurrentActive) {
+                    {/* Iframe hanya dirender SETELAH komponen mount agar overlay sudah ada di DOM lebih dulu */}
+                    {isMounted && (
+                      <iframe
+                        ref={(el) => {
+                          iframeRefs.current[index] = el;
+                        }}
+                        src={formatEmbedUrl(reel.videoUrl, {
+                          autoplay: isCurrentActive,
+                          muted: isMuted,
+                        })}
+                        title={reel.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                        onLoad={(e) => {
+                          const iframe = e.currentTarget;
+                          if (isCurrentActive) {
+                            setTimeout(() => {
+                              sendEmbedCommand(iframe, "play");
+                              sendEmbedCommand(iframe, isMuted ? "mute" : "unMute");
+                            }, 300);
+                            setTimeout(() => {
+                              sendEmbedCommand(iframe, isMuted ? "mute" : "unMute");
+                            }, 1000);
+                          }
+                          // Fallback timer: buka overlay jika postMessage belum diterima
                           setTimeout(() => {
-                            sendEmbedCommand(iframe, "play");
-                            sendEmbedCommand(iframe, isMuted ? "mute" : "unMute");
-                          }, 300);
-                          setTimeout(() => {
-                            sendEmbedCommand(iframe, isMuted ? "mute" : "unMute");
-                          }, 1000);
-                        }
-                        // Beri waktu 3.5 detik agar stream video TikTok sudah mulai merender frame sebelum overlay dibuka
-                        setTimeout(() => {
-                          setLoadedIframes((prev) => ({ ...prev, [reel.id]: true }));
-                        }, 3500);
-                      }}
-                      className="absolute -top-[80px] left-[-6%] w-[112%] h-[calc(100%+160px)] border-0 object-cover pointer-events-none transition-transform duration-300"
-                    />
+                            setLoadedIframes((prev) => ({ ...prev, [reel.id]: true }));
+                          }, 3500);
+                        }}
+                        className="absolute -top-[80px] left-[-6%] w-[112%] h-[calc(100%+160px)] border-0 object-cover pointer-events-none transition-transform duration-300"
+                      />
+                    )}
 
-                    {/* Smooth Poster / LDK Branded Overlay agar logo watermark TikTok di awal tidak terlihat */}
+                    {/* LDK Branded Loading Overlay — selalu hadir di DOM, menutupi iframe sepenuhnya */}
                     <div
-                      className={`absolute inset-0 z-10 bg-black flex items-center justify-center transition-opacity duration-700 ${
-                        loadedIframes[reel.id] && isCurrentActive ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto"
-                      }`}
+                      className="absolute inset-0 z-10 flex items-center justify-center transition-opacity duration-700"
+                      style={{
+                        backgroundColor: "black",
+                        opacity: loadedIframes[reel.id] && isCurrentActive ? 0 : 1,
+                        pointerEvents: loadedIframes[reel.id] && isCurrentActive ? "none" : "auto",
+                      }}
                     >
                       {reel.thumbnailUrl || getVideoPosterUrl(reel.videoUrl) ? (
                         <div className="relative w-full h-full bg-black">
