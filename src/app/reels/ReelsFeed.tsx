@@ -462,34 +462,53 @@ export default function ReelsFeed({ initialReels }: Props) {
                             sendEmbedCommand(iframe, isMuted ? "mute" : "unMute");
                           }, 1000);
                         }
-                        // Sembunyikan cover poster setelah iframe siap dan merender video
+                        // Beri waktu 2 detik agar stream video TikTok sudah mulai merender frame sebelum overlay dibuka
                         setTimeout(() => {
                           setLoadedIframes((prev) => ({ ...prev, [reel.id]: true }));
-                        }, 500);
+                        }, 2000);
                       }}
                       className="absolute -top-[65px] left-[-5%] w-[110%] h-[calc(100%+130px)] border-0 object-cover pointer-events-none transition-transform duration-300"
                     />
 
-                    {/* Smooth Poster / Placeholder Overlay agar logo watermark TikTok di awal tidak terlihat */}
-                    {(!loadedIframes[reel.id] || !isCurrentActive) && (
-                      <div
-                        className={`absolute inset-0 z-10 bg-black flex items-center justify-center transition-opacity duration-500 pointer-events-none ${
-                          loadedIframes[reel.id] ? "opacity-0" : "opacity-100"
-                        }`}
-                      >
-                        {reel.thumbnailUrl || getVideoPosterUrl(reel.videoUrl) ? (
+                    {/* Smooth Poster / LDK Branded Overlay agar logo watermark TikTok di awal tidak terlihat */}
+                    <div
+                      className={`absolute inset-0 z-10 bg-black flex items-center justify-center transition-opacity duration-700 pointer-events-none ${
+                        loadedIframes[reel.id] && isCurrentActive ? "opacity-0" : "opacity-100"
+                      }`}
+                    >
+                      {reel.thumbnailUrl || getVideoPosterUrl(reel.videoUrl) ? (
+                        <div className="relative w-full h-full">
                           <img
                             src={reel.thumbnailUrl || getVideoPosterUrl(reel.videoUrl)}
                             alt={reel.title}
                             className="w-full h-full object-cover"
                           />
-                        ) : (
-                          <div className="flex flex-col items-center gap-2 text-white/50">
-                            <div className="w-8 h-8 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin" />
+                          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
+                            <div className="relative flex items-center justify-center">
+                              <div className="w-14 h-14 rounded-full border-2 border-emerald-500/20 border-t-emerald-400 animate-spin" />
+                              <div className="absolute w-9 h-9 rounded-full bg-black/70 p-1 flex items-center justify-center border border-white/20 shadow-lg">
+                                <img src="/logo-ldk.png" alt="LDK" className="w-full h-full object-contain" />
+                              </div>
+                            </div>
+                            <span className="text-xs font-medium text-white/90 mt-3 drop-shadow tracking-wide">
+                              Memuat Video Dakwah...
+                            </span>
                           </div>
-                        )}
-                      </div>
-                    )}
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center gap-3 text-white">
+                          <div className="relative flex items-center justify-center">
+                            <div className="w-14 h-14 rounded-full border-2 border-emerald-500/20 border-t-emerald-400 animate-spin" />
+                            <div className="absolute w-9 h-9 rounded-full bg-black/70 p-1 flex items-center justify-center border border-white/20 shadow-lg">
+                              <img src="/logo-ldk.png" alt="LDK" className="w-full h-full object-contain" />
+                            </div>
+                          </div>
+                          <span className="text-xs font-medium text-white/90 drop-shadow tracking-wide">
+                            Memuat Video Dakwah...
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ) : (
                   <img

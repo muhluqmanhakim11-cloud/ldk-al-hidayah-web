@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { 
   Plus, Search, Edit3, Trash2, Eye, Heart, Film, 
   Upload, Link as LinkIcon, CheckCircle2, AlertCircle, 
@@ -41,6 +41,17 @@ export default function ReelsClient({ initialReels }: Props) {
 
   // Preview Modal
   const [previewVideo, setPreviewVideo] = useState<Reel | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(true);
+
+  useEffect(() => {
+    if (previewVideo && getVideoSourceType(previewVideo.videoUrl) !== "direct") {
+      setPreviewLoading(true);
+      const timer = setTimeout(() => {
+        setPreviewLoading(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [previewVideo]);
 
   // Video input ref
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -990,6 +1001,32 @@ export default function ReelsClient({ initialReels }: Props) {
                   allowFullScreen
                   className="absolute -top-[65px] left-[-5%] w-[110%] h-[calc(100%+130px)] border-0 object-cover pointer-events-none"
                 />
+
+                {/* Branded LDK Loading Overlay to eliminate TikTok loading logo */}
+                <div
+                  className={`absolute inset-0 z-10 bg-black flex flex-col items-center justify-center transition-opacity duration-700 pointer-events-none ${
+                    previewLoading ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  {previewVideo.thumbnailUrl ? (
+                    <img
+                      src={previewVideo.thumbnailUrl}
+                      alt="Thumbnail"
+                      className="absolute inset-0 w-full h-full object-cover opacity-50"
+                    />
+                  ) : null}
+                  <div className="relative flex flex-col items-center justify-center z-10">
+                    <div className="relative flex items-center justify-center">
+                      <div className="w-14 h-14 rounded-full border-2 border-emerald-500/20 border-t-emerald-400 animate-spin" />
+                      <div className="absolute w-9 h-9 rounded-full bg-black/70 p-1 flex items-center justify-center border border-white/20 shadow-lg">
+                        <img src="/logo-ldk.png" alt="LDK" className="w-full h-full object-contain" />
+                      </div>
+                    </div>
+                    <span className="text-xs font-medium text-white/90 mt-3 tracking-wide drop-shadow">
+                      Memuat Video Dakwah...
+                    </span>
+                  </div>
+                </div>
               </div>
             ) : (
               <video
