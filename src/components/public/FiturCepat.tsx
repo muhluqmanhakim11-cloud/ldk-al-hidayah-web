@@ -53,6 +53,24 @@ export default function FiturCepat() {
               <p className="text-gray-500 dark:text-gray-400 text-sm relative z-10">Baca Al-Qur'an dan terjemahannya dari portal resmi Kemenag RI.</p>
             </a>
 
+            <Link href="/reels" className="group bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/50 dark:to-slate-900 rounded-3xl p-6 shadow-sm border border-emerald-200/70 dark:border-emerald-800/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+              <div className="absolute -right-6 -bottom-6 text-emerald-200/60 dark:text-emerald-900/40 group-hover:scale-110 transition-transform">
+                <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="m10 8 6 4-6 4V8Z"></path></svg>
+              </div>
+              <div className="flex items-center justify-between gap-3 mb-4 relative z-10">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-emerald-600 text-white rounded-xl flex items-center justify-center shrink-0 shadow-sm shadow-emerald-600/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 dark:text-gray-100 text-lg group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Reels Dakwah</h3>
+                  </div>
+                </div>
+                <span className="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-600 text-white rounded-full">Baru</span>
+              </div>
+              <p className="text-gray-600 dark:text-gray-400 text-sm relative z-10">Video tausiyah singkat yang segar, ringan, dan mudah diakses kapan saja.</p>
+            </Link>
+
             <Link href="/kegiatan" className="group bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-slate-800 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
               <div className="absolute -right-6 -bottom-6 text-gray-100 dark:text-slate-800 opacity-50 group-hover:scale-110 transition-transform">
                 <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
