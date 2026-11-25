@@ -970,20 +970,27 @@ export default function ReelsClient({ initialReels }: Props) {
       {previewVideo && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
           <div className="relative w-full max-w-sm aspect-[9/16] bg-black rounded-3xl overflow-hidden shadow-2xl border border-white/20">
+            {/* Top disguise gradient mask to hide any embed header */}
+            <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-black via-black/80 to-transparent z-20 pointer-events-none" />
+            {/* Bottom disguise gradient mask */}
+            <div className="absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-black via-black/80 to-transparent z-20 pointer-events-none" />
+
             <button
               onClick={() => setPreviewVideo(null)}
-              className="absolute top-4 right-4 z-30 w-9 h-9 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/90 transition-colors"
+              className="absolute top-4 right-4 z-30 w-9 h-9 rounded-full bg-black/70 text-white flex items-center justify-center hover:bg-black transition-colors border border-white/20 shadow-lg"
             >
               ✕
             </button>
             {getVideoSourceType(previewVideo.videoUrl) !== "direct" ? (
-              <iframe
-                src={formatEmbedUrl(previewVideo.videoUrl, { autoplay: true, muted: false })}
-                title={previewVideo.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-                className="w-full h-full border-0 scale-[1.08] object-cover pointer-events-none"
-              />
+              <div className="w-full h-full relative overflow-hidden bg-black flex items-center justify-center">
+                <iframe
+                  src={formatEmbedUrl(previewVideo.videoUrl, { autoplay: true, muted: false })}
+                  title={previewVideo.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  className="absolute -top-[65px] left-[-5%] w-[110%] h-[calc(100%+130px)] border-0 object-cover pointer-events-none"
+                />
+              </div>
             ) : (
               <video
                 src={previewVideo.videoUrl}

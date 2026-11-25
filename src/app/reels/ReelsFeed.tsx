@@ -37,6 +37,7 @@ export default function ReelsFeed({ initialReels }: Props) {
   const [showHeartBurst, setShowHeartBurst] = useState<{ id: number; key: number } | null>(null);
   const [expandedDesc, setExpandedDesc] = useState<Record<number, boolean>>({});
   const [progressMap, setProgressMap] = useState<Record<number, number>>({});
+  const [loadedIframes, setLoadedIframes] = useState<Record<number, boolean>>({});
 
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
@@ -461,9 +462,34 @@ export default function ReelsFeed({ initialReels }: Props) {
                             sendEmbedCommand(iframe, isMuted ? "mute" : "unMute");
                           }, 1000);
                         }
+                        // Sembunyikan cover poster setelah iframe siap dan merender video
+                        setTimeout(() => {
+                          setLoadedIframes((prev) => ({ ...prev, [reel.id]: true }));
+                        }, 500);
                       }}
-                      className="w-full h-full border-0 object-cover scale-[1.08] pointer-events-none transition-transform duration-300"
+                      className="absolute -top-[65px] left-[-5%] w-[110%] h-[calc(100%+130px)] border-0 object-cover pointer-events-none transition-transform duration-300"
                     />
+
+                    {/* Smooth Poster / Placeholder Overlay agar logo watermark TikTok di awal tidak terlihat */}
+                    {(!loadedIframes[reel.id] || !isCurrentActive) && (
+                      <div
+                        className={`absolute inset-0 z-10 bg-black flex items-center justify-center transition-opacity duration-500 pointer-events-none ${
+                          loadedIframes[reel.id] ? "opacity-0" : "opacity-100"
+                        }`}
+                      >
+                        {reel.thumbnailUrl || getVideoPosterUrl(reel.videoUrl) ? (
+                          <img
+                            src={reel.thumbnailUrl || getVideoPosterUrl(reel.videoUrl)}
+                            alt={reel.title}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex flex-col items-center gap-2 text-white/50">
+                            <div className="w-8 h-8 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin" />
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <img
@@ -509,8 +535,9 @@ export default function ReelsFeed({ initialReels }: Props) {
                 </div>
               )}
 
-              {/* Gradient Vignette Overlays for Maximum Readability */}
-              <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/90 pointer-events-none z-10" />
+              {/* Gradient Vignette Overlays for Maximum Readability & Disguise */}
+              <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-black/90 pointer-events-none z-10" />
+              <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-black via-black/80 to-transparent pointer-events-none z-20" />
 
               {/* Mute Tap-to-Unmute Banner (if muted on active) */}
               {isMuted && isCurrentActive && (
