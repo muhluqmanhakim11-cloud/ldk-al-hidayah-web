@@ -412,10 +412,10 @@ export default function ReelsFeed({ initialReels }: Props) {
     <div className="fixed inset-0 bg-slate-950 text-white overflow-hidden select-none flex items-center justify-center">
       <Toaster position="top-center" />
 
-      {/* ── AMBIENT BLURRED BACKDROP (Desktop Luxury) ── */}
+      {/* ── AMBIENT BLURRED BACKDROP — desktop only, never mobile ── */}
       {currentReel && (
         <div
-          className="absolute inset-0 hidden md:block opacity-30 filter blur-3xl scale-125 transition-all duration-700 pointer-events-none"
+          className="absolute inset-0 hidden lg:block opacity-20 filter blur-3xl scale-125 transition-all duration-700 pointer-events-none"
           style={{
             backgroundImage: `url(${currentReel.thumbnailUrl || ""})`,
             backgroundPosition: "center",
@@ -445,7 +445,7 @@ export default function ReelsFeed({ initialReels }: Props) {
         {/* Sound Toggle (Top corner) */}
         <button
           onClick={toggleMute}
-          className="w-9 h-9 rounded-full bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center text-white/90 hover:text-white hover:bg-black/60 transition-colors"
+          className="w-9 h-9 rounded-full bg-black/60 border border-white/10 flex items-center justify-center text-white/90 hover:text-white hover:bg-black/80 transition-colors"
           title={isMuted ? "Aktifkan Suara" : "Matikan Suara"}
         >
           {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4 text-green-400" />}
@@ -455,7 +455,7 @@ export default function ReelsFeed({ initialReels }: Props) {
       {/* ── MAIN VERTICAL SNAP SCROLL CONTAINER ── */}
       <main
         ref={containerRef}
-        className="relative w-full h-[100dvh] md:max-w-[420px] md:h-[calc(100dvh-2.5rem)] md:rounded-3xl md:overflow-hidden md:shadow-2xl md:border md:border-white/15 overflow-y-scroll snap-y snap-mandatory scroll-smooth no-scrollbar z-20 bg-black"
+        className="relative w-full h-[100dvh] md:max-w-[420px] md:h-[calc(100dvh-2.5rem)] md:rounded-3xl md:overflow-hidden md:shadow-2xl md:border md:border-white/15 overflow-y-scroll snap-y snap-mandatory no-scrollbar z-20 bg-black overscroll-y-contain touch-pan-y"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {reels.map((reel, index) => {
@@ -475,7 +475,7 @@ export default function ReelsFeed({ initialReels }: Props) {
             >
               {/* Embed Player (TikTok / YouTube Shorts) or Direct Video */}
               {isEmbed ? (
-                isNearActive ? (
+                isCurrentActive ? (
                   <div 
                     onClick={() => handleVideoTap(reel.id)}
                     className="w-full h-full relative overflow-hidden flex items-center justify-center bg-black cursor-pointer"
@@ -639,7 +639,7 @@ export default function ReelsFeed({ initialReels }: Props) {
                   <button
                     onClick={() => handleLike(reel.id)}
                     aria-label="Like Reels"
-                    className="w-11 h-11 rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center justify-center active:scale-75 transition-all text-white hover:bg-black/70"
+                    className="w-11 h-11 rounded-full bg-black/60 border border-white/10 flex items-center justify-center active:scale-75 transition-transform text-white hover:bg-black/80"
                   >
                     <Heart
                       className={`w-6 h-6 transition-all ${
@@ -659,7 +659,7 @@ export default function ReelsFeed({ initialReels }: Props) {
                   <button
                     onClick={toggleMute}
                     aria-label="Mute / Unmute"
-                    className="w-11 h-11 rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center justify-center active:scale-75 transition-all text-white hover:bg-black/70"
+                    className="w-11 h-11 rounded-full bg-black/60 border border-white/10 flex items-center justify-center active:scale-75 transition-transform text-white hover:bg-black/80"
                   >
                     {isMuted ? (
                       <VolumeX className="w-5 h-5 text-rose-400" />
@@ -677,7 +677,7 @@ export default function ReelsFeed({ initialReels }: Props) {
                   <button
                     onClick={() => handleShare(reel)}
                     aria-label="Share Reels"
-                    className="w-11 h-11 rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center justify-center active:scale-75 transition-all text-white hover:bg-black/70"
+                    className="w-11 h-11 rounded-full bg-black/60 border border-white/10 flex items-center justify-center active:scale-75 transition-transform text-white hover:bg-black/80"
                   >
                     {copiedId === reel.id ? (
                       <Check className="w-5 h-5 text-green-400" />
@@ -738,7 +738,7 @@ export default function ReelsFeed({ initialReels }: Props) {
 
                 {/* Audio Ticker */}
                 <div className="flex items-center gap-2 pt-0.5 text-[11px] text-white/70">
-                  <Music2 className="w-3 h-3 text-green-400 flex-shrink-0 animate-spin" />
+                  <Music2 className={`w-3 h-3 text-green-400 flex-shrink-0 ${isCurrentActive ? "animate-spin" : ""}`} />
                   <span className="truncate">Suara Asli • LDK Al-Hidayah IKMI Cirebon</span>
                 </div>
               </div>
